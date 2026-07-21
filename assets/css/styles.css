@@ -193,9 +193,16 @@ img, svg { max-width: 100%; }
    Navigation
    -------------------------------------------------------------------------- */
 .nav {
-  position: sticky;
+  /* Fixed, not sticky: iOS/Telegram WKWebView composites sticky elements
+     lazily during momentum scroll, letting transformed page content paint
+     above the bar. Fixed elements are promoted to their own layer and
+     reliably stay on top. translateZ(0) forces that layer explicitly. */
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
+  transform: translateZ(0);
   /* Opaque by default. Mobile browsers and in-app WebViews (e.g. Telegram)
      report backdrop-filter support but don't reliably render it, so a
      translucent bar leaks page content through as it scrolls. A solid bar
@@ -203,6 +210,8 @@ img, svg { max-width: 100%; }
   background: var(--nav-bg-solid);
   border-bottom: 1px solid var(--border);
 }
+/* The bar no longer occupies flow space, so offset the page by its height. */
+body { padding-top: 66px; }
 /* Frosted-glass effect only on large, pointer-precise (desktop) screens,
    where backdrop-filter is dependable. */
 @media (min-width: 900px) and (hover: hover) and (pointer: fine) {
