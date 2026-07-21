@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-labelledby="title desc">
+  <title id="title">openmock logo</title>
+  <desc id="desc">Lime green play-bars icon followed by the word openmock, with open in charcoal and mock in lime green.</desc>
+
+  <defs>
+    <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#86D624"/>
+      <stop offset="100%" stop-color="#76C81D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Transparent background -->
+  <g transform="translate(180 180)">
+    <!-- Play-bars icon -->
+    <rect x="0" y="0" width="44" height="220" rx="22" fill="url(#lime)"/>
+    <rect x="70" y="38" width="44" height="144" rx="22" fill="url(#lime)"/>
+    <path d="M142 74
+             C142 62 155 55 165 61
+             L205 88
+             C214 94 214 107 205 113
+             L165 140
+             C155 146 142 139 142 127 Z"
+          fill="url(#lime)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="430" y="345"
+        font-family="Inter, Poppins, Avenir Next, Helvetica Neue, Arial, sans-serif"
+        font-size="220"
+        font-weight="700"
+        letter-spacing="-10">
+    <tspan fill="#171717">open</tspan><tspan fill="url(#lime)">mock</tspan>
+  </text>
+</svg>

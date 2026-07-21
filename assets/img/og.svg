@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="OpenMock — one portable YAML file for your API mocks">
+  <defs>
+    <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#86D624"/>
+      <stop offset="100%" stop-color="#76C81D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#76C81D" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#0d0f0c" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0d0f0c"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Icon -->
+  <g transform="translate(140 210) scale(0.9)">
+    <rect x="0" y="0" width="44" height="220" rx="22" fill="url(#lime)"/>
+    <rect x="70" y="38" width="44" height="144" rx="22" fill="url(#lime)"/>
+    <path d="M142 74 C142 62 155 55 165 61 L205 88 C214 94 214 107 205 113 L165 140 C155 146 142 139 142 127 Z" fill="url(#lime)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="140" y="200" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-2">
+    <tspan fill="#FAFAFA">open</tspan><tspan fill="#86D624">mock</tspan>
+  </text>
+
+  <text x="400" y="330" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="800" fill="#FAFAFA" letter-spacing="-2">One portable YAML file</text>
+  <text x="400" y="410" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="800" letter-spacing="-2">
+    <tspan fill="#FAFAFA">for all your </tspan><tspan fill="#86D624">API mocks</tspan>
+  </text>
+  <text x="400" y="470" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="400" fill="#a9b0a0">HTTP · gRPC · GraphQL · WebSocket — one model.</text>
+
+  <text x="140" y="560" font-family="JetBrains Mono, monospace" font-size="26" fill="#76C81D">openmock.dev</text>
+</svg>
