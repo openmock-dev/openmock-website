@@ -95,7 +95,9 @@
 *::before,
 *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: 90px; }
+/* scroll-padding-top matches the header: in-flow on mobile (small offset),
+   floating 66px bar on desktop (see the .nav desktop media query). */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; scroll-padding-top: 20px; }
 
 body {
   margin: 0;
@@ -193,28 +195,28 @@ img, svg { max-width: 100%; }
    Navigation
    -------------------------------------------------------------------------- */
 .nav {
-  /* Fixed, not sticky: iOS/Telegram WKWebView composites sticky elements
-     lazily during momentum scroll, letting transformed page content paint
-     above the bar. Fixed elements are promoted to their own layer and
-     reliably stay on top. translateZ(0) forces that layer explicitly. */
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  /* In normal flow on mobile — the bar scrolls away with the page.
+     Floating bars (sticky OR fixed) are repositioned asynchronously by
+     iOS in-app sheet browsers (e.g. Telegram's WKWebView), so page content
+     visibly paints above/through them during scroll. A bar that isn't
+     overlaid can never be overlapped. relative keeps it the anchor for
+     the mobile dropdown menu. */
+  position: relative;
   z-index: 1000;
-  transform: translateZ(0);
-  /* Opaque by default. Mobile browsers and in-app WebViews (e.g. Telegram)
-     report backdrop-filter support but don't reliably render it, so a
-     translucent bar leaks page content through as it scrolls. A solid bar
-     avoids that everywhere. */
   background: var(--nav-bg-solid);
   border-bottom: 1px solid var(--border);
 }
-/* The bar no longer occupies flow space, so offset the page by its height. */
-body { padding-top: 66px; }
-/* Frosted-glass effect only on large, pointer-precise (desktop) screens,
+/* Desktop (large, pointer-precise screens): float the bar, frosted glass
    where backdrop-filter is dependable. */
 @media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  body { padding-top: 66px; }
+  html { scroll-padding-top: 90px; }
   @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav {
       background: var(--nav-bg);
