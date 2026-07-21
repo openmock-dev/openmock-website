@@ -196,16 +196,23 @@ img, svg { max-width: 100%; }
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: var(--nav-bg);
-  backdrop-filter: saturate(180%) blur(14px);
-  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  /* Opaque by default. Mobile browsers and in-app WebViews (e.g. Telegram)
+     report backdrop-filter support but don't reliably render it, so a
+     translucent bar leaks page content through as it scrolls. A solid bar
+     avoids that everywhere. */
+  background: var(--nav-bg-solid);
   border-bottom: 1px solid var(--border);
 }
-/* WebViews / browsers without backdrop-filter (e.g. some in-app browsers)
-   would otherwise show the page content through the translucent bar as it
-   scrolls. Fall back to a fully opaque header there. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .nav { background: var(--nav-bg-solid); }
+/* Frosted-glass effect only on large, pointer-precise (desktop) screens,
+   where backdrop-filter is dependable. */
+@media (min-width: 900px) and (hover: hover) and (pointer: fine) {
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav {
+      background: var(--nav-bg);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+    }
+  }
 }
 .nav__inner {
   display: flex;
