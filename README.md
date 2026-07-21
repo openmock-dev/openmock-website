@@ -7,8 +7,8 @@
 ---
 
 This repository holds the marketing/landing site for
-[OpenMock](https://github.com/openmock-dev/openmock), an open specification for
-defining API mocks in a single, portable YAML file. The site is a **static,
+[OpenMock](https://github.com/openmock-dev/openmock), an open format and data
+model for defining API mocks in a single, portable file. The site is a **static,
 dependency-free** HTML/CSS/JS page — no framework, no build step — so it deploys
 straight to **GitHub Pages** and is served through the **Cloudflare** domain
 [`openmock.dev`](https://openmock.dev).

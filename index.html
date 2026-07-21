@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenMock — One portable YAML file for your API mocks</title>
-  <meta name="description" content="OpenMock is an open specification for defining API mocks — HTTP, gRPC, GraphQL, and WebSocket — in a single, portable, human- and AI-friendly YAML file. One file, no split metadata, no external dispatcher: just the mock." />
+  <title>OpenMock — An open format for your API mocks</title>
+  <meta name="description" content="OpenMock is an open format and data model for defining API mocks — HTTP, gRPC, GraphQL, and WebSocket — in a single, portable file. One file, no split metadata, no external dispatcher: just the mock." />
   <link rel="canonical" href="https://openmock.dev/" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://openmock.dev/" />
-  <meta property="og:title" content="OpenMock — One portable YAML file for your API mocks" />
-  <meta property="og:description" content="An open specification for defining API mocks in a single, portable YAML file. HTTP, gRPC, GraphQL, and WebSocket — one model." />
+  <meta property="og:title" content="OpenMock — An open format for your API mocks" />
+  <meta property="og:description" content="An open format and data model for defining API mocks in a single, portable file. HTTP, gRPC, GraphQL, and WebSocket — one model." />
   <meta property="og:image" content="https://openmock.dev/assets/img/og.svg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="OpenMock — One portable YAML file for your API mocks" />
-  <meta name="twitter:description" content="An open specification for defining API mocks in a single, portable YAML file." />
+  <meta name="twitter:title" content="OpenMock — An open format for your API mocks" />
+  <meta name="twitter:description" content="An open format and data model for defining API mocks in a single, portable file." />
   <meta name="theme-color" content="#76C81D" />
 
   <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml" />
@@ -43,7 +43,7 @@
     "name": "OpenMock",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
-    "description": "An open specification for defining API mocks in a single, portable YAML file.",
+    "description": "An open format and data model for defining API mocks in a single, portable file.",
     "url": "https://openmock.dev",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "license": "https://opensource.org/licenses/MIT"
@@ -89,12 +89,12 @@
     <section class="hero">
       <div class="container hero__inner">
         <span class="badge"><span class="dot"></span>OpenMock&nbsp;<b>v0.2</b>&nbsp;· open specification</span>
-        <h1>One portable YAML file<br />for <span class="gradient-text">all your API mocks</span></h1>
+        <h1>One open format<br />for <span class="gradient-text">all your API mocks</span></h1>
         <p class="hero__sub">
-          OpenMock describes how a mock API should respond — routes, request matching,
-          response bodies, delays, and templated values — in a single human- and
-          AI-friendly <code>.yml</code> file. One file, no split
-          metadata, no external dispatcher. Just the mock.
+          OpenMock is an open format and data model for describing how a mock API
+          should respond — routes, request matching, response bodies, delays, and
+          templated values — in a single, portable, human- and AI-friendly file.
+          No split metadata, no external dispatcher. Just the mock.
         </p>
         <div class="hero__cta">
           <a class="btn btn--primary btn--lg" href="#quickstart">Read the quickstart</a>
@@ -172,7 +172,7 @@
           <div class="flow__step reveal">
             <span class="flow__num">3</span>
             <h3>Render</h3>
-            <p><code>{{params.*}}</code> and <code>{{faker.*}}</code> placeholders are substituted into the native-YAML body.</p>
+            <p><code>{{params.*}}</code> and <code>{{faker.*}}</code> placeholders are substituted into the native response body.</p>
           </div>
           <div class="flow__step reveal">
             <span class="flow__num">4</span>
@@ -189,7 +189,7 @@
         <div class="section-head reveal">
           <span class="eyebrow">Why OpenMock</span>
           <h2>Example-driven mocks, made <span class="gradient-text">smaller and standalone</span></h2>
-          <p>The good idea — example-driven mocks in YAML — with the ceremony removed. One file, inline matching, and a clear JSON Schema humans and AI agents can both read and write.</p>
+          <p>The good idea — example-driven mocks in one open format — with the ceremony removed. One file, inline matching, and a clear JSON Schema humans and AI agents can both read and write.</p>
         </div>
         <div class="grid">
           <div class="card reveal">
@@ -199,8 +199,8 @@
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></div>
-            <h3>Native YAML bodies</h3>
-            <p>Response payloads are real YAML — never escaped JSON-in-a-string. What you write is what the client receives.</p>
+            <h3>Native bodies</h3>
+            <p>Response payloads are real structured data — never escaped JSON-in-a-string. What you write is what the client receives.</p>
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
@@ -343,7 +343,7 @@
               </tr>
               <tr>
                 <td>Native (unescaped) bodies</td>
-                <td class="yes">Real YAML</td>
+                <td class="yes">Native</td>
                 <td class="yes">Yes</td>
                 <td class="no">JSON stubs</td>
                 <td class="yes">Yes</td>
@@ -430,7 +430,7 @@
             <img src="assets/img/icon.svg" alt="" width="26" height="26" />
             <span class="brand-word">open<b>mock</b></span>
           </a>
-          <p>An open specification for defining API mocks in a single, portable YAML file. MIT licensed, community built.</p>
+          <p>An open format for defining API mocks in a single, portable file. MIT licensed, community built.</p>
         </div>
         <div class="footer__col">
           <h4>Specification</h4>

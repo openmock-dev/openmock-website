@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="OpenMock — one portable YAML file for your API mocks">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="OpenMock — an open format for your API mocks">
   <defs>
     <linearGradient id="lime" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#86D624"/>
@@ -29,7 +29,7 @@
     <tspan fill="#FAFAFA">open</tspan><tspan fill="#86D624">mock</tspan>
   </text>
 
-  <text x="400" y="330" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="800" fill="#FAFAFA" letter-spacing="-2">One portable YAML file</text>
+  <text x="400" y="330" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="800" fill="#FAFAFA" letter-spacing="-2">One open format</text>
   <text x="400" y="410" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="800" letter-spacing="-2">
     <tspan fill="#FAFAFA">for all your </tspan><tspan fill="#86D624">API mocks</tspan>
   </text>
