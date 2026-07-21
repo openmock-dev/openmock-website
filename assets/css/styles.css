@@ -250,6 +250,9 @@ img, svg { max-width: 100%; }
 
 .nav__burger { display: none; }
 
+/* Links that only appear inside the mobile dropdown menu */
+.nav__mobile-only { display: none; }
+
 /* --------------------------------------------------------------------------
    Hero
    -------------------------------------------------------------------------- */
@@ -598,6 +601,10 @@ img, svg { max-width: 100%; }
   .section { padding: 68px 0; }
   .nav__links { display: none; }
   .nav__burger { display: inline-flex; }
+  /* Free up the cramped top bar: keep only the theme toggle + burger,
+     move GitHub and Get started into the dropdown menu. */
+  .nav__actions > a.icon-btn,
+  .nav__actions > .btn--primary { display: none; }
   .nav__links.open {
     display: flex;
     flex-direction: column;
@@ -612,6 +619,14 @@ img, svg { max-width: 100%; }
     box-shadow: var(--shadow-md);
   }
   .nav__links.open a { padding: 12px 10px; }
+  .nav__links.open .nav__mobile-only { display: block; }
+  .nav__links.open .nav__mobile-cta {
+    margin-top: 8px;
+    color: var(--accent);
+    font-weight: 700;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
   .grid, .protocols { grid-template-columns: 1fr; }
   .flow { grid-template-columns: 1fr; }
   .footer__grid { grid-template-columns: 1fr; }
