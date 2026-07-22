@@ -287,7 +287,7 @@
       layout();
       var keys = visible(), maxX = 0, maxY = 0, minY = 1e9;
       keys.forEach(function (k) { var n = nodes[k]; maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h); minY = Math.min(minY, n.y); });
-      var offY = 40 - minY;
+      var offY = 40 - minY; lastOffY = offY;
       var eh = "";
       keys.forEach(function (k) {
         var n = nodes[k]; if (!n.expanded) return;
@@ -316,12 +316,34 @@
       n.expanded = !n.expanded;
       if (n.expanded) ensureChildren(n.key);
       render();
+      // Re-frame on the toggled node (and its children when expanding).
+      focusKeys(n.expanded ? [n.key].concat(n.childKeys) : [n.key]);
     });
 
     /* pan / zoom */
-    var tx = 0, ty = 0, scale = 1;
+    var tx = 0, ty = 0, scale = 1, lastOffY = 0, animT = null;
     function apply() { world.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + scale + ")"; }
     function clampScale(s) { return Math.max(0.25, Math.min(2, s)); }
+    function stopAnim() { if (animT) { clearTimeout(animT); animT = null; } world.style.transition = ""; }
+    function animateTo(ntx, nty, ns) {
+      world.style.transition = "transform 0.5s cubic-bezier(.22,.61,.36,1)";
+      tx = ntx; ty = nty; scale = ns; apply();
+      if (animT) clearTimeout(animT);
+      animT = setTimeout(function () { world.style.transition = ""; animT = null; }, 540);
+    }
+    function focusKeys(keys) {
+      var x1 = 1e9, y1 = 1e9, x2 = -1e9, y2 = -1e9;
+      keys.forEach(function (k) {
+        var n = nodes[k]; if (!n) return;
+        x1 = Math.min(x1, n.x); x2 = Math.max(x2, n.x + n.w);
+        y1 = Math.min(y1, n.y + lastOffY); y2 = Math.max(y2, n.y + n.h + lastOffY);
+      });
+      if (x2 < x1) return;
+      var bw = x2 - x1, bh = y2 - y1, cw = canvas.clientWidth, ch = canvas.clientHeight, pad = 90;
+      var ns = clampScale(Math.min((cw - pad) / bw, (ch - pad) / bh, 1.1));
+      var cx = (x1 + x2) / 2, cy = (y1 + y2) / 2;
+      animateTo(cw / 2 - cx * ns, ch / 2 - cy * ns, ns);
+    }
     function fit() {
       render();
       var w = Number(edgesSvg.getAttribute("width")), h = Number(edgesSvg.getAttribute("height"));
@@ -330,9 +352,9 @@
       tx = 30; ty = Math.max(20, (ch - h * scale) / 2); apply();
     }
     function zoomAt(cx, cy, f) { var ns = clampScale(scale * f); tx = cx - (cx - tx) * (ns / scale); ty = cy - (cy - ty) * (ns / scale); scale = ns; apply(); }
-    canvas.addEventListener("wheel", function (e) { e.preventDefault(); var r = canvas.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.12 : 0.89); }, { passive: false });
+    canvas.addEventListener("wheel", function (e) { e.preventDefault(); stopAnim(); var r = canvas.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.12 : 0.89); }, { passive: false });
     var dragging = false, sx = 0, sy = 0;
-    function down(x, y, target) { if (target.closest && target.closest(".gt, .svx__zoom")) return; dragging = true; sx = x - tx; sy = y - ty; canvas.classList.add("grabbing"); }
+    function down(x, y, target) { if (target.closest && target.closest(".gt, .svx__zoom")) return; stopAnim(); dragging = true; sx = x - tx; sy = y - ty; canvas.classList.add("grabbing"); }
     function mv(x, y) { if (!dragging) return; tx = x - sx; ty = y - sy; apply(); }
     function up() { dragging = false; canvas.classList.remove("grabbing"); }
     canvas.addEventListener("mousedown", function (e) { down(e.clientX, e.clientY, e.target); });
