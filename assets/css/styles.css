@@ -587,6 +587,7 @@ img, svg { max-width: 100%; }
    -------------------------------------------------------------------------- */
 .footer { border-top: 1px solid var(--border); background: var(--bg-alt); padding: 64px 0 34px; }
 .footer__grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 40px; margin-bottom: 46px; }
+.footer__grid--docs { grid-template-columns: 2fr 1fr 1fr; }
 .footer__brand .nav__brand { margin-bottom: 14px; }
 .footer__brand p { font-size: 0.92rem; max-width: 300px; }
 .footer__col h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 16px; font-weight: 600; }

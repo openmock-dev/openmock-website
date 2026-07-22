@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenMock Examples</title>
+  <meta name="description" content="Runnable OpenMock example documents: scenarios, templating, delays, polling, and HTTP/gRPC/GraphQL/WebSocket." />
+  <meta name="theme-color" content="#76C81D" />
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml" />
+  <script>(function(){try{var t=localStorage.getItem("om-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/docs.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+        <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+        <span class="brand-word">open<b>mock</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#features">Features</a>
+        <a href="spec.html">Spec</a>
+        <a href="schema.html">Schema</a>
+        <a href="examples.html" aria-current="page">Examples</a>
+        <a class="nav__mobile-only" href="https://github.com/openmock-dev/openmock">GitHub</a>
+        <a class="nav__mobile-only nav__mobile-cta" href="index.html#quickstart">Get started →</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <a class="icon-btn" href="https://github.com/openmock-dev/openmock" aria-label="OpenMock on GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        <a class="btn btn--primary" href="index.html#quickstart">Get started</a>
+        <button class="icon-btn nav__burger" type="button" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="doc-hero">
+      <div class="container">
+        <span class="eyebrow">Examples</span>
+        <h1>OpenMock <span class="gradient-text">examples</span></h1>
+        <p>Runnable example documents covering scenarios, templating, delays, stateful polling, and all four protocols.</p>
+        <div class="doc-hero__meta">
+        <span>8 documents</span>
+        <a href="https://github.com/openmock-dev/openmock/tree/main/examples">On GitHub</a>
+        </div>
+      </div>
+    </section>
+    <div class="docs">
+      <aside class="docs__side">
+        <details class="docs__toc" open>
+          <summary>On this page</summary>
+          <p class="toc-title">On this page</p>
+          <ul class="toc-list">
+            <li><a class="lvl-2" href="#ex-01-minimal">Minimal REST mock</a></li>
+            <li><a class="lvl-2" href="#ex-02-scenarios-when">Users API mock</a></li>
+            <li><a class="lvl-2" href="#ex-03-templating-faker">Templating and faker demo</a></li>
+            <li><a class="lvl-2" href="#ex-04-delays-errors">Delays and errors</a></li>
+            <li><a class="lvl-2" href="#ex-05-polling-calls">File-analysis polling mock</a></li>
+            <li><a class="lvl-2" href="#ex-06-grpc">Order service gRPC mock</a></li>
+            <li><a class="lvl-2" href="#ex-07-graphql">Order service GraphQL mock</a></li>
+            <li><a class="lvl-2" href="#ex-08-websocket">Order feed WebSocket mock</a></li>
+          </ul>
+        </details>
+      </aside>
+      <article class="docs__main">
+<div class="prose"><p>Eight worked <code>openmock.yml</code> documents, from a minimal REST mock to a two-server gRPC topology — each runnable with the <a href="https://github.com/openmock-dev/openmock-go">openmock-go</a> reference server. Copy any of them and adapt.</p></div>
+      <section class="example" id="ex-01-minimal">
+        <div class="example__head">
+          <span class="example__badge">01-minimal.yml</span>
+          <h2 id="ex-01-minimal-h">Minimal REST mock</h2>
+          <p>A single health-check endpoint.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# The smallest useful OpenMock document: one operation, one default scenario.
+# Any GET /health request returns 200 with a native-YAML body.
+
+info:
+  title: Minimal REST mock
+  version: 1.0.0
+  description: A single health-check endpoint.
+
+servers:
+  - name: main
+    type: http
+    operations:
+      - method: GET
+        path: /health
+        scenarios:
+          - name: healthy
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                status: ok
+</code></pre>
+        </div>
+      </section>
+      <section class="example" id="ex-02-scenarios-when">
+        <div class="example__head">
+          <span class="example__badge">02-scenarios-when.yml</span>
+          <h2 id="ex-02-scenarios-when-h">Users API mock</h2>
+          <p>Demonstrates when conditions and a default fallback.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# Multiple scenarios evaluated first-match-wins. The most specific `when`
+# scenarios come first; the conditionless default comes last.
+
+info:
+  title: Users API mock
+  version: 1.0.0
+  description: Demonstrates when conditions and a default fallback.
+
+servers:
+  - name: main
+    type: http
+    operations:
+      - method: GET
+        path: /users/{id}
+        scenarios:
+          # Matches only when the request carries an admin role header.
+          - name: admin-user
+            summary: Admin view — richer payload for callers with the admin role.
+            when:
+              headers:
+                X-Role: admin
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                id: "{{params.id}}"
+                name: Ada Lovelace
+                role: admin
+
+          # Matches a specific user id, regardless of headers.
+          - name: known-user-1
+            when:
+              params:
+                id: "1"
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                id: "1"
+                name: Grace Hopper
+                role: user
+
+          # Default fallback — always matches, so it must be last.
+          - name: default-user
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                id: "{{params.id}}"
+                name: Anonymous
+                role: user
+
+      - method: POST
+        path: /users
+        scenarios:
+          # Reject when the body is missing a required field.
+          - name: missing-name
+            when:
+              body:
+                name: ""
+            response:
+              status: 422
+              headers:
+                Content-Type: application/json
+              body:
+                error: name is required
+
+          - name: created
+            response:
+              status: 201
+              headers:
+                Content-Type: application/json
+              body:
+                id: "100"
+                name: "{{request.body.name}}"
+                role: user
+</code></pre>
+        </div>
+      </section>
+      <section class="example" id="ex-03-templating-faker">
+        <div class="example__head">
+          <span class="example__badge">03-templating-faker.yml</span>
+          <h2 id="ex-03-templating-faker-h">Templating and faker demo</h2>
+          <p>Shows every placeholder namespace defined in v0.1.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# Templating placeholders and the faker namespace. Values are substituted from
+# the incoming request (params/body/headers/query) and generated by faker.
+
+info:
+  title: Templating and faker demo
+  version: 1.0.0
+  description: Shows every placeholder namespace defined in v0.1.
+
+servers:
+  - name: main
+    type: http
+    operations:
+      - method: GET
+        path: /users/{id}
+        scenarios:
+          - name: rendered-user
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+                X-Request-Id: "{{request.headers.X-Request-Id}}"
+              body:
+                # From the path parameter.
+                id: "{{params.id}}"
+                # From a query parameter, e.g. /users/42?fields=full
+                fields: "{{request.query.fields}}"
+                # Generated by faker.
+                name: "{{faker.person.fullName}}"
+                email: "{{faker.internet.email}}"
+                token: "{{faker.string.uuid}}"
+                createdAt: "{{faker.date.recent}}"
+
+      - method: POST
+        path: /echo
+        scenarios:
+          - name: echo-body
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                # Reach into nested request body values with dotted paths.
+                receivedName: "{{request.body.user.name}}"
+                receivedRole: "{{request.body.user.role}}"
+</code></pre>
+        </div>
+      </section>
+      <section class="example" id="ex-04-delays-errors">
+        <div class="example__head">
+          <span class="example__badge">04-delays-errors.yml</span>
+          <h2 id="ex-04-delays-errors-h">Delays and errors</h2>
+          <p>Latency simulation and error responses.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# Response delays and author-declared error responses. Note the difference
+# between a declared error (a scenario with a 4xx/5xx status) and OpenMock's
+# own synthetic fallbacks (501 unmatched / 404 unrouted).
+
+info:
+  title: Delays and errors
+  version: 1.0.0
+  description: Latency simulation and error responses.
+
+servers:
+  - name: main
+    type: http
+    operations:
+      - method: GET
+        path: /orders/{id}
+        scenarios:
+          # Simulate a slow backend for a specific order.
+          - name: slow-order
+            when:
+              params:
+                id: "slow"
+            response:
+              status: 200
+              delay: 1500
+              headers:
+                Content-Type: application/json
+              body:
+                id: slow
+                status: processing
+
+          # Simulate an upstream failure for a specific order.
+          - name: failing-order
+            when:
+              params:
+                id: "boom"
+            response:
+              status: 503
+              delay: 250
+              headers:
+                Content-Type: application/json
+                Retry-After: "5"
+              body:
+                error: upstream unavailable
+                code: SERVICE_UNAVAILABLE
+
+          # Not-found error for anything else.
+          - name: not-found
+            response:
+              status: 404
+              headers:
+                Content-Type: application/json
+              body:
+                error: order not found
+                id: "{{params.id}}"
+</code></pre>
+        </div>
+      </section>
+      <section class="example" id="ex-05-polling-calls">
+        <div class="example__head">
+          <span class="example__badge">05-polling-calls.yml</span>
+          <h2 id="ex-05-polling-calls-h">File-analysis polling mock</h2>
+          <p>Simulates an async analyze-then-poll API.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# Stateful polling with the `calls` facet. The engine keeps a call counter per
+# operation and concrete path, so /v1/file/abc and /v1/file/def advance
+# independently. `calls: 1` is shorthand for {min: 1, max: 1}; bounds are
+# inclusive and either may be omitted ({min: 5} = the 5th call onward).
+#
+# Manual flow this mocks:
+#   1. GET  /v1/file/{hash}   -&gt; 404 (file unknown, 1st call)
+#   2. POST /v1/file/upload   -&gt; 202 (accepted for analysis)
+#   3. GET  /v1/file/{hash}   -&gt; 200 pending (calls 2-3)
+#   4. GET  /v1/file/{hash}   -&gt; 200 done (4th call onward, default scenario)
+
+info:
+  title: File-analysis polling mock
+  version: 1.0.0
+  description: Simulates an async analyze-then-poll API.
+
+servers:
+  - name: main
+    type: http
+    operations:
+      - method: POST
+        path: /v1/file/upload
+        scenarios:
+          - name: accepted
+            response:
+              status: 202
+              headers:
+                Content-Type: application/json
+              body:
+                status: queued
+
+      - method: GET
+        path: /v1/file/{hash}
+        scenarios:
+          - name: not-uploaded-yet
+            when:
+              calls: 1
+            response:
+              status: 404
+              headers:
+                Content-Type: application/json
+              body:
+                error: not_found
+
+          - name: analyzing
+            when:
+              calls:
+                min: 2
+                max: 3
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                hash: "{{params.hash}}"
+                status: pending
+
+          # Default scenario: catches the 4th call and every one after it.
+          # This is how "repeat the final response forever" is written.
+          - name: done
+            response:
+              status: 200
+              headers:
+                Content-Type: application/json
+              body:
+                hash: "{{params.hash}}"
+                status: done
+                verdict: clean
+</code></pre>
+        </div>
+      </section>
+      <section class="example" id="ex-06-grpc">
+        <div class="example__head">
+          <span class="example__badge">06-grpc.yml</span>
+          <h2 id="ex-06-grpc-h">Order service gRPC mock</h2>
+          <p>Unary calls, a streaming watch, errors, and calls-based polling.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# gRPC mocks. Operations are addressed by service + rpc, declare their call
+# type explicitly (unary | server-streaming), and match on metadata / message
+# facets. Messages are native YAML following the proto3 JSON mapping (spec
+# §4.2) — the mock is serveable without any .proto file.
+
+info:
+  title: Order service gRPC mock
+  version: 1.0.0
+  description: Unary calls, a streaming watch, errors, and calls-based polling.
+
+# The schema behind this mock lives in 06-grpc.proto; 06-grpc.binpb is the
+# descriptor set compiled from it (see the .proto header for the protoc/buf
+# commands). Attaching it here is OPTIONAL and never changes what the document
+# means — engines MAY ignore it, and MAY use it to serve binary protobuf,
+# server reflection, or message validation (spec §3.4).
+servers:
+  - name: main
+    type: grpc
+    descriptorSet: ./06-grpc.binpb
+    # Extension keys are permitted on server objects too (spec §11);
+    # an engine that doesn't recognise this ignores it.
+    x-acme-reflection: false
+    operations:
+      # Unary RPC with metadata matching and an error scenario.
+      - service: shop.v1.OrderService
+        rpc: GetOrder
+        type: unary
+        scenarios:
+          - name: admin-view
+            when:
+              metadata:
+                x-role: admin
+            response:
+              status: OK
+              metadata:
+                x-cache: MISS
+              message:
+                id: "{{request.message.orderId}}"
+                state: SHIPPED
+                internalNotes: fragile — handle with care
+
+          - name: missing-order
+            when:
+              message:
+                orderId: "0"
+            response:
+              status: NOT_FOUND
+              error: order not found
+
+          - name: default-view
+            response:
+              status: OK
+              message:
+                id: "{{request.message.orderId}}"
+                state: SHIPPED
+
+      # Server-streaming RPC: messages are emitted in order.
+      - service: shop.v1.OrderService
+        rpc: WatchOrder
+        type: server-streaming
+        scenarios:
+          - name: lifecycle
+            response:
+              status: OK
+              messages:
+                - event: CREATED
+                  orderId: "{{request.message.orderId}}"
+                - event: PAID
+                  orderId: "{{request.message.orderId}}"
+                - event: SHIPPED
+                  orderId: "{{request.message.orderId}}"
+
+      # A stream that fails mid-way: two events, then the stream terminates
+      # with a non-OK status.
+      - service: shop.v1.OrderService
+        rpc: WatchInventory
+        type: server-streaming
+        scenarios:
+          - name: interrupted
+            response:
+              status: UNAVAILABLE
+              error: inventory feed lost upstream connection
+              messages:
+                - level: "42"
+                - level: "41"
+
+      # The calls facet works on gRPC exactly as on HTTP; the counter is keyed by
+      # service + rpc (no path parameters), i.e. per operation.
+      - service: shop.v1.ReportService
+        rpc: GetReport
+        type: unary
+        scenarios:
+          - name: generating
+            when:
+              calls:
+                max: 2
+            response:
+              status: OK
+              message:
+                state: GENERATING
+          - name: ready
+            response:
+              status: OK
+              message:
+                state: READY
+                url: https://example.com/report.pdf
+</code></pre>
+          <details>
+            <summary>Protobuf schema (06-grpc.proto)</summary>
+            <div class="codeblock" style="margin-top:8px">
+              <button class="codeblock__copy" type="button">Copy</button>
+              <pre><code class="language-protobuf">// The protobuf schema behind examples/06-grpc.yml.
+//
+// OpenMock documents never require a .proto file — messages are written as
+// native YAML following the proto3 JSON mapping (spec §4.2). This file shows
+// the schema that mock implements, and is the source for the descriptor set
+// the document attaches via `grpc.descriptorSet` (spec §3.4):
+//
+//   protoc --include_imports --descriptor_set_out=06-grpc.binpb 06-grpc.proto
+//   # or, with buf:
+//   buf build 06-grpc.proto -o 06-grpc.binpb
+//
+// Note how the proto3 JSON mapping shapes the YAML in 06-grpc.yml:
+//   - field names appear as their lowerCamelCase JSON names
+//     (order_id here → orderId in the document),
+//   - enum values appear by name (state: SHIPPED),
+//   - 64-bit integers appear as decimal strings (level: "42").
+
+syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+  rpc WatchOrder(WatchOrderRequest) returns (stream OrderEvent);
+  rpc WatchInventory(WatchInventoryRequest) returns (stream InventoryLevel);
+}
+
+service ReportService {
+  rpc GetReport(GetReportRequest) returns (Report);
+}
+
+enum OrderState {
+  ORDER_STATE_UNSPECIFIED = 0;
+  CREATED = 1;
+  PAID = 2;
+  SHIPPED = 3;
+}
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+message Order {
+  string id = 1;
+  OrderState state = 2;
+  string internal_notes = 3;
+}
+
+message WatchOrderRequest {
+  string order_id = 1;
+}
+
+message OrderEvent {
+  OrderState event = 1;
+  string order_id = 2;
+}
+
+message WatchInventoryRequest {}
+
+message InventoryLevel {
+  int64 level = 1;
+}
+
+enum ReportState {
+  REPORT_STATE_UNSPECIFIED = 0;
+  GENERATING = 1;
+  READY = 2;
+}
+
+message GetReportRequest {}
+
+message Report {
+  ReportState state = 1;
+  string url = 2;
+}
+</code></pre>
+            </div>
+          </details>
+        </div>
+      </section>
+      <section class="example" id="ex-07-graphql">
+        <div class="example__head">
+          <span class="example__badge">07-graphql.yml</span>
+          <h2 id="ex-07-graphql-h">Order service GraphQL mock</h2>
+          <p>Queries, a mutation, declared errors, and calls-based polling.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# GraphQL mocks. Operations are addressed by operationType (query | mutation,
+# query is the default) + operationName — the name a client gives its request
+# document — and match on variables / headers facets. Responses carry `data`,
+# `errors`, or both (a partial response); there is no status field, because
+# GraphQL signals failure in-band (spec §7.4). The mock is serveable without
+# any GraphQL schema.
+
+info:
+  title: Order service GraphQL mock
+  version: 1.0.0
+  description: Queries, a mutation, declared errors, and calls-based polling.
+
+# The type system behind this mock lives in 07-graphql.graphql (SDL).
+# Attaching it here is OPTIONAL and never changes what the document means —
+# engines MAY ignore it, and MAY use it to serve introspection, validate
+# incoming query documents, or check response shapes (spec §3.5).
+servers:
+  - name: main
+    type: graphql
+    schema: ./07-graphql.graphql
+    # Extension keys are permitted on server objects too (spec §11);
+    # an engine that doesn't recognise this ignores it.
+    x-acme-introspection: false
+    operations:
+      # A query with header matching and a declared error scenario.
+      # operationType defaults to query, but writing it is clearer.
+      - operationType: query
+        operationName: GetOrder
+        scenarios:
+          - name: admin-view
+            when:
+              headers:
+                x-role: admin
+            response:
+              data:
+                order:
+                  id: "{{request.variables.orderId}}"
+                  state: SHIPPED
+                  internalNotes: fragile — handle with care
+
+          # A partial response: `data` holds what resolved (a null order) and
+          # `errors` explains what did not.
+          - name: missing-order
+            when:
+              variables:
+                orderId: "0"
+            response:
+              data:
+                order: null
+              errors:
+                - message: order not found
+                  path: [order]
+                  extensions:
+                    code: NOT_FOUND
+
+          - name: default-view
+            response:
+              data:
+                order:
+                  id: "{{request.variables.orderId}}"
+                  state: SHIPPED
+
+      # A mutation. Routing considers operationType, so a mutation named like a
+      # query would still resolve to the right operation.
+      - operationType: mutation
+        operationName: CreateOrder
+        scenarios:
+          - name: created
+            response:
+              data:
+                createOrder:
+                  id: "{{faker.string.uuid}}"
+                  state: CREATED
+                  note: "{{request.variables.input.note}}"
+
+      # The calls facet works on GraphQL exactly as on HTTP and gRPC; the counter
+      # is keyed by operationType + operationName, i.e. per operation.
+      - operationType: query
+        operationName: GetReport
+        scenarios:
+          - name: generating
+            when:
+              calls:
+                max: 2
+            response:
+              data:
+                report:
+                  state: GENERATING
+          - name: ready
+            response:
+              data:
+                report:
+                  state: READY
+                  url: https://example.com/report.pdf
+</code></pre>
+          <details>
+            <summary>GraphQL schema (07-graphql.graphql)</summary>
+            <div class="codeblock" style="margin-top:8px">
+              <button class="codeblock__copy" type="button">Copy</button>
+              <pre><code class="language-graphql"># The GraphQL type system behind examples/07-graphql.yml.
+#
+# OpenMock documents never require a GraphQL schema — data, errors, and
+# variables are written as native YAML (spec §4.3, §7.4). This file shows the
+# schema that mock implements, and is what the document attaches via
+# `graphql.schema` (spec §3.5). Engines MAY ignore it, and MAY use it to serve
+# introspection, validate incoming query documents, or check response shapes.
+#
+# Note that the operationName each mock operation declares (GetOrder,
+# CreateOrder, GetReport) is the name a *client* gives its request document —
+# it does not appear in this schema. The root fields the clients select
+# (order, createOrder, report) do.
+
+type Query {
+  order(id: ID!): Order
+  report: Report!
+}
+
+type Mutation {
+  createOrder(input: CreateOrderInput!): Order!
+}
+
+enum OrderState {
+  CREATED
+  PAID
+  SHIPPED
+}
+
+type Order {
+  id: ID!
+  state: OrderState!
+  internalNotes: String
+  note: String
+}
+
+input CreateOrderInput {
+  note: String
+}
+
+enum ReportState {
+  GENERATING
+  READY
+}
+
+type Report {
+  state: ReportState!
+  url: String
+}
+</code></pre>
+            </div>
+          </details>
+        </div>
+      </section>
+      <section class="example" id="ex-08-websocket">
+        <div class="example__head">
+          <span class="example__badge">08-websocket.yml</span>
+          <h2 id="ex-08-websocket-h">Order feed WebSocket mock</h2>
+          <p>A scripted feed — subscribe/ack, heartbeats, a close, and a per-connection welcome.</p>
+        </div>
+        <div class="codeblock">
+          <button class="codeblock__copy" type="button">Copy</button>
+          <pre><code class="language-yaml">openmock: 0.2.0
+
+# WebSocket mocks. Operations are addressed by the connection path (with
+# {param} segments, as in HTTP); every message the client sends resolves
+# against the operation's scenarios to a reply of zero or more messages,
+# optionally followed by a close (spec §5.8, §7.5). v0.1 covers
+# client-initiated exchanges only — the mock speaks only in reply.
+
+info:
+  title: Order feed WebSocket mock
+  version: 1.0.0
+  description: A scripted feed — subscribe/ack, heartbeats, a close, and a per-connection welcome.
+
+servers:
+  - name: main
+    type: websocket
+    operations:
+      # Clients connect to /ws/orders/{id} and exchange JSON messages. The
+      # connection-scoped facets (params, query, headers) match the values fixed
+      # at establishment; message matches each inbound message.
+      - path: /ws/orders/{id}
+        scenarios:
+          # The calls counter is keyed per (operation, connection), so every
+          # connection's first message — whatever it is — is answered with a
+          # welcome. Placed first so nothing below can consume call 1.
+          - name: welcome
+            when:
+              calls: 1
+            response:
+              messages:
+                - type: welcome
+                  orderId: "{{params.id}}"
+
+          # Heartbeats are deliberately ignored: an empty messages list replies
+          # with nothing and keeps the connection open.
+          - name: heartbeat
+            when:
+              message:
+                type: ping
+            response:
+              messages: []
+
+          # Admin connections (matched on the upgrade request's headers) get the
+          # internal view.
+          - name: admin-status
+            when:
+              headers:
+                x-role: admin
+              message:
+                type: status
+            response:
+              messages:
+                - type: status
+                  orderId: "{{params.id}}"
+                  state: SHIPPED
+                  internalNotes: fragile — handle with care
+
+          - name: status
+            when:
+              message:
+                type: status
+            response:
+              messages:
+                - type: status
+                  orderId: "{{params.id}}"
+                  state: SHIPPED
+
+          # Reply, then close the connection normally.
+          - name: bye
+            when:
+              message:
+                type: bye
+            response:
+              messages:
+                - type: goodbye
+              close:
+                code: 1000
+                reason: client requested close
+
+          # Default: an application-shaped error reply. WebSocket has no
+          # per-message status; failures are in-band messages or a close with an
+          # application code (4000–4999).
+          - name: unknown-command
+            response:
+              messages:
+                - type: error
+                  error: unknown command
+                  received: "{{request.message.type}}"
+</code></pre>
+        </div>
+      </section>
+      </article>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid footer__grid--docs">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+            <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+            <span class="brand-word">open<b>mock</b></span>
+          </a>
+          <p>An open format for defining API mocks in a single, portable file. MIT licensed, community built.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Specification</h4>
+          <a href="spec.html">Spec v0.2</a>
+          <a href="schema.html">JSON Schema</a>
+          <a href="examples.html">Examples</a>
+          <a href="serving.html">Serving guide</a>
+        </div>
+        <div class="footer__col">
+          <h4>Community</h4>
+          <a href="https://github.com/openmock-dev/openmock">GitHub</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/CONTRIBUTING.md">Contributing</a>
+          <a href="https://github.com/openmock-dev/openmock/issues">Issues</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/LICENSE">License (MIT)</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="year">2026</span> OpenMock contributors. Released under the MIT License.</span>
+        <div class="social">
+          <a href="https://github.com/openmock-dev" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/docs.js"></script>
+</body>
+</html>
