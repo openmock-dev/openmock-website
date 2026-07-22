@@ -307,7 +307,7 @@ pre .ty { color: #7cc4ff; }
 /* ==========================================================================
    Schema graph explorer (schema.html) — pan/zoom ER-style canvas
    ========================================================================== */
-.svx { max-width: 1800px; margin: 0 auto; padding: 16px 28px 0; }
+.svx { max-width: 1240px; margin: 0 auto; padding: 16px 24px 72px; }
 .svx__bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
 .svx__search { flex: 1 1 240px; max-width: 340px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.9rem; font-family: inherit; }
 .svx__search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--lime-glow); }
@@ -492,9 +492,16 @@ pre .ty { color: #7cc4ff; }
 .gt--any  { border-color: var(--border-strong); }
 .gt:hover { box-shadow: var(--shadow-md); }
 
-.svx__edges .gt-edge { fill: none; stroke: var(--text-faint); stroke-width: 1.8; opacity: 0.6; }
-.svx__edges .gt-dot { fill: var(--text-faint); opacity: 0.75; }
+.svx__edges .gt-edge { fill: none; stroke: #8a93a3; stroke-width: 2.2; stroke-linejoin: round; opacity: 0.95; }
+.svx__edges .gt-dot { fill: #8a93a3; }
+:root[data-theme="dark"] .svx__edges .gt-edge,
+:root[data-theme="dark"] .svx__edges .gt-dot { stroke: #6b7280; fill: #6b7280; }
 
 /* The view containers use the [hidden] attribute to toggle; class rules like
    .xp{display:flex} would otherwise win over the UA [hidden] rule. */
 #view-explorer[hidden], #view-graph[hidden], #view-source[hidden] { display: none !important; }
+
+/* The global `svg { max-width:100% }` reset collapses the absolutely-positioned
+   edges SVG (its parent has no intrinsic width) to 0, hiding the connectors.
+   Let it use its own width/height attributes. */
+.svx__edges { max-width: none !important; width: auto; height: auto; }
