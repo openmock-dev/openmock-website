@@ -432,8 +432,8 @@ function buildSchema() {
   // never terminate the <script> element.
   const embedded = JSON.stringify(schema).replace(/</g, "\\u003c");
 
-  const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">schema diagram</span>",
-    "An interactive map of the OpenMock JSON Schema (draft 2020-12). Pan and zoom the diagram, follow references between models, and open any model for its properties and raw source.",
+  const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">schema explorer</span>",
+    "Browse the OpenMock JSON Schema (draft 2020-12) column by column — click a property to open the model it references. Switch to the diagram for the big picture, or read the raw source.",
     [
       { label: "draft 2020-12" },
       { label: "Download JSON", href: "openmock-0.2.0.json" },
@@ -443,10 +443,18 @@ function buildSchema() {
   const rawContent = `${hero}
     <div class="svx">
       <div class="svx__bar">
-        <input class="svx__search" id="svx-search" type="search" placeholder="Search a model, then press Enter…" aria-label="Search models" autocomplete="off" />
-        <span class="svx__hint">Drag to pan · scroll to zoom · click a model for details</span>
+        <div class="viewswitch" role="tablist" aria-label="Schema views">
+          <button class="viewswitch__btn active" type="button" data-view="explorer">Explorer</button>
+          <button class="viewswitch__btn" type="button" data-view="graph">Schema</button>
+          <button class="viewswitch__btn" type="button" data-view="source">Source</button>
+        </div>
+        <span class="svx__hint" id="svx-hint">Click a property to open the referenced model in a new column</span>
       </div>
-      <div class="svx__canvas" id="svx-canvas">
+      <div class="svx__crumb" id="svx-crumb"></div>
+
+      <div class="xp" id="view-explorer"></div>
+
+      <div class="svx__canvas" id="view-graph" hidden>
         <div class="svx__world" id="svx-world">
           <svg class="svx__edges" id="svx-edges" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
@@ -457,9 +465,12 @@ function buildSchema() {
         </div>
         <aside class="svx__panel" id="svx-panel" aria-label="Model details"></aside>
       </div>
+
+      <div class="svx__srcview" id="view-source" hidden></div>
+
       <noscript>
         <div class="prose" style="padding:24px 0">
-          <p>This interactive schema diagram needs JavaScript. You can still <a href="openmock-0.2.0.json">download the raw JSON Schema</a> or <a href="spec.html">read the specification</a>.</p>
+          <p>This interactive schema explorer needs JavaScript. You can still <a href="openmock-0.2.0.json">download the raw JSON Schema</a> or <a href="spec.html">read the specification</a>.</p>
         </div>
       </noscript>
     </div>
