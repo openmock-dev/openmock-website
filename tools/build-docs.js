@@ -463,7 +463,6 @@ function buildSchema() {
           <button id="svx-zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
           <button id="svx-zoom-fit" type="button" aria-label="Fit to view" title="Fit to view">⊡</button>
         </div>
-        <aside class="svx__panel" id="svx-panel" aria-label="Model details"></aside>
       </div>
 
       <div class="svx__srcview" id="view-source" hidden></div>

@@ -307,7 +307,7 @@ pre .ty { color: #7cc4ff; }
 /* ==========================================================================
    Schema graph explorer (schema.html) — pan/zoom ER-style canvas
    ========================================================================== */
-.svx { max-width: 1240px; margin: 0 auto; padding: 16px 24px 0; }
+.svx { max-width: 1800px; margin: 0 auto; padding: 16px 28px 0; }
 .svx__bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
 .svx__search { flex: 1 1 240px; max-width: 340px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.9rem; font-family: inherit; }
 .svx__search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--lime-glow); }
@@ -453,3 +453,48 @@ pre .ty { color: #7cc4ff; }
   .xp { height: 66vh; }
   .viewswitch__btn { padding: 8px 12px; font-size: 0.84rem; }
 }
+
+/* ==========================================================================
+   Schema "Schema" view — expandable left-to-right tree
+   ========================================================================== */
+.svx__canvas { background-color: var(--bg-alt); }
+.svx__world .gt-layer { position: absolute; top: 0; left: 0; }
+
+.gt {
+  position: absolute;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  cursor: default;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.gt__row { display: flex; align-items: center; gap: 9px; padding: 11px 12px; }
+.gt__name { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1 1 auto; }
+.gt__t { color: var(--text-faint); font-weight: 500; }
+.gt__sub { padding: 0 12px 9px 33px; margin-top: -4px; font-size: 0.76rem; color: var(--text-faint); }
+.gt__tog {
+  flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px;
+  border: 1px solid var(--border-strong); background: var(--bg);
+  color: var(--text-muted); font-size: 1rem; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.gt__tog:hover { border-color: var(--accent); color: var(--accent); }
+
+/* type colours (card tint + border), matching the reference */
+.gt--obj  { border-color: #7cc4ff88; background: color-mix(in srgb, #7cc4ff 10%, var(--surface)); }
+.gt--obj.open { border-color: #4c9be6; }
+.gt--str  { border-color: #4cae4f88; background: color-mix(in srgb, #4cae4f 10%, var(--surface)); }
+.gt--arr  { border-color: #f0932b88; background: color-mix(in srgb, #f0932b 12%, var(--surface)); }
+.gt--num  { border-color: #7cc4ff88; background: color-mix(in srgb, #7cc4ff 10%, var(--surface)); }
+.gt--bool { border-color: #c792ea88; background: color-mix(in srgb, #c792ea 12%, var(--surface)); }
+.gt--enum { border-color: #e9c46a99; background: color-mix(in srgb, #e9c46a 14%, var(--surface)); }
+.gt--any  { border-color: var(--border-strong); }
+.gt:hover { box-shadow: var(--shadow-md); }
+
+.svx__edges .gt-edge { fill: none; stroke: var(--text-faint); stroke-width: 1.8; opacity: 0.6; }
+.svx__edges .gt-dot { fill: var(--text-faint); opacity: 0.75; }
+
+/* The view containers use the [hidden] attribute to toggle; class rules like
+   .xp{display:flex} would otherwise win over the UA [hidden] rule. */
+#view-explorer[hidden], #view-graph[hidden], #view-source[hidden] { display: none !important; }
