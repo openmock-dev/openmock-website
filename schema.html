@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenMock JSON Schema</title>
+  <meta name="description" content="Browsable reference for the OpenMock JSON Schema (draft 2020-12): servers, operations, scenarios, matchers, and responses." />
+  <meta name="theme-color" content="#76C81D" />
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml" />
+  <script>(function(){try{var t=localStorage.getItem("om-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/docs.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+        <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+        <span class="brand-word">open<b>mock</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#features">Features</a>
+        <a href="spec.html">Spec</a>
+        <a href="schema.html" aria-current="page">Schema</a>
+        <a href="examples.html">Examples</a>
+        <a class="nav__mobile-only" href="https://github.com/openmock-dev/openmock">GitHub</a>
+        <a class="nav__mobile-only nav__mobile-cta" href="index.html#quickstart">Get started →</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <a class="icon-btn" href="https://github.com/openmock-dev/openmock" aria-label="OpenMock on GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        <a class="btn btn--primary" href="index.html#quickstart">Get started</a>
+        <button class="icon-btn nav__burger" type="button" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="doc-hero">
+      <div class="container">
+        <span class="eyebrow">JSON Schema</span>
+        <h1>OpenMock <span class="gradient-text">JSON Schema</span></h1>
+        <p>A browsable reference for the OpenMock JSON Schema (draft 2020-12) — every server, operation, scenario, matcher, and response shape the format defines.</p>
+        <div class="doc-hero__meta">
+        <span>draft 2020-12</span>
+        <a href="openmock-0.2.0.json">Download JSON</a>
+        <a href="spec.html">Read the spec</a>
+        </div>
+      </div>
+    </section>
+    <div class="docs">
+      <aside class="docs__side">
+        <details class="docs__toc" open>
+          <summary>On this page</summary>
+          <p class="toc-title">On this page</p>
+          <ul class="toc-list">
+            <li><a class="lvl-2" href="#document">The document</a></li>
+            <li><a class="lvl-2" href="#metadata">Metadata</a></li>
+            <li><a class="lvl-3" href="#def-info">info</a></li>
+            <li><a class="lvl-3" href="#def-serverName">serverName</a></li>
+            <li><a class="lvl-3" href="#def-serverPort">serverPort</a></li>
+            <li><a class="lvl-2" href="#servers">Servers</a></li>
+            <li><a class="lvl-3" href="#def-httpServer">httpServer</a></li>
+            <li><a class="lvl-3" href="#def-grpcServer">grpcServer</a></li>
+            <li><a class="lvl-3" href="#def-graphqlServer">graphqlServer</a></li>
+            <li><a class="lvl-3" href="#def-websocketServer">websocketServer</a></li>
+            <li><a class="lvl-2" href="#operations">Operations</a></li>
+            <li><a class="lvl-3" href="#def-httpOperation">httpOperation</a></li>
+            <li><a class="lvl-3" href="#def-grpcUnaryOperation">grpcUnaryOperation</a></li>
+            <li><a class="lvl-3" href="#def-grpcStreamOperation">grpcStreamOperation</a></li>
+            <li><a class="lvl-3" href="#def-graphqlOperation">graphqlOperation</a></li>
+            <li><a class="lvl-3" href="#def-websocketOperation">websocketOperation</a></li>
+            <li><a class="lvl-2" href="#scenarios">Scenarios</a></li>
+            <li><a class="lvl-3" href="#def-httpScenario">httpScenario</a></li>
+            <li><a class="lvl-3" href="#def-grpcUnaryScenario">grpcUnaryScenario</a></li>
+            <li><a class="lvl-3" href="#def-grpcStreamScenario">grpcStreamScenario</a></li>
+            <li><a class="lvl-3" href="#def-graphqlScenario">graphqlScenario</a></li>
+            <li><a class="lvl-3" href="#def-websocketScenario">websocketScenario</a></li>
+            <li><a class="lvl-2" href="#matching">Request matching (when)</a></li>
+            <li><a class="lvl-3" href="#def-httpWhen">httpWhen</a></li>
+            <li><a class="lvl-3" href="#def-grpcWhen">grpcWhen</a></li>
+            <li><a class="lvl-3" href="#def-graphqlWhen">graphqlWhen</a></li>
+            <li><a class="lvl-3" href="#def-websocketWhen">websocketWhen</a></li>
+            <li><a class="lvl-3" href="#def-callsMatcher">callsMatcher</a></li>
+            <li><a class="lvl-2" href="#responses">Responses</a></li>
+            <li><a class="lvl-3" href="#def-httpResponse">httpResponse</a></li>
+            <li><a class="lvl-3" href="#def-grpcUnaryResponse">grpcUnaryResponse</a></li>
+            <li><a class="lvl-3" href="#def-grpcStreamResponse">grpcStreamResponse</a></li>
+            <li><a class="lvl-3" href="#def-graphqlResponse">graphqlResponse</a></li>
+            <li><a class="lvl-3" href="#def-graphqlError">graphqlError</a></li>
+            <li><a class="lvl-3" href="#def-websocketResponse">websocketResponse</a></li>
+            <li><a class="lvl-3" href="#def-grpcStatus">grpcStatus</a></li>
+            <li><a class="lvl-2" href="#helpers">Matchers &amp; helpers</a></li>
+            <li><a class="lvl-3" href="#def-stringMap">stringMap</a></li>
+            <li><a class="lvl-3" href="#def-existsMatcher">existsMatcher</a></li>
+            <li><a class="lvl-3" href="#def-patternMatcher">patternMatcher</a></li>
+            <li><a class="lvl-3" href="#def-valueMatcher">valueMatcher</a></li>
+            <li><a class="lvl-3" href="#def-matcherMap">matcherMap</a></li>
+            <li><a class="lvl-3" href="#def-payloadMatcher">payloadMatcher</a></li>
+            <li><a class="lvl-3" href="#def-queryMatcherMap">queryMatcherMap</a></li>
+            <li><a class="lvl-3" href="#def-headerMap">headerMap</a></li>
+
+          </ul>
+        </details>
+      </aside>
+      <article class="docs__main">
+<div class="prose" style="max-width:820px">
+  <p>Schema for an OpenMock document — an open format for defining API mocks in a single YAML file. A document declares a list of named, type-tagged servers, each carrying its own operations. Validates the envelope strictly while allowing arbitrary YAML bodies and messages.</p>
+  <p>This viewer documents the OpenMock JSON Schema (draft 2020-12). It validates the document envelope strictly — servers, operations, scenarios, matching, and responses — while allowing arbitrary structured bodies and messages. <a href="openmock-0.2.0.json">Download the raw schema</a>.</p>
+</div>
+
+      <section class="schema-section" id="document">
+        <div class="prose"><h2 id="document-h">The document</h2><p>The root object. <code>additionalProperties</code> is <code>false</code> — only the fields below (and <code>x-</code> extensions) are allowed.</p></div>
+        <div class="def" id="def-root">
+          <div class="def__head"><h3>OpenMock document<span class="def__type">object</span></h3></div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">openmock</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">The OpenMock format version this document targets (SemVer).</p>
+            <div class="prop__meta"><span class="chip"><b>pattern</b> ^\d+\.\d+\.\d+$</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">info</span>
+              <span class="prop__type"><a href="#def-info">info</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">servers</span>
+              <span class="prop__type">array&lt;object&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">The mock servers this document describes. Each server is named, carries one protocol type, and holds its own operations; a document may declare several servers of the same type.</p>
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="metadata">
+        <div class="prose"><h2 id="metadata-h">Metadata</h2></div>
+        <div class="def" id="def-info">
+          <div class="def__head">
+            <h3>info<span class="def__type">object</span></h3>
+            <p>Human-oriented, non-normative metadata.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">title</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">version</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">description</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-serverName">
+          <div class="def__head">
+            <h3>serverName<span class="def__type">string</span></h3>
+            <p>The server's name: how normalized requests address it. Unique across the servers list (a spec-level load-time rule).</p>
+          </div>
+          <div class="def__body">
+          <div class="prop"><p class="prop__desc">See type above.</p></div>
+          </div>
+        </div>
+        <div class="def" id="def-serverPort">
+          <div class="def__head">
+            <h3>serverPort<span class="def__type">integer</span></h3>
+            <p>Optional default port hint for implementations serving this server over a network. A hint only: it never affects routing, matching, or rendering, and engines MAY override it. See docs/serving.md.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop"><div class="prop__meta"><span class="chip"><b>min</b> 1</span><span class="chip"><b>max</b> 65535</span></div></div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="servers">
+        <div class="prose"><h2 id="servers-h">Servers</h2></div>
+        <div class="def" id="def-httpServer">
+          <div class="def__head">
+            <h3>httpServer<span class="def__type">object</span></h3>
+            <p>An HTTP mock server: a named group of method+path operations.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type"><a href="#def-serverName">serverName</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>const</b> "http"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">port</span>
+              <span class="prop__type"><a href="#def-serverPort">serverPort</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operations</span>
+              <span class="prop__type">array&lt;<a href="#def-httpOperation">httpOperation</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcServer">
+          <div class="def__head">
+            <h3>grpcServer<span class="def__type">object</span></h3>
+            <p>A gRPC mock server: a named group of service+rpc operations, optionally carrying its compiled protobuf schema.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type"><a href="#def-serverName">serverName</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>const</b> "grpc"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">port</span>
+              <span class="prop__type"><a href="#def-serverPort">serverPort</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">descriptorSet</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Path, resolved relative to the document, to a serialized google.protobuf.FileDescriptorSet covering the services this server mocks. Implementations MAY ignore it; it never changes matching or responses.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operations</span>
+              <span class="prop__type">array&lt;any&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlServer">
+          <div class="def__head">
+            <h3>graphqlServer<span class="def__type">object</span></h3>
+            <p>A GraphQL mock server: a named group of operationType+operationName operations, optionally carrying its SDL schema.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type"><a href="#def-serverName">serverName</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>const</b> "graphql"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">port</span>
+              <span class="prop__type"><a href="#def-serverPort">serverPort</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">schema</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Path, resolved relative to the document, to a GraphQL schema in SDL covering the operations this server mocks. Implementations MAY ignore it; it never changes matching or responses.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operations</span>
+              <span class="prop__type">array&lt;<a href="#def-graphqlOperation">graphqlOperation</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-websocketServer">
+          <div class="def__head">
+            <h3>websocketServer<span class="def__type">object</span></h3>
+            <p>A WebSocket mock server: a named group of connection-path operations.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type"><a href="#def-serverName">serverName</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>const</b> "websocket"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">port</span>
+              <span class="prop__type"><a href="#def-serverPort">serverPort</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operations</span>
+              <span class="prop__type">array&lt;<a href="#def-websocketOperation">websocketOperation</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="operations">
+        <div class="prose"><h2 id="operations-h">Operations</h2></div>
+        <div class="def" id="def-httpOperation">
+          <div class="def__head">
+            <h3>httpOperation<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">method</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">HTTP method, matched case-insensitively.</p>
+            <div class="prop__meta"><span class="chip"><b>pattern</b> ^[A-Za-z]+$</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">path</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Absolute path template; {name} segments capture path parameters.</p>
+            <div class="prop__meta"><span class="chip"><b>pattern</b> ^/</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">scenarios</span>
+              <span class="prop__type">array&lt;<a href="#def-httpScenario">httpScenario</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcUnaryOperation">
+          <div class="def__head">
+            <h3>grpcUnaryOperation<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">service</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Fully-qualified gRPC service name, matched case-sensitively.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">rpc</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">RPC method name, matched case-sensitively.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">The RPC's call type. unary is the default; write it explicitly for clarity.</p>
+            <div class="prop__meta"><span class="chip"><b>const</b> "unary"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">scenarios</span>
+              <span class="prop__type">array&lt;<a href="#def-grpcUnaryScenario">grpcUnaryScenario</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcStreamOperation">
+          <div class="def__head">
+            <h3>grpcStreamOperation<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">service</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Fully-qualified gRPC service name, matched case-sensitively.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">rpc</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">RPC method name, matched case-sensitively.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">type</span>
+              <span class="prop__type">const</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Server-streaming call type; required, never inferred from response shape.</p>
+            <div class="prop__meta"><span class="chip"><b>const</b> "server-streaming"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">scenarios</span>
+              <span class="prop__type">array&lt;<a href="#def-grpcStreamScenario">grpcStreamScenario</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlOperation">
+          <div class="def__head">
+            <h3>graphqlOperation<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operationType</span>
+              <span class="prop__type">enum</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">The GraphQL operation type. query is the default; subscriptions are not part of v0.2.</p>
+            <div class="prop__meta"><span class="chip chip--enum">"query" · "mutation"</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">operationName</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">The GraphQL operation name this route answers, matched case-sensitively.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">scenarios</span>
+              <span class="prop__type">array&lt;<a href="#def-graphqlScenario">graphqlScenario</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-websocketOperation">
+          <div class="def__head">
+            <h3>websocketOperation<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">path</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Path template the connection is established against; {name} segments capture path parameters.</p>
+            <div class="prop__meta"><span class="chip"><b>pattern</b> ^/</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">scenarios</span>
+              <span class="prop__type">array&lt;<a href="#def-websocketScenario">websocketScenario</a>&gt;</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="scenarios">
+        <div class="prose"><h2 id="scenarios-h">Scenarios</h2></div>
+        <div class="def" id="def-httpScenario">
+          <div class="def__head">
+            <h3>httpScenario<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Identifier for the scenario, unique within its operation.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Optional human-oriented description of the scenario's intent. Non-normative.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">when</span>
+              <span class="prop__type"><a href="#def-httpWhen">httpWhen</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">response</span>
+              <span class="prop__type"><a href="#def-httpResponse">httpResponse</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcUnaryScenario">
+          <div class="def__head">
+            <h3>grpcUnaryScenario<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Identifier for the scenario, unique within its operation.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Optional human-oriented description of the scenario's intent. Non-normative.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">when</span>
+              <span class="prop__type"><a href="#def-grpcWhen">grpcWhen</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">response</span>
+              <span class="prop__type"><a href="#def-grpcUnaryResponse">grpcUnaryResponse</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcStreamScenario">
+          <div class="def__head">
+            <h3>grpcStreamScenario<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Identifier for the scenario, unique within its operation.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Optional human-oriented description of the scenario's intent. Non-normative.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">when</span>
+              <span class="prop__type"><a href="#def-grpcWhen">grpcWhen</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">response</span>
+              <span class="prop__type"><a href="#def-grpcStreamResponse">grpcStreamResponse</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlScenario">
+          <div class="def__head">
+            <h3>graphqlScenario<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Identifier for the scenario, unique within its operation.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Optional human-oriented description of the scenario's intent. Non-normative.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">when</span>
+              <span class="prop__type"><a href="#def-graphqlWhen">graphqlWhen</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">response</span>
+              <span class="prop__type"><a href="#def-graphqlResponse">graphqlResponse</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-websocketScenario">
+          <div class="def__head">
+            <h3>websocketScenario<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">name</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Identifier for the scenario, unique within its operation.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">summary</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Optional human-oriented description of the scenario's intent. Non-normative.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">when</span>
+              <span class="prop__type"><a href="#def-websocketWhen">websocketWhen</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">response</span>
+              <span class="prop__type"><a href="#def-websocketResponse">websocketResponse</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="matching">
+        <div class="prose"><h2 id="matching-h">Request matching (when)</h2></div>
+        <div class="def" id="def-httpWhen">
+          <div class="def__head">
+            <h3>httpWhen<span class="def__type">object</span></h3>
+            <p>Condition under which an HTTP scenario applies. All declared facets must match. Omitting when makes the scenario the default fallback.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">params</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">query</span>
+              <span class="prop__type"><a href="#def-queryMatcherMap">queryMatcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">headers</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">body</span>
+              <span class="prop__type"><a href="#def-payloadMatcher">payloadMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">calls</span>
+              <span class="prop__type"><a href="#def-callsMatcher">callsMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcWhen">
+          <div class="def__head">
+            <h3>grpcWhen<span class="def__type">object</span></h3>
+            <p>Condition under which a gRPC scenario applies. All declared facets must match. Omitting when makes the scenario the default fallback.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">metadata</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">message</span>
+              <span class="prop__type"><a href="#def-payloadMatcher">payloadMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">calls</span>
+              <span class="prop__type"><a href="#def-callsMatcher">callsMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlWhen">
+          <div class="def__head">
+            <h3>graphqlWhen<span class="def__type">object</span></h3>
+            <p>Condition under which a GraphQL scenario applies. All declared facets must match. Omitting when makes the scenario the default fallback.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">variables</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">headers</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">calls</span>
+              <span class="prop__type"><a href="#def-callsMatcher">callsMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-websocketWhen">
+          <div class="def__head">
+            <h3>websocketWhen<span class="def__type">object</span></h3>
+            <p>Condition under which a WebSocket scenario applies. params/query/headers match the connection-scoped values fixed at establishment; message matches the individual inbound message. All declared facets must match. Omitting when makes the scenario the default fallback.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">params</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">query</span>
+              <span class="prop__type"><a href="#def-queryMatcherMap">queryMatcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">headers</span>
+              <span class="prop__type"><a href="#def-matcherMap">matcherMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">message</span>
+              <span class="prop__type"><a href="#def-payloadMatcher">payloadMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">calls</span>
+              <span class="prop__type"><a href="#def-callsMatcher">callsMatcher</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-callsMatcher">
+          <div class="def__head">
+            <h3>callsMatcher<span class="def__type">object</span></h3>
+            <p>Matches the operation's call counter: an exact positive integer, or an object with inclusive min/max bounds (at least one required). `n` is shorthand for {min: n, max: n}.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop"><p class="prop__desc">A discriminated shape resolved to one of: see below.</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="responses">
+        <div class="prose"><h2 id="responses-h">Responses</h2></div>
+        <div class="def" id="def-httpResponse">
+          <div class="def__head">
+            <h3>httpResponse<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">status</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Response status code.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 100</span><span class="chip"><b>max</b> 599</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">headers</span>
+              <span class="prop__type"><a href="#def-headerMap">headerMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">delay</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Delay before responding, in milliseconds.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 0</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">body</span>
+              <span class="prop__type">any</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">The response body as native YAML/JSON — any object, array, or scalar. Intentionally unconstrained.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcUnaryResponse">
+          <div class="def__head">
+            <h3>grpcUnaryResponse<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">status</span>
+              <span class="prop__type"><a href="#def-grpcStatus">grpcStatus</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">error</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">gRPC status message accompanying a non-OK status.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">metadata</span>
+              <span class="prop__type"><a href="#def-stringMap">stringMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Initial response metadata (headers), sent before the response message.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">trailers</span>
+              <span class="prop__type"><a href="#def-stringMap">stringMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Trailing response metadata (trailers), sent with the final status.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">delay</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Delay before responding, in milliseconds.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 0</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">message</span>
+              <span class="prop__type">any</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">The unary response message as native YAML/JSON. Intentionally unconstrained.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcStreamResponse">
+          <div class="def__head">
+            <h3>grpcStreamResponse<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">status</span>
+              <span class="prop__type"><a href="#def-grpcStatus">grpcStatus</a></span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">error</span>
+              <span class="prop__type">string</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">gRPC status message accompanying a non-OK status.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">metadata</span>
+              <span class="prop__type"><a href="#def-stringMap">stringMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Initial response metadata (headers), sent before the first message.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">trailers</span>
+              <span class="prop__type"><a href="#def-stringMap">stringMap</a></span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Trailing response metadata (trailers), sent with the final status.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">delay</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Delay before the first message, in milliseconds.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 0</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">messages</span>
+              <span class="prop__type">array&lt;any&gt;</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Ordered response messages, emitted first to last. May be combined with a non-OK status (stream that fails mid-way).</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlResponse">
+          <div class="def__head">
+            <h3>graphqlResponse<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">data</span>
+              <span class="prop__type">any</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">The response's data payload as native YAML/JSON. Intentionally unconstrained.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">errors</span>
+              <span class="prop__type">array&lt;<a href="#def-graphqlError">graphqlError</a>&gt;</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">GraphQL errors, in order. May be combined with data (a partial response).</p>
+            <div class="prop__meta"><span class="chip"><b>minItems</b> 1</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">extensions</span>
+              <span class="prop__type">object</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Top-level response extensions: free-form, machine-readable data the GraphQL spec permits alongside data/errors.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">delay</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Delay before responding, in milliseconds.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 0</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          <div class="prop"><p class="prop__desc">A discriminated shape resolved to one of: see below.</p></div>
+          </div>
+        </div>
+        <div class="def" id="def-graphqlError">
+          <div class="def__head">
+            <h3>graphqlError<span class="def__type">object</span></h3>
+            <p>A GraphQL error object, per the GraphQL specification: message plus optional locations, path, and extensions.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">message</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            <p class="prop__desc">Human-readable error description.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">locations</span>
+              <span class="prop__type">array&lt;object&gt;</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">path</span>
+              <span class="prop__type">array&lt;string | integer&gt;</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Path to the response field the error concerns: field names (strings) and list indices (integers).</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">extensions</span>
+              <span class="prop__type">object</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Free-form, machine-readable error details. Intentionally unconstrained.</p>
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-websocketResponse">
+          <div class="def__head">
+            <h3>websocketResponse<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">messages</span>
+              <span class="prop__type">array&lt;any&gt;</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Ordered reply messages as native YAML/JSON, emitted first to last. MAY be empty (ignore the inbound message). Intentionally unconstrained items.</p>
+            
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">close</span>
+              <span class="prop__type">object</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Close the connection after the last reply message.</p>
+            <div class="prop__meta"><span class="chip">no additional properties</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">delay</span>
+              <span class="prop__type">integer</span>
+              <span class="badge-opt">optional</span>
+            </div>
+            <p class="prop__desc">Delay before the first reply message (or the close), in milliseconds.</p>
+            <div class="prop__meta"><span class="chip"><b>min</b> 0</span></div>
+          </div>
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">x-*</span><span class="prop__type">any</span><span class="badge-opt">extension</span></div>
+            <p class="prop__desc">Specification extension. Any property whose name starts with <code>x-</code> is allowed and ignored by validation.</p>
+          </div>
+          <div class="prop"><p class="prop__desc">A discriminated shape resolved to one of: see below.</p></div>
+          </div>
+        </div>
+        <div class="def" id="def-grpcStatus">
+          <div class="def__head">
+            <h3>grpcStatus<span class="def__type">enum</span></h3>
+            <p>A canonical gRPC status code name.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop"><div class="prop__meta"><span class="chip chip--enum">"OK" · "CANCELLED" · "UNKNOWN" · "INVALID_ARGUMENT" · "DEADLINE_EXCEEDED" · "NOT_FOUND" · "ALREADY_EXISTS" · "PERMISSION_DENIED" · "RESOURCE_EXHAUSTED" · "FAILED_PRECONDITION" · "ABORTED" · "OUT_OF_RANGE" · "UNIMPLEMENTED" · "INTERNAL" · "UNAVAILABLE" · "DATA_LOSS" · "UNAUTHENTICATED"</span></div></div>
+          </div>
+        </div>
+      </section>
+      <section class="schema-section" id="helpers">
+        <div class="prose"><h2 id="helpers-h">Matchers &amp; helpers</h2></div>
+        <div class="def" id="def-stringMap">
+          <div class="def__head">
+            <h3>stringMap<span class="def__type">object</span></h3>
+            <p>A map of string keys to string values.</p>
+          </div>
+          <div class="def__body">
+
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">*</span><span class="prop__type">string</span><span class="badge-opt">map value</span></div>
+            <p class="prop__desc">Additional properties (map entries) of the type above.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-existsMatcher">
+          <div class="def__head">
+            <h3>existsMatcher<span class="def__type">object</span></h3>
+            <p>Presence matcher: true asserts the target is present (any value), false asserts it is absent.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">exists</span>
+              <span class="prop__type">boolean</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-patternMatcher">
+          <div class="def__head">
+            <h3>patternMatcher<span class="def__type">object</span></h3>
+            <p>Pattern matcher: an RE2 pattern matched against the target's entire canonical string form (implicitly anchored). A pattern that is not valid RE2 makes the document invalid.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop">
+            <div class="prop__row">
+              <span class="prop__name">pattern</span>
+              <span class="prop__type">string</span>
+              <span class="badge-req">required</span>
+            </div>
+            
+            
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-valueMatcher">
+          <div class="def__head">
+            <h3>valueMatcher<span class="def__type">object</span></h3>
+            
+          </div>
+          <div class="def__body">
+          <div class="prop"><p class="prop__desc">A discriminated shape resolved to one of: <a href="#def-existsMatcher">existsMatcher</a>, <a href="#def-patternMatcher">patternMatcher</a>.</p></div>
+          </div>
+        </div>
+        <div class="def" id="def-matcherMap">
+          <div class="def__head">
+            <h3>matcherMap<span class="def__type">object</span></h3>
+            <p>A when-facet map: each value is a string (exact match on canonical string form) or a matcher object ({exists: bool} | {pattern: RE2}). At least one key — an empty facet map is not a constraint.</p>
+          </div>
+          <div class="def__body">
+
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">*</span><span class="prop__type">string | <a href="#def-valueMatcher">valueMatcher</a></span><span class="badge-opt">map value</span></div>
+            <p class="prop__desc">Additional properties (map entries) of the type above.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-payloadMatcher">
+          <div class="def__head">
+            <h3>payloadMatcher<span class="def__type">object</span></h3>
+            <p>body/message facet: a map of dotted paths to strings or matcher objects, or a single string matching the whole payload by its canonical string form.</p>
+          </div>
+          <div class="def__body">
+          <div class="prop"><p class="prop__desc">A discriminated shape resolved to one of: <a href="#def-matcherMap">matcherMap</a>.</p></div>
+          </div>
+        </div>
+        <div class="def" id="def-queryMatcherMap">
+          <div class="def__head">
+            <h3>queryMatcherMap<span class="def__type">object</span></h3>
+            <p>Query facet: each value is a non-empty list matched against the parameter's full occurrence sequence exactly — same order, same count; elements are strings or pattern matchers. Alternatively an exists matcher asserts the parameter's presence or absence. There is no string form. At least one key — an empty facet map is not a constraint.</p>
+          </div>
+          <div class="def__body">
+
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">*</span><span class="prop__type">array&lt;string | <a href="#def-patternMatcher">patternMatcher</a>&gt; | <a href="#def-existsMatcher">existsMatcher</a></span><span class="badge-opt">map value</span></div>
+            <p class="prop__desc">Additional properties (map entries) of the type above.</p>
+          </div>
+          </div>
+        </div>
+        <div class="def" id="def-headerMap">
+          <div class="def__head">
+            <h3>headerMap<span class="def__type">object</span></h3>
+            <p>Response headers: each value is a string, or a non-empty list of strings emitted as one field line per item, in order (for headers that cannot be comma-joined, like Set-Cookie).</p>
+          </div>
+          <div class="def__body">
+
+          <div class="prop">
+            <div class="prop__row"><span class="prop__name">*</span><span class="prop__type">string | array&lt;string&gt;</span><span class="badge-opt">map value</span></div>
+            <p class="prop__desc">Additional properties (map entries) of the type above.</p>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      </article>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid footer__grid--docs">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+            <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+            <span class="brand-word">open<b>mock</b></span>
+          </a>
+          <p>An open format for defining API mocks in a single, portable file. MIT licensed, community built.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Specification</h4>
+          <a href="spec.html">Spec v0.2</a>
+          <a href="schema.html">JSON Schema</a>
+          <a href="examples.html">Examples</a>
+          <a href="serving.html">Serving guide</a>
+        </div>
+        <div class="footer__col">
+          <h4>Community</h4>
+          <a href="https://github.com/openmock-dev/openmock">GitHub</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/CONTRIBUTING.md">Contributing</a>
+          <a href="https://github.com/openmock-dev/openmock/issues">Issues</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/LICENSE">License (MIT)</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="year">2026</span> OpenMock contributors. Released under the MIT License.</span>
+        <div class="social">
+          <a href="https://github.com/openmock-dev" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/docs.js"></script>
+</body>
+</html>

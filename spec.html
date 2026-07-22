@@ -1,0 +1,2461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenMock Specification v0.2</title>
+  <meta name="description" content="The OpenMock format specification — servers, operations, scenarios, matching, responses, and templating across HTTP, gRPC, GraphQL, and WebSocket." />
+  <meta name="theme-color" content="#76C81D" />
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml" />
+  <script>(function(){try{var t=localStorage.getItem("om-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/docs.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+        <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+        <span class="brand-word">open<b>mock</b></span>
+      </a>
+      <nav class="nav__links" aria-label="Primary">
+        <a href="index.html#how">How it works</a>
+        <a href="index.html#features">Features</a>
+        <a href="spec.html" aria-current="page">Spec</a>
+        <a href="schema.html">Schema</a>
+        <a href="examples.html">Examples</a>
+        <a class="nav__mobile-only" href="https://github.com/openmock-dev/openmock">GitHub</a>
+        <a class="nav__mobile-only nav__mobile-cta" href="index.html#quickstart">Get started →</a>
+      </nav>
+      <div class="nav__actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+        <a class="icon-btn" href="https://github.com/openmock-dev/openmock" aria-label="OpenMock on GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        <a class="btn btn--primary" href="index.html#quickstart">Get started</a>
+        <button class="icon-btn nav__burger" type="button" aria-label="Toggle menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="doc-hero">
+      <div class="container">
+        <span class="eyebrow">Specification</span>
+        <h1>OpenMock Specification <span class="gradient-text">v0.2</span></h1>
+        <p>The normative specification for the OpenMock format — file structure, request matching, response shaping, delays, and templating, across HTTP, gRPC, GraphQL, and WebSocket.</p>
+        <div class="doc-hero__meta">
+        <span>Draft · v0.2</span>
+        <a href="https://github.com/openmock-dev/openmock/blob/main/spec/v0.2.md">Download Markdown</a>
+        <a href="schema.html">JSON Schema</a>
+        </div>
+      </div>
+    </section>
+    <div class="docs">
+      <aside class="docs__side">
+        <details class="docs__toc" open>
+          <summary>On this page</summary>
+          <p class="toc-title">On this page</p>
+          <ul class="toc-list">
+            <li><a class="lvl-2" href="#1-status-and-scope">1. Status and scope</a></li>
+            <li><a class="lvl-2" href="#2-conventions">2. Conventions</a></li>
+            <li><a class="lvl-2" href="#3-file-structure">3. File structure</a></li>
+            <li><a class="lvl-3" href="#31-openmock-required">3.1 <code>openmock</code> (REQUIRED)</a></li>
+            <li><a class="lvl-3" href="#32-info-optional">3.2 <code>info</code> (OPTIONAL)</a></li>
+            <li><a class="lvl-3" href="#33-servers-required">3.3 <code>servers</code> (REQUIRED)</a></li>
+            <li><a class="lvl-3" href="#34-grpc-servers-descriptorset">3.4 gRPC servers: <code>descriptorSet</code></a></li>
+            <li><a class="lvl-3" href="#35-graphql-servers-schema">3.5 GraphQL servers: <code>schema</code></a></li>
+            <li><a class="lvl-3" href="#36-document-validity">3.6 Document validity</a></li>
+            <li><a class="lvl-2" href="#4-the-request-model">4. The request model</a></li>
+            <li><a class="lvl-3" href="#41-http-requests">4.1 HTTP requests</a></li>
+            <li><a class="lvl-3" href="#42-grpc-requests">4.2 gRPC requests</a></li>
+            <li><a class="lvl-3" href="#43-graphql-requests">4.3 GraphQL requests</a></li>
+            <li><a class="lvl-3" href="#44-websocket-requests">4.4 WebSocket requests</a></li>
+            <li><a class="lvl-3" href="#45-dotted-paths-and-string-forms">4.5 Dotted paths and string forms</a></li>
+            <li><a class="lvl-3" href="#46-multi-valued-fields">4.6 Multi-valued fields</a></li>
+            <li><a class="lvl-2" href="#5-operations">5. Operations</a></li>
+            <li><a class="lvl-3" href="#http-operations">HTTP operations</a></li>
+            <li><a class="lvl-3" href="#51-method">5.1 <code>method</code></a></li>
+            <li><a class="lvl-3" href="#52-path-and-path-parameters">5.2 <code>path</code> and path parameters</a></li>
+            <li><a class="lvl-3" href="#53-route-resolution">5.3 Route resolution</a></li>
+            <li><a class="lvl-3" href="#54-grpc-operations">5.4 gRPC operations</a></li>
+            <li><a class="lvl-3" href="#55-grpc-route-resolution">5.5 gRPC route resolution</a></li>
+            <li><a class="lvl-3" href="#56-graphql-operations">5.6 GraphQL operations</a></li>
+            <li><a class="lvl-3" href="#57-graphql-route-resolution">5.7 GraphQL route resolution</a></li>
+            <li><a class="lvl-3" href="#58-websocket-operations">5.8 WebSocket operations</a></li>
+            <li><a class="lvl-3" href="#59-websocket-route-resolution">5.9 WebSocket route resolution</a></li>
+            <li><a class="lvl-2" href="#6-scenarios">6. Scenarios</a></li>
+            <li><a class="lvl-3" href="#61-when">6.1 <code>when</code></a></li>
+            <li><a class="lvl-3" href="#62-the-default-scenario">6.2 The default scenario</a></li>
+            <li><a class="lvl-3" href="#63-the-calls-facet-and-the-call-counter">6.3 The <code>calls</code> facet and the call counter</a></li>
+            <li><a class="lvl-2" href="#7-the-response-object">7. The response object</a></li>
+            <li><a class="lvl-3" href="#71-native-yaml-bodies">7.1 Native YAML bodies</a></li>
+            <li><a class="lvl-3" href="#72-delay">7.2 <code>delay</code></a></li>
+            <li><a class="lvl-3" href="#73-grpc-responses">7.3 gRPC responses</a></li>
+            <li><a class="lvl-3" href="#74-graphql-responses">7.4 GraphQL responses</a></li>
+            <li><a class="lvl-3" href="#75-websocket-responses">7.5 WebSocket responses</a></li>
+            <li><a class="lvl-2" href="#8-matching-algorithm">8. Matching algorithm</a></li>
+            <li><a class="lvl-2" href="#9-templating">9. Templating</a></li>
+            <li><a class="lvl-3" href="#91-placeholder-namespaces">9.1 Placeholder namespaces</a></li>
+            <li><a class="lvl-3" href="#92-unresolved-placeholders">9.2 Unresolved placeholders</a></li>
+            <li><a class="lvl-3" href="#93-faker">9.3 Faker</a></li>
+            <li><a class="lvl-3" href="#94-whole-value-placeholders-and-typed-output">9.4 Whole-value placeholders and typed output</a></li>
+            <li><a class="lvl-3" href="#95-literal-text-and-escaping">9.5 Literal text and escaping</a></li>
+            <li><a class="lvl-2" href="#10-error-and-fallback-responses">10. Error and fallback responses</a></li>
+            <li><a class="lvl-3" href="#101-no-scenario-matches">10.1 No scenario matches</a></li>
+            <li><a class="lvl-3" href="#102-no-operation-matches">10.2 No operation matches</a></li>
+            <li><a class="lvl-2" href="#11-specification-extensions">11. Specification extensions</a></li>
+            <li><a class="lvl-3" href="#111-example-grpc-engine-behaviour-non-normative">11.1 Example: gRPC engine behaviour (non-normative)</a></li>
+            <li><a class="lvl-2" href="#12-conformance">12. Conformance</a></li>
+            <li><a class="lvl-2" href="#13-glossary">13. Glossary</a></li>
+            <li><a class="lvl-2" href="#14-security-considerations">14. Security considerations</a></li>
+          </ul>
+        </details>
+      </aside>
+      <article class="docs__main">
+<div class="prose">
+<p><strong>Version:</strong> 0.2 (draft) · <strong>Schema version key:</strong> <code>openmock: 0.2.0</code>
+<strong>License:</strong> MIT · <strong>Home:</strong> <a href="https://openmock.dev">https://openmock.dev</a></p>
+<hr>
+<h2 id="1-status-and-scope">1. Status and scope<a class="anchor" href="#1-status-and-scope" aria-label="Link to this section">#</a></h2>
+<p>OpenMock is an open, self-contained format for describing <strong>API mocks</strong> in a
+single YAML file. A single file declares a list of named <strong>servers</strong> — each of
+one protocol, each carrying its own operations — and for each operation an
+ordered list of scenarios that map an incoming request to a response.</p>
+<p>This document is a <strong>draft</strong>. It is precise enough to implement and is backed by
+a conformance corpus (see <a href="#12-conformance">§12</a>), but the format may still
+change before a stable 1.0 milestone.</p>
+<p><strong>In scope.</strong> How to write a mock: file structure, request matching, response
+shaping, delays, and templating.</p>
+<p><strong>Out of scope.</strong> OpenMock describes <em>mocks, not running processes</em>. It is
+transport-agnostic: TLS, process management, and hosting are implementation
+concerns, as is how an implementation listens for requests and maps a real
+request onto the normalized request model used here. The one
+deployment-adjacent field a server may carry is the optional <code>port</code> <strong>hint</strong>
+(<a href="#33-servers-required">§3.3</a>) — a non-binding default for serving
+implementations that never changes what a document means. Recommended
+practice for the implementations around this specification — standalone
+servers (port resolution, a discovery/admin API) and applications embedding
+an engine as a library — lives outside it in
+<a href="serving.html"><code>docs/serving.md</code></a>.</p>
+<p><strong>Non-goals.</strong> Some capabilities are deliberately <em>not</em> part of the format —
+not oversights, and distinct from the <em>future</em> protocol work named below.
+Each has an OpenMock-native alternative or is simply outside the mission:</p>
+<ul>
+<li><strong>No proxying or fallthrough.</strong> An unmatched or unrouted request yields a
+synthetic response (<a href="#10-error-and-fallback-responses">§10</a>); OpenMock
+never forwards to a real backend.</li>
+<li><strong>No request-verification or call-count assertions.</strong> The <code>calls</code> facet
+(<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>) <em>drives responses</em>; the
+format is not a test-spy API for asserting that a call happened N times.</li>
+<li><strong>No webhooks or server-initiated calls.</strong> A mock answers requests; it
+does not originate outbound calls. (Server-initiated WebSocket messages
+are <em>future</em> work, not a non-goal — see Protocol scope below.)</li>
+<li><strong>No response randomness or scripting.</strong> A resolved response is a pure
+function of the request and the <code>calls</code> counter — no random selection
+among responses, no embedded logic. (<code>faker</code> (<a href="#93-faker">§9.3</a>) produces
+field-level fake data, not control flow.)</li>
+<li><strong>No cross-request state beyond <code>calls</code>.</strong> The per-operation call counter
+is the only stateful primitive; there is no general session store or data
+that mutates across requests.</li>
+</ul>
+<p>An implementation <strong>MAY</strong> offer any of these through extensions
+(<a href="#11-specification-extensions">§11</a>), but they are outside the portable
+format and the conformance corpus.</p>
+<p><strong>Self-contained.</strong> An OpenMock document is serveable on its own: no other
+specification or file format is ever required. gRPC messages are written in
+the proto3 JSON mapping (<a href="#42-grpc-requests">§4.2</a>), and a document MAY attach
+a compiled protobuf schema (<a href="#34-grpc-servers-descriptorset">§3.4</a>) — but never has to.
+Likewise, GraphQL mocks are serveable without a GraphQL schema; a document MAY
+attach one (<a href="#35-graphql-servers-schema">§3.5</a>) — but never has to.</p>
+<p><strong>Protocol scope.</strong> v0.2 addresses <strong>HTTP/REST</strong>, <strong>gRPC</strong> (unary and
+server-streaming calls), <strong>GraphQL</strong> (queries and mutations), and
+<strong>WebSocket</strong> (client-initiated request/reply exchanges) mocks. The protocols
+share one model — named servers, operations, first-match-wins scenarios,
+<code>when</code> facets, <code>calls</code>, delays, templating, and extensions — and differ only
+in three places, summarized here and detailed in the sections referenced:</p>
+<table>
+<thead>
+<tr>
+<th>Protocol</th>
+<th>Addressed by (<a href="#5-operations">§5</a>)</th>
+<th>Matchable <code>when</code> facets (<a href="#61-when">§6.1</a>)</th>
+<th>Response fields (<a href="#7-the-response-object">§7</a>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>http</code></td>
+<td><code>method</code> + <code>path</code></td>
+<td><code>params</code>, <code>query</code>, <code>headers</code>, <code>body</code></td>
+<td><code>status</code>, <code>headers</code>, <code>body</code></td>
+</tr>
+<tr>
+<td><code>grpc</code></td>
+<td><code>service</code> + <code>rpc</code></td>
+<td><code>metadata</code>, <code>message</code></td>
+<td><code>status</code>, <code>error</code>, <code>metadata</code>, <code>trailers</code>, <code>message</code>/<code>messages</code></td>
+</tr>
+<tr>
+<td><code>graphql</code></td>
+<td><code>operationType</code> + <code>operationName</code></td>
+<td><code>variables</code>, <code>headers</code></td>
+<td><code>data</code>, <code>errors</code>, <code>extensions</code></td>
+</tr>
+<tr>
+<td><code>websocket</code></td>
+<td><code>path</code></td>
+<td><code>params</code>, <code>query</code>, <code>headers</code>, <code>message</code></td>
+<td><code>messages</code>, <code>close</code></td>
+</tr>
+</tbody></table>
+<p>The <code>calls</code> facet (<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>) is
+matchable under every protocol. Client-streaming and bidirectional gRPC
+calls, GraphQL subscriptions, and server-initiated WebSocket messages
+(greetings on connect, unsolicited pushes) are expected in future versions by
+the same reuse principle.</p>
+<h2 id="2-conventions">2. Conventions<a class="anchor" href="#2-conventions" aria-label="Link to this section">#</a></h2>
+<p>The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>,
+and <strong>MAY</strong> in this document are to be interpreted as described in
+<a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a>.</p>
+<p>A <strong>document</strong> is one OpenMock YAML file. Unless stated otherwise, &quot;the string
+value&quot; means a YAML scalar rendered as text. Object key order is not
+significant except where explicitly noted (scenario order <strong>is</strong> significant).</p>
+<h2 id="3-file-structure">3. File structure<a class="anchor" href="#3-file-structure" aria-label="Link to this section">#</a></h2>
+<p>An OpenMock document is a YAML mapping with these top-level fields:</p>
+<pre><code class="language-yaml">openmock: 0.2.0        # REQUIRED — spec version this document targets
+info:                  # OPTIONAL — human-oriented metadata
+  title: Shop mocks
+  version: 1.0.0
+  description: Mock responses for the shop&#39;s services.
+servers:               # REQUIRED — the mock servers (at least one)
+  - name: users-api            # REQUIRED — unique across the list
+    type: http                 # REQUIRED — http | grpc | graphql | websocket
+    operations:                # REQUIRED — at least one operation
+      - method: GET
+        path: /users/{id}
+        scenarios:
+          - name: found
+            response:
+              status: 200
+              body:
+                id: &quot;{{params.id}}&quot;
+                name: Ada Lovelace
+  - name: orders-grpc
+    type: grpc
+    descriptorSet: ./shop.binpb   # protocol settings live on the server (§3.4)
+    operations:
+      - service: shop.v1.OrderService
+        rpc: GetOrder
+        type: unary
+        scenarios:
+          - name: found
+            response:
+              status: OK
+              message:
+                id: &quot;{{request.message.orderId}}&quot;
+                state: SHIPPED
+</code></pre>
+<h3 id="31-openmock-required">3.1 <code>openmock</code> (REQUIRED)<a class="anchor" href="#31-openmock-required" aria-label="Link to this section">#</a></h3>
+<p>The format version the document targets, as a
+<a href="https://semver.org/">SemVer</a> string. For this specification the value is
+<code>0.2.0</code>. An implementation <strong>MUST</strong> reject a document whose version it does not
+support. While the format is in its <code>0.x</code> series it has no stable public
+contract in SemVer&#39;s sense, so a <strong>minor</strong> increment (<code>0.1</code> → <code>0.2</code>) may make
+breaking changes; an implementation supports specific <code>0.MINOR</code> versions and
+rejects the rest.</p>
+<blockquote>
+<p><strong>Note on numbering.</strong> The format version in the <code>openmock</code> key (<code>0.2.0</code>) and
+this document&#39;s &quot;v0.2 (draft)&quot; label share a <code>0.2</code> line — both say the
+format is pre-stable. The key names the on-disk contract that tooling reads;
+until a <code>1.0.0</code> milestone the format may still change in <code>0.x</code> releases.
+The <code>0.1</code> → <code>0.2</code> change is itself the breaking-minor rule in action: 0.2
+replaces the flat <code>operations</code> list with the <code>servers</code> list (<a href="#33-servers-required">§3.3</a>).</p>
+</blockquote>
+<h3 id="32-info-optional">3.2 <code>info</code> (OPTIONAL)<a class="anchor" href="#32-info-optional" aria-label="Link to this section">#</a></h3>
+<p>Human-oriented metadata. All fields are optional and non-normative — they do not
+affect matching or responses.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Display name for the mock set.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Version of <em>this mock set</em> (not the spec).</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>Free-form description.</td>
+</tr>
+</tbody></table>
+<h3 id="33-servers-required">3.3 <code>servers</code> (REQUIRED)<a class="anchor" href="#33-servers-required" aria-label="Link to this section">#</a></h3>
+<p>A non-empty list of <strong>server objects</strong>. A server is a named group of
+operations of one protocol — one mock service. A document may declare several
+servers, <strong>including several of the same type</strong>: two HTTP services with
+overlapping paths coexist in one document because every request addresses a
+server by name (<a href="#4-the-request-model">§4</a>, <a href="#8-matching-algorithm">§8</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The server&#39;s name — how normalized requests address it. Non-empty; <strong>MUST</strong> be unique across the <code>servers</code> list. Compared case-sensitively.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The server&#39;s protocol: <code>http</code>, <code>grpc</code>, <code>graphql</code>, or <code>websocket</code>. Determines the shape of the server&#39;s operations (<a href="#5-operations">§5</a>), the facets its scenarios may use (<a href="#61-when">§6.1</a>), and the shape of their responses (<a href="#7-the-response-object">§7</a>).</td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>integer</td>
+<td>no</td>
+<td>Optional <strong>default port hint</strong> (1–65535) for implementations serving this server over a network. A hint only: engines <strong>MAY</strong> override it, and it never affects routing, matching, or rendering. See the recommended serving practice in <a href="serving.html"><code>docs/serving.md</code></a>.</td>
+</tr>
+<tr>
+<td><code>operations</code></td>
+<td>list</td>
+<td>yes</td>
+<td>Ordered, non-empty list of <a href="#5-operations">operation objects</a> of the server&#39;s type.</td>
+</tr>
+</tbody></table>
+<p>Two server types carry one additional, optional field each: <code>descriptorSet</code>
+on <code>grpc</code> servers (<a href="#34-grpc-servers-descriptorset">§3.4</a>) and <code>schema</code> on
+<code>graphql</code> servers (<a href="#35-graphql-servers-schema">§3.5</a>).</p>
+<p>Rules:</p>
+<ul>
+<li><strong>At least one server.</strong> A document with no <code>servers</code> entry mocks nothing
+and is invalid (<a href="#36-document-validity">§3.6</a>).</li>
+<li><strong>Every server carries operations.</strong> A declared server without a non-empty
+<code>operations</code> list — even one that attaches a <code>descriptorSet</code> — is invalid.</li>
+<li><strong>Names are unique.</strong> Two servers sharing a <code>name</code> make the document
+invalid. This is a load-time semantic rule (a JSON Schema cannot compare
+values across list items), like an inverted <code>calls</code> range.</li>
+<li><strong>Unknown types are rejected.</strong> A <code>type</code> outside the four above makes the
+document invalid; future protocols (an MCP server, say) arrive as new
+<code>type</code> values in future spec versions, never as silently-ignored entries.</li>
+<li><strong>Order carries no meaning across servers.</strong> The significant order is the
+order of each server&#39;s <code>operations</code> list (<a href="#53-route-resolution">§5.3</a>);
+requests are routed by server name, never by position.</li>
+<li><strong><code>port</code> is a hint, not behaviour.</strong> It follows the same contract as
+<code>descriptorSet</code> and <code>schema</code> (<a href="#34-grpc-servers-descriptorset">§3.4</a>,
+<a href="#35-graphql-servers-schema">§3.5</a>): matching, templating, and response
+resolution against the normalized request model are identical with the
+field present, absent, ignored, or consumed. The conformance corpus
+(<a href="#12-conformance">§12</a>) holds engines to this.</li>
+<li>A top-level <code>operations</code> key is the <strong>0.1 layout</strong> and is invalid in 0.2.
+An implementation <strong>SHOULD</strong> name the <code>servers</code> layout in its diagnostic
+when it sees one — it is the migration mistake every 0.1 author will make
+once.</li>
+</ul>
+<h3 id="34-grpc-servers-descriptorset">3.4 gRPC servers: <code>descriptorSet</code><a class="anchor" href="#34-grpc-servers-descriptorset" aria-label="Link to this section">#</a></h3>
+<p>A server of <code>type: grpc</code> <strong>MAY</strong> carry one additional field:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>descriptorSet</code></td>
+<td>string</td>
+<td>no</td>
+<td>Path, resolved relative to the document (see <a href="#14-security-considerations">§14</a> on untrusted paths), to a serialized <code>google.protobuf.FileDescriptorSet</code> covering the services this server mocks.</td>
+</tr>
+</tbody></table>
+<p>A <strong>descriptor set</strong> is the protobuf ecosystem&#39;s standard compiled-schema
+artifact — the output of <code>protoc --include_imports --descriptor_set_out=…</code> or
+<code>buf build -o …</code> — consumable by every protobuf runtime without parsing
+<code>.proto</code> source. It <strong>SHOULD</strong> contain every service and message type used by
+the server&#39;s operations, with transitive imports included. Each gRPC server
+carries its own schema: two gRPC servers in one document may attach two
+different descriptor sets.</p>
+<p><code>descriptorSet</code> exists for <strong>interoperability</strong>: it is the one portable place a
+server attaches its protobuf schema. Its rules:</p>
+<ol>
+<li>It never changes what a document means. Messages in the document remain
+plain data under the proto3 JSON mapping (<a href="#42-grpc-requests">§4.2</a>), and
+matching, templating, and response resolution against the normalized
+request model are identical with the field present, absent, ignored, or
+consumed. The conformance corpus (<a href="#12-conformance">§12</a>) holds engines to
+this.</li>
+<li>An implementation <strong>MAY</strong> ignore it. Every document <strong>MUST</strong> remain
+serveable from its YAML alone, exactly as if the field were absent.</li>
+<li>An implementation that binds messages to real protobuf encoding — serving
+binary wire format, gRPC server reflection, or schema validation — <strong>MUST</strong>
+accept the schema through this field. It <strong>MAY</strong> additionally offer its own
+mechanisms (flags, registries, extensions), but a document that carries
+<code>descriptorSet</code> <strong>MUST NOT</strong> need any of them.</li>
+<li>A missing or unreadable descriptor set is <strong>not</strong> a document error. The
+implementation <strong>SHOULD</strong> report a diagnostic and <strong>MUST</strong> still resolve
+normalized requests exactly as without the field; only the capabilities the
+descriptor would have enabled are lost.</li>
+<li>With a descriptor set in hand, an implementation <strong>SHOULD</strong> surface a
+diagnostic when a document&#39;s messages contradict the schema (an unknown
+field, a misspelled enum name). The corpus only contains documents whose
+messages agree with their descriptor sets, so both strict and lenient
+engines conform.</li>
+</ol>
+<h3 id="35-graphql-servers-schema">3.5 GraphQL servers: <code>schema</code><a class="anchor" href="#35-graphql-servers-schema" aria-label="Link to this section">#</a></h3>
+<p>A server of <code>type: graphql</code> <strong>MAY</strong> carry one additional field:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>schema</code></td>
+<td>string</td>
+<td>no</td>
+<td>Path, resolved relative to the document (see <a href="#14-security-considerations">§14</a> on untrusted paths), to a GraphQL schema in SDL (type system definition language) covering the operations this server mocks.</td>
+</tr>
+</tbody></table>
+<p><code>schema</code> is the GraphQL analog of the gRPC server&#39;s <code>descriptorSet</code> and
+follows the same interoperability rules, restated here for GraphQL:</p>
+<ol>
+<li>It never changes what a document means. <code>data</code>, <code>errors</code>, and <code>variables</code>
+in the document remain plain data, and matching, templating, and response
+resolution against the normalized request model are identical with the
+field present, absent, ignored, or consumed. The conformance corpus
+(<a href="#12-conformance">§12</a>) holds engines to this.</li>
+<li>An implementation <strong>MAY</strong> ignore it. Every document <strong>MUST</strong> remain
+serveable from its YAML alone, exactly as if the field were absent.</li>
+<li>An implementation that binds mocks to a real GraphQL type system — serving
+introspection, validating incoming query documents, or checking response
+shapes — <strong>MUST</strong> accept the schema through this field. It <strong>MAY</strong>
+additionally offer its own mechanisms (flags, registries, extensions), but
+a document that carries <code>schema</code> <strong>MUST NOT</strong> need any of them.</li>
+<li>A missing or unreadable schema is <strong>not</strong> a document error. The
+implementation <strong>SHOULD</strong> report a diagnostic and <strong>MUST</strong> still resolve
+normalized requests exactly as without the field; only the capabilities the
+schema would have enabled are lost.</li>
+<li>With a schema in hand, an implementation <strong>SHOULD</strong> surface a diagnostic
+when a document contradicts it (an unknown field in <code>data</code>, a scalar where
+the schema declares an object). The corpus only contains documents that
+agree with their schemas, so both strict and lenient engines conform.</li>
+</ol>
+<h3 id="36-document-validity">3.6 Document validity<a class="anchor" href="#36-document-validity" aria-label="Link to this section">#</a></h3>
+<p>A document is <strong>invalid</strong> when it violates any requirement this
+specification places on documents: it fails the
+<a href="schema.html">JSON Schema</a>, targets a format version the
+implementation does not support (<a href="#31-openmock-required">§3.1</a>), declares no
+server, a server without operations, two servers sharing a <code>name</code>, or a
+legacy top-level <code>operations</code> list (<a href="#33-servers-required">§3.3</a>), uses a
+facet under a protocol that does not list it (<a href="#61-when">§6.1</a>), carries a
+response whose shape disagrees with its operation
+(<a href="#54-grpc-operations">§5.4</a>, <a href="#73-grpc-responses">§7.3</a>–<a href="#75-websocket-responses">§7.5</a>),
+names a faker category/method the implementation does not know
+(<a href="#93-faker">§9.3</a>), carries a facet <code>pattern</code> that is not valid RE2
+(<a href="#61-when">§6.1</a>), or declares an inverted <code>calls</code> range with <code>min &gt; max</code>
+(<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>). The schema is a floor,
+not the whole rule: some invalidity — an unknown faker, a malformed pattern,
+an inverted range — is not schema-expressible.</p>
+<ol>
+<li>An implementation <strong>MUST NOT serve an invalid document.</strong> It <strong>MUST</strong>
+refuse the document at <strong>load time</strong>, before answering any request, and
+<strong>SHOULD</strong> emit a diagnostic identifying the violation and where it is
+(operation, scenario).</li>
+<li><strong>Partial service is not an option.</strong> An implementation <strong>MUST NOT</strong>
+skip an invalid operation or scenario and serve the rest — a silently
+dropped operation surfaces later as a baffling unrouted 404 in someone&#39;s
+test run.</li>
+<li><strong>Validity is static.</strong> Every rule above is checkable from the document
+alone — templating placeholders are literal strings, so an
+implementation can enumerate every <code>{{faker.*}}</code> placeholder without
+rendering a single response. Detection <strong>MUST NOT</strong> be deferred to
+matching or render time, where it would surface as a per-request
+failure. (This is why an unknown faker fails the <em>load</em>, not the first
+request that happens to render it.)</li>
+<li>Invalidity is a property of the <strong>document</strong>, not its environment. A
+missing or unreadable <code>descriptorSet</code> or GraphQL <code>schema</code> file remains a
+diagnostic, never a document error (<a href="#34-grpc-servers-descriptorset">§3.4</a>,
+<a href="#35-graphql-servers-schema">§3.5</a>); unrecognized <code>x-</code> keys are ignored
+(<a href="#11-specification-extensions">§11</a>); an unresolved <em>data</em> placeholder
+renders the empty string (<a href="#92-unresolved-placeholders">§9.2</a>).</li>
+</ol>
+<p>The conformance corpus pins this behavior with <strong>invalid-document cases</strong>:
+a case that carries <code>invalid.json</code> instead of a request/response pair names
+a document the implementation <strong>MUST refuse to load</strong>
+(<a href="#12-conformance">§12</a>).</p>
+<h2 id="4-the-request-model">4. The request model<a class="anchor" href="#4-the-request-model" aria-label="Link to this section">#</a></h2>
+<p>Matching and templating are defined against a <strong>normalized request</strong>, so the
+format stays transport-agnostic. An implementation maps a real incoming request
+onto the model for its protocol. A normalized request carries a <code>protocol</code>
+field (<code>http</code>, <code>grpc</code>, <code>graphql</code>, or <code>websocket</code>); when absent it is <code>http</code>.
+It <strong>MAY</strong> carry a <code>server</code> field: the <strong>name</strong> of the server it targets
+(<a href="#33-servers-required">§3.3</a>), which is what routing selects first
+(<a href="#8-matching-algorithm">§8</a>). When <code>server</code> is <strong>absent</strong> and the document
+declares <strong>exactly one</strong> server of the request&#39;s protocol, the request
+targets that server; with zero or several such servers, an absent <code>server</code>
+leaves the request <strong>unrouted</strong> (<a href="#102-no-operation-matches">§10.2</a>) —
+omission is a convenience for the common single-server document, never a
+tiebreaker. How an implementation attributes a real incoming request to a
+server name — a port per server, a host header, a dedicated socket — is a
+transport concern, exactly as TLS is.</p>
+<h3 id="41-http-requests">4.1 HTTP requests<a class="anchor" href="#41-http-requests" aria-label="Link to this section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>server</code></td>
+<td>string</td>
+<td>Name of the server the request targets (<a href="#33-servers-required">§3.3</a>). MAY be omitted when the document declares exactly one server of this protocol (<a href="#8-matching-algorithm">§8</a>).</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>string</td>
+<td>Request method, compared case-insensitively.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>Request path without query string, as received — percent-encoding preserved (decoding happens per segment during matching, <a href="#52-path-and-path-parameters">§5.2</a>). E.g. <code>/users/42</code>.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td>object</td>
+<td>Path parameters extracted by matching <code>path</code> (see §5.2).</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>object</td>
+<td>Query-string parameters, name→value; a repeated name carries a <strong>list</strong> of its values in wire order (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>object</td>
+<td>Header name→value; names compared case-insensitively; repeated field lines join with <code>&quot;, &quot;</code> (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>any</td>
+<td>Parsed request body (object/array/scalar), or absent.</td>
+</tr>
+</tbody></table>
+<p><code>params</code> is derived by the router and <code>server</code> by the transport mapping; the
+others come from the incoming request.</p>
+<h3 id="42-grpc-requests">4.2 gRPC requests<a class="anchor" href="#42-grpc-requests" aria-label="Link to this section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>server</code></td>
+<td>string</td>
+<td>Name of the server the request targets (<a href="#33-servers-required">§3.3</a>). MAY be omitted when the document declares exactly one server of this protocol (<a href="#8-matching-algorithm">§8</a>).</td>
+</tr>
+<tr>
+<td><code>service</code></td>
+<td>string</td>
+<td>Fully-qualified service name, e.g. <code>shop.v1.OrderService</code>.</td>
+</tr>
+<tr>
+<td><code>rpc</code></td>
+<td>string</td>
+<td>RPC method name, e.g. <code>GetOrder</code>.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>Request metadata (the client&#39;s call headers), key→value; keys compared case-insensitively; repeated keys join with <code>&quot;, &quot;</code> (<a href="#46-multi-valued-fields">§4.6</a>). Unambiguous on the request side: gRPC clients send no trailing metadata.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>any</td>
+<td>The request message as data (object/array/scalar), or absent.</td>
+</tr>
+</tbody></table>
+<p>Messages are represented as plain data following the
+<a href="https://protobuf.dev/programming-guides/proto3/#json">proto3 JSON mapping</a>
+(field names, not wire bytes). How an implementation binds these
+representations to actual protobuf encoding — server reflection, descriptor
+sets, transcoding — is an implementation concern, exactly as ports and TLS are
+for HTTP. A gRPC server <strong>MAY</strong> attach its compiled protobuf schema portably
+through its <code>descriptorSet</code> field (<a href="#34-grpc-servers-descriptorset">§3.4</a>).</p>
+<p>So that the same document matches the same requests on every engine, the
+following consequences of the JSON mapping are normative here:</p>
+<ul>
+<li><strong>Field names</strong> are the proto3 <strong>JSON names</strong> — lowerCamelCase by default
+(<code>order_id</code> in the <code>.proto</code> is <code>orderId</code> here). Documents address fields by
+JSON name in facets, templates, and messages, and an implementation that
+normalizes wire requests <strong>MUST</strong> present message keys under their JSON
+names.</li>
+<li><strong>Scalar forms</strong> follow the mapping: 64-bit integers (<code>int64</code>, <code>uint64</code>,
+<code>fixed64</code>, <code>sfixed64</code>) are decimal <strong>strings</strong> (<code>level: &quot;42&quot;</code>), enum values
+are their <strong>names</strong> (<code>state: SHIPPED</code>), <code>bytes</code> are base64 strings, and
+well-known types use their JSON forms (e.g. <code>google.protobuf.Timestamp</code> as
+an RFC 3339 string). Facet comparison (<a href="#61-when">§6.1</a>) and
+templating (<a href="#9-templating">§9</a>) operate on these forms.</li>
+</ul>
+<h3 id="43-graphql-requests">4.3 GraphQL requests<a class="anchor" href="#43-graphql-requests" aria-label="Link to this section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>server</code></td>
+<td>string</td>
+<td>Name of the server the request targets (<a href="#33-servers-required">§3.3</a>). MAY be omitted when the document declares exactly one server of this protocol (<a href="#8-matching-algorithm">§8</a>).</td>
+</tr>
+<tr>
+<td><code>operationType</code></td>
+<td>string</td>
+<td><code>query</code> or <code>mutation</code>.</td>
+</tr>
+<tr>
+<td><code>operationName</code></td>
+<td>string</td>
+<td>The GraphQL operation name, e.g. <code>GetOrder</code>. Case-sensitive.</td>
+</tr>
+<tr>
+<td><code>variables</code></td>
+<td>object</td>
+<td>The request&#39;s variables as data (object), or absent.</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>object</td>
+<td>Transport header name→value; names compared case-insensitively; repeated field lines join with <code>&quot;, &quot;</code> (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+</tbody></table>
+<p>A GraphQL request document names its operation (<code>query GetOrder(...) { ... }</code>);
+that name and the operation type are what OpenMock routes on
+(<a href="#56-graphql-operations">§5.6</a>). How an implementation obtains these values —
+parsing the <code>query</code> text of a GraphQL-over-HTTP POST, reading the
+<code>operationName</code> request parameter, a persisted-query lookup — is an
+implementation concern, exactly as ports and TLS are for HTTP. Requests whose
+operation cannot be named (anonymous operations) have no normalized form in
+v0.2; how an implementation treats them is likewise an implementation concern.</p>
+<p>The <strong>selection set is deliberately not part of the model</strong>. A mock declares
+its response data literally, so there is nothing to select against: an
+implementation <strong>MUST</strong> emit the declared <code>data</code> exactly as written
+(<a href="#74-graphql-responses">§7.4</a>), not filtered or expanded by the request&#39;s
+selection set. An engine that consumes the document&#39;s schema
+(<a href="#35-graphql-servers-schema">§3.5</a>) may gain validation and introspection, but the
+resolved response stays the same.</p>
+<h3 id="44-websocket-requests">4.4 WebSocket requests<a class="anchor" href="#44-websocket-requests" aria-label="Link to this section">#</a></h3>
+<p>WebSocket is message-oriented: a client establishes a connection to a path and
+then sends messages over it. <strong>Each inbound client message is one normalized
+request.</strong> The connection itself produces no request — v0.2 mocks speak only
+in reply to a client message (<a href="#58-websocket-operations">§5.8</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>server</code></td>
+<td>string</td>
+<td>Name of the server the connection targets (<a href="#33-servers-required">§3.3</a>). MAY be omitted when the document declares exactly one WebSocket server (<a href="#8-matching-algorithm">§8</a>). Connection-scoped: fixed at establishment.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>The connection&#39;s request path without query string, as received — percent-encoding preserved (<a href="#52-path-and-path-parameters">§5.2</a>), e.g. <code>/ws/orders/42</code>.</td>
+</tr>
+<tr>
+<td><code>params</code></td>
+<td>object</td>
+<td>Path parameters extracted by matching the operation&#39;s <code>path</code> (see §5.2).</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>object</td>
+<td>Query-string parameters of the connection URL, name→value; a repeated name carries a <strong>list</strong> of its values in wire order (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>object</td>
+<td>Connection (upgrade) request headers; names compared case-insensitively; repeated field lines join with <code>&quot;, &quot;</code> (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+<tr>
+<td><code>connection</code></td>
+<td>string</td>
+<td>Opaque identifier of the connection the message arrived on.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>any</td>
+<td>The parsed incoming message (object/array/scalar).</td>
+</tr>
+</tbody></table>
+<p><code>path</code>, <code>params</code>, <code>query</code>, <code>headers</code>, and <code>connection</code> are <strong>connection-scoped</strong>:
+they are fixed when the connection is established and identical for every
+message on it. <code>message</code> is the one per-request field.</p>
+<p><code>connection</code> distinguishes one connection from another — it is what the
+per-connection call counter is keyed by
+(<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>). Its value is opaque; an
+implementation derives it however it likes (a socket id, a UUID). Two
+normalized requests with equal <code>connection</code> values belong to the same
+connection. When the field is absent, all requests belong to one default
+connection.</p>
+<p>Messages are data, exactly like bodies and gRPC messages. How an
+implementation maps wire frames onto that data — typically parsing JSON text
+frames, with a plain text frame normalizing to a string scalar — and how it
+serializes reply messages back onto the wire is an implementation concern,
+exactly as ports and TLS are for HTTP. A frame that normalized to a string
+scalar is matched with the scalar form of the <code>message</code> facet
+(<a href="#61-when">§6.1</a>) and rendered with bare <code>{{request.message}}</code>
+(<a href="#91-placeholder-namespaces">§9.1</a>).</p>
+<h3 id="45-dotted-paths-and-string-forms">4.5 Dotted paths and string forms<a class="anchor" href="#45-dotted-paths-and-string-forms" aria-label="Link to this section">#</a></h3>
+<p>Matching (<a href="#61-when">§6.1</a>) and templating (<a href="#9-templating">§9</a>) both address
+values inside the structured request payloads — <code>body</code> (HTTP), <code>message</code>
+(gRPC, WebSocket), and <code>variables</code> (GraphQL) — with <strong>dotted paths</strong>, and both
+reduce what they find to a value&#39;s <strong>canonical string form</strong> before comparing
+or rendering it. Both definitions live here, once, so the two features cannot
+drift apart.</p>
+<h4 id="dotted-paths">Dotted paths<a class="anchor" href="#dotted-paths" aria-label="Link to this section">#</a></h4>
+<p>A dotted path is one or more non-empty <strong>segments</strong> joined by <code>.</code>:</p>
+<pre><code>path    = segment *( &quot;.&quot; segment )
+segment = one or more characters, none of which is &quot;.&quot;
+</code></pre>
+<p>Every <code>.</code> is a segment separator — there is no escape syntax. A member whose
+name contains a literal dot therefore <strong>cannot be addressed</strong> in v0.2. This is
+a deliberate limitation: a future version may add an escape syntax, but the
+meaning of <code>.</code> will not change.</p>
+<p>A path <strong>resolves</strong> by applying its segments left to right, starting at the
+payload root. At each step, against the current value:</p>
+<ul>
+<li>If the current value is an <strong>object</strong>, the segment selects the member with
+exactly that name (case-sensitively). No such member → resolution fails.</li>
+<li>If the current value is an <strong>array</strong> and the segment is a <strong>canonical
+base-10 integer</strong> — one or more ASCII digits, no sign, no leading zeros
+(<code>0</code> is canonical) — the segment selects the element at that 0-based index.
+An index at or beyond the array&#39;s length, or a non-canonical segment
+(<code>01</code>, <code>-1</code>, <code>1x</code>), fails resolution.</li>
+<li>Against anything else (a string, number, boolean, or <code>null</code>), resolution
+fails.</li>
+</ul>
+<p>A path whose resolution fails resolves to <strong>absent</strong>. Absent is not an error:
+an absent target simply never matches a facet (<a href="#61-when">§6.1</a>) and renders
+as the empty string in a template (<a href="#92-unresolved-placeholders">§9.2</a>).</p>
+<p>Dotted paths apply <strong>only</strong> to <code>body</code>, <code>message</code>, and <code>variables</code> — the
+facets and template namespaces that address structured payloads. The flat
+facets (<code>params</code>, <code>query</code>, <code>headers</code>, <code>metadata</code>) and their template
+namespaces are plain key lookups: a <code>.</code> in a header or query parameter name
+is a literal character, never a separator.</p>
+<pre><code class="language-yaml"># Against a body of: { &quot;items&quot;: [ { &quot;id&quot;: &quot;a1&quot;, &quot;qty&quot;: 2 } ] }
+when:
+  body:
+    items.0.qty: &quot;2&quot;     # index 0 into the array, then member &quot;qty&quot; → 2
+    # items.1.id: …      # index past the end → absent → never matches
+    # user.role: …       # no member &quot;user&quot; → absent (&quot;.&quot; always separates)
+</code></pre>
+<h4 id="canonical-string-forms">Canonical string forms<a class="anchor" href="#canonical-string-forms" aria-label="Link to this section">#</a></h4>
+<p>Facet comparison and placeholder rendering treat request values uniformly by
+reducing them to a <strong>canonical string form</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Canonical string form</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>the string itself, unchanged</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td><code>true</code> or <code>false</code></td>
+</tr>
+<tr>
+<td>number</td>
+<td>the shortest decimal string that round-trips to the same IEEE 754 double — the output of the ECMAScript <code>Number::toString</code> algorithm, which is what <code>JSON.stringify</code> emits</td>
+</tr>
+<tr>
+<td><code>null</code>, object, array</td>
+<td><strong>none</strong> — these values have no canonical string form</td>
+</tr>
+</tbody></table>
+<p>Consequences of the number rule: <code>42</code> → <code>42</code>; <code>1.0</code> → <code>1</code> (a fractionless
+double and the integer are the same value); <code>0.5</code> → <code>0.5</code>; <code>-0</code> → <code>0</code>;
+integers of magnitude up to 2⁵³ never gain a fraction or an exponent. An
+engine whose parser preserves more precision than an IEEE 754 double (64-bit
+or arbitrary-precision integers) renders such values in plain decimal form;
+the conformance corpus stays within the double-safe range.</p>
+<p>Because comparison operates on string forms, a facet cannot distinguish the
+JSON number <code>42</code> from the JSON string <code>&quot;42&quot;</code> — both have the form <code>42</code>. This
+is deliberate: values that arrive as text on the wire (query parameters, path
+segments, headers) and values that arrive typed (JSON payloads) are matched
+by one rule.</p>
+<p><code>null</code> has no string form <strong>by design</strong>: a <code>null</code> target behaves exactly like
+an absent one — it matches no facet value and renders as the empty string.
+v0.2 offers no way to distinguish <code>null</code> from absent, in matching or in
+templating.</p>
+<h3 id="46-multi-valued-fields">4.6 Multi-valued fields<a class="anchor" href="#46-multi-valued-fields" aria-label="Link to this section">#</a></h3>
+<p>The maps in the normalized request are single-stringed by default, but wires
+are not: a query string may repeat a name (<code>?a=1&amp;a=2</code>), and HTTP requests
+and gRPC calls may repeat a header or metadata key. How each map represents
+repetition is normative:</p>
+<ul>
+<li><strong>Repeated headers and metadata</strong> normalize to <strong>one string</strong>: every value
+the transport delivered for that name, in arrival order, joined with
+<code>&quot;, &quot;</code> (a comma and a single space). This is RFC 9110&#39;s rule — repeated
+field lines are semantically one comma-separated list — applied at
+normalization time, so nothing is dropped. It covers HTTP request headers,
+gRPC request metadata, and the transport headers of GraphQL and WebSocket
+requests alike. Matching and templating see only the joined value: a facet
+<code>X-Tag: alpha</code> does <strong>not</strong> match a request that sent <code>X-Tag: alpha</code> and
+<code>X-Tag: beta</code> (the normalized value is <code>alpha, beta</code>); an author who wants
+to match the repetition writes the joined form.</li>
+<li><strong>Repeated query parameters are preserved as a list.</strong> Query strings,
+unlike header fields, have no standard joining semantics — and repetition
+can be the encoding of the data itself (a gRPC-JSON transcoder renders a
+repeated proto field as <code>?ids=1&amp;ids=2</code>), so no occurrence may be dropped.
+A <code>query</code> value is therefore a <strong>string</strong> when the name appeared once and
+a <strong>list of strings, in wire order</strong>, when it was repeated.</li>
+</ul>
+<p>Because a <code>query</code> value can be a list, the <code>query</code> facet has exactly one
+rule of its own:</p>
+<ul>
+<li>A <code>query</code> facet value is <strong>always a non-empty list of strings</strong>. It
+matches iff the parameter&#39;s full occurrence sequence equals it — same
+values, same order, same count. A single occurrence is a one-element
+sequence: <code>verbose: [&quot;true&quot;]</code> matches <code>?verbose=true</code> and nothing else.
+<code>ids: [&quot;1&quot;, &quot;2&quot;]</code> matches <code>?ids=1&amp;ids=2</code> but not <code>?ids=1</code>,
+<code>?ids=2&amp;ids=1</code>, or <code>?ids=1&amp;ids=2&amp;ids=3</code>. There is no string form and no
+hidden single-value shortcut — one rule covers one occurrence and many.</li>
+<li>Templating follows the ordinary string-form rules of
+<a href="#45-dotted-paths-and-string-forms">§4.5</a>: <code>{{request.query.NAME}}</code>
+renders a single-valued parameter&#39;s value, and renders the <strong>empty
+string</strong> for a repeated one (<a href="#92-unresolved-placeholders">§9.2</a>).</li>
+</ul>
+<p>On the <strong>response</strong> side the concern is reversed — emitting repetition, not
+normalizing it — and only HTTP needs it, for the one header that RFC 6265
+forbids comma-joining: <code>Set-Cookie</code>. An HTTP response header value MAY
+therefore be a <strong>list of strings</strong>, emitted as one field line per item, in
+order (<a href="#7-the-response-object">§7</a>). gRPC response <code>metadata</code> and
+<code>trailers</code> (<a href="#73-grpc-responses">§7.3</a>) stay string-valued: metadata has no
+<code>Set-Cookie</code> analog — a comma-joined value is semantically the repetition,
+for ASCII and base64 <code>-bin</code> values alike — so an author who wants repeated
+metadata or trailer entries writes the joined value.</p>
+<h2 id="5-operations">5. Operations<a class="anchor" href="#5-operations" aria-label="Link to this section">#</a></h2>
+<p>An operation object declares one addressable route and the scenarios for it.
+Operations live in a server&#39;s <code>operations</code> list
+(<a href="#33-servers-required">§3.3</a>); the server&#39;s <code>type</code> determines the
+operation&#39;s shape — there is no per-operation protocol field. A document that
+mocks several protocols declares several servers, one per service.</p>
+<h3 id="http-operations">HTTP operations<a class="anchor" href="#http-operations" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">servers:
+  - name: users-api
+    type: http
+    operations:
+      - method: GET          # REQUIRED
+        path: /users/{id}    # REQUIRED
+        scenarios:           # REQUIRED — at least one
+          - ...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>method</code></td>
+<td>string</td>
+<td>yes</td>
+<td>HTTP method. Compared case-insensitively.</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Path template with optional <code>{param}</code> segments.</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>string</td>
+<td>no</td>
+<td>Optional human-oriented description.</td>
+</tr>
+<tr>
+<td><code>scenarios</code></td>
+<td>list</td>
+<td>yes</td>
+<td>Ordered, non-empty list of scenarios.</td>
+</tr>
+</tbody></table>
+<h3 id="51-method">5.1 <code>method</code><a class="anchor" href="#51-method" aria-label="Link to this section">#</a></h3>
+<p>Any HTTP method token (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>,
+<code>OPTIONS</code>, …). Comparison against a request is case-insensitive.</p>
+<h3 id="52-path-and-path-parameters">5.2 <code>path</code> and path parameters<a class="anchor" href="#52-path-and-path-parameters" aria-label="Link to this section">#</a></h3>
+<p><code>path</code> is an absolute path that <strong>MUST</strong> begin with <code>/</code>. A segment written as
+<code>{name}</code> is a <strong>path parameter</strong> that matches exactly one non-empty path segment
+and captures it under that name.</p>
+<ul>
+<li><code>/users/{id}</code> matches <code>/users/42</code> → <code>params.id = &quot;42&quot;</code>.</li>
+<li><code>/users/{id}</code> does <strong>not</strong> match <code>/users</code> or <code>/users/42/posts</code>.</li>
+<li>Multiple parameters are allowed: <code>/users/{userId}/posts/{postId}</code>.</li>
+<li>A parameter matches a single segment only; it never spans <code>/</code>.</li>
+</ul>
+<p>Two operations <strong>in one server SHOULD NOT</strong> declare the same <code>method</code> +
+<code>path</code>. If they do, an implementation <strong>MUST</strong> consider them in the server&#39;s
+<code>operations</code> order and use the first. Operations of <em>different</em> servers never
+conflict: two servers may both declare <code>GET /health</code>, and each answers its
+own requests (<a href="#8-matching-algorithm">§8</a>).</p>
+<h4 id="path-comparison">Path comparison<a class="anchor" href="#path-comparison" aria-label="Link to this section">#</a></h4>
+<p>A template matches a request path <strong>segment for segment</strong>:</p>
+<ol>
+<li><strong>Split.</strong> Template and request path each drop the leading <code>/</code> and split
+on <code>/</code>. A trailing slash yields a trailing <strong>empty segment</strong>, so <code>/users</code>
+splits to <code>[&quot;users&quot;]</code> and <code>/users/</code> to <code>[&quot;users&quot;, &quot;&quot;]</code>. A template
+matches only a request path with the <strong>same number of segments</strong>.</li>
+<li><strong>Decode.</strong> Each <em>request</em> segment is then percent-decoded: <code>%</code> followed
+by two hex digits becomes the encoded octet, and the octets are
+interpreted as UTF-8. A segment containing a malformed escape (<code>%zz</code>, a
+trailing <code>%</code>) is compared as written. <code>+</code> is <strong>not</strong> decoded — it means a
+space only in query strings, never in paths. Because splitting happens
+<strong>before</strong> decoding, an encoded <code>%2F</code> can never act as a segment
+separator.</li>
+<li><strong>Compare.</strong> A literal template segment matches iff it equals the decoded
+request segment — <strong>case-sensitively</strong>, with no Unicode case folding or
+other normalization. Template segments are compared exactly as written in
+the YAML; authors write them in decoded form. An empty literal segment
+(from a trailing slash) matches only an empty request segment.</li>
+<li><strong>Capture.</strong> A <code>{name}</code> segment matches any <strong>non-empty</strong> decoded segment
+and captures the <strong>decoded</strong> value: <code>/files/{name}</code> matches
+<code>/files/a%2Fb.txt</code> with <code>params.name = &quot;a/b.txt&quot;</code>. The captured value is
+what the <code>params</code> facet (<a href="#61-when">§6.1</a>) and <code>{{params.NAME}}</code>
+(<a href="#9-templating">§9</a>) see.</li>
+</ol>
+<p>There is <strong>no other normalization</strong>: paths are never case-folded, <code>/users</code>
+and <code>/users/</code> are distinct (an author who wants both declares both), and
+dot-segments (<code>.</code>, <code>..</code>) are not resolved during matching — resolving them,
+like every other URL normalization that precedes the normalized request,
+is the transport mapping&#39;s concern, exactly as ports and TLS are.</p>
+<h3 id="53-route-resolution">5.3 Route resolution<a class="anchor" href="#53-route-resolution" aria-label="Link to this section">#</a></h3>
+<p>For an incoming request, an implementation selects the <strong>first</strong> operation, in
+the addressed server&#39;s <code>operations</code> list (<a href="#8-matching-algorithm">§8</a> step 1),
+whose <code>method</code> matches and whose <code>path</code> template matches the request path. If
+routing selects no target server (<a href="#8-matching-algorithm">§8</a> step 1), or no
+operation in the targeted server matches, the request is <strong>unrouted</strong> (see
+<a href="#102-no-operation-matches">§10.2</a>).</p>
+<h3 id="54-grpc-operations">5.4 gRPC operations<a class="anchor" href="#54-grpc-operations" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">servers:
+  - name: orders-grpc
+    type: grpc
+    operations:
+      - service: shop.v1.OrderService   # REQUIRED — fully-qualified service name
+        rpc: GetOrder                   # REQUIRED — RPC method name
+        type: unary                     # OPTIONAL — unary (default) | server-streaming
+        scenarios:                      # REQUIRED — at least one
+          - ...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>service</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Fully-qualified service name. Compared case-sensitively (protobuf names are case-sensitive).</td>
+</tr>
+<tr>
+<td><code>rpc</code></td>
+<td>string</td>
+<td>yes</td>
+<td>RPC method name. Compared case-sensitively.</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>no</td>
+<td>The RPC&#39;s <strong>call type</strong>: <code>unary</code> (the default) or <code>server-streaming</code>.</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>string</td>
+<td>no</td>
+<td>Optional human-oriented description.</td>
+</tr>
+<tr>
+<td><code>scenarios</code></td>
+<td>list</td>
+<td>yes</td>
+<td>Ordered, non-empty list of scenarios.</td>
+</tr>
+</tbody></table>
+<p>The call type is declared <strong>explicitly on the operation</strong> — it is never
+inferred from the shape of a response. Every response in a <code>unary</code> operation
+uses <code>message</code>; every response in a <code>server-streaming</code> operation uses
+<code>messages</code> (<a href="#73-grpc-responses">§7.3</a>). A response whose shape does not agree
+with the operation&#39;s declared <code>type</code> makes the document <strong>invalid</strong>
+(<a href="#36-document-validity">§3.6</a>). Authors
+<strong>SHOULD</strong> write <code>type</code> explicitly even for unary RPCs.</p>
+<p>Client-streaming and bidirectional call types are not part of v0.2.</p>
+<h3 id="55-grpc-route-resolution">5.5 gRPC route resolution<a class="anchor" href="#55-grpc-route-resolution" aria-label="Link to this section">#</a></h3>
+<p>For an incoming gRPC request, an implementation selects the <strong>first</strong>
+operation, in the addressed server&#39;s <code>operations</code> list
+(<a href="#8-matching-algorithm">§8</a> step 1), whose <code>service</code> and <code>rpc</code> both equal
+the request&#39;s. There are no path parameters and no query strings in gRPC
+addressing. If routing selects no target server
+(<a href="#8-matching-algorithm">§8</a> step 1), or no operation in the targeted server
+matches, the request is <strong>unrouted</strong> (see
+<a href="#102-no-operation-matches">§10.2</a>).</p>
+<p>Two operations in one server <strong>SHOULD NOT</strong> declare the same <code>service</code> +
+<code>rpc</code>. If they do, an implementation <strong>MUST</strong> consider them in the server&#39;s
+<code>operations</code> order and use the first.</p>
+<h3 id="56-graphql-operations">5.6 GraphQL operations<a class="anchor" href="#56-graphql-operations" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">servers:
+  - name: shop-graphql
+    type: graphql
+    operations:
+      - operationType: query            # OPTIONAL — query (default) | mutation
+        operationName: GetOrder         # REQUIRED — the GraphQL operation name
+        scenarios:                      # REQUIRED — at least one
+          - ...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>operationType</code></td>
+<td>string</td>
+<td>no</td>
+<td><code>query</code> (the default) or <code>mutation</code>.</td>
+</tr>
+<tr>
+<td><code>operationName</code></td>
+<td>string</td>
+<td>yes</td>
+<td>The GraphQL operation name this route answers. Compared case-sensitively (GraphQL names are case-sensitive).</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>string</td>
+<td>no</td>
+<td>Optional human-oriented description.</td>
+</tr>
+<tr>
+<td><code>scenarios</code></td>
+<td>list</td>
+<td>yes</td>
+<td>Ordered, non-empty list of scenarios.</td>
+</tr>
+</tbody></table>
+<p><code>operationName</code> is the name a client gives its request document — the
+<code>GetOrder</code> in <code>query GetOrder($id: ID!) { order(id: $id) { … } }</code>. Mocking
+addresses requests by this name rather than by root field or query text: it is
+present on every named request, it survives persisted-query indirection, and
+it keeps a document readable as a list of the calls a client makes.</p>
+<p>GraphQL subscriptions are not part of v0.2.</p>
+<h3 id="57-graphql-route-resolution">5.7 GraphQL route resolution<a class="anchor" href="#57-graphql-route-resolution" aria-label="Link to this section">#</a></h3>
+<p>For an incoming GraphQL request, an implementation selects the <strong>first</strong>
+operation, in the addressed server&#39;s <code>operations</code> list
+(<a href="#8-matching-algorithm">§8</a> step 1), whose <code>operationType</code> and
+<code>operationName</code> both equal the request&#39;s. There are no path parameters and no
+query strings in GraphQL addressing. If routing selects no target server
+(<a href="#8-matching-algorithm">§8</a> step 1), or no operation in the targeted server
+matches, the request is <strong>unrouted</strong> (see <a href="#102-no-operation-matches">§10.2</a>).</p>
+<p>Two operations in one server <strong>SHOULD NOT</strong> declare the same <code>operationType</code></p>
+<ul>
+<li><code>operationName</code>. If they do, an implementation <strong>MUST</strong> consider them in
+the server&#39;s <code>operations</code> order and use the first.</li>
+</ul>
+<h3 id="58-websocket-operations">5.8 WebSocket operations<a class="anchor" href="#58-websocket-operations" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">servers:
+  - name: orders-feed
+    type: websocket
+    operations:
+      - path: /ws/orders/{id}           # REQUIRED — connection path template
+        scenarios:                      # REQUIRED — at least one
+          - ...
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Path template the connection is established against, with optional <code>{param}</code> segments. Same rules as <a href="#52-path-and-path-parameters">§5.2</a>.</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>string</td>
+<td>no</td>
+<td>Optional human-oriented description.</td>
+</tr>
+<tr>
+<td><code>scenarios</code></td>
+<td>list</td>
+<td>yes</td>
+<td>Ordered, non-empty list of scenarios.</td>
+</tr>
+</tbody></table>
+<p>A WebSocket operation describes one connection endpoint and the request/reply
+exchanges on it: every message the client sends on a connection resolves,
+per <a href="#8-matching-algorithm">§8</a>, against this operation&#39;s scenarios to a
+response of zero or more reply messages, optionally followed by a close
+(<a href="#75-websocket-responses">§7.5</a>).</p>
+<p>v0.2 covers <strong>client-initiated exchanges only</strong> — the mock speaks only in
+reply to a client message. Server-initiated messages (a greeting on connect,
+unsolicited pushes) are not part of v0.2.</p>
+<h3 id="59-websocket-route-resolution">5.9 WebSocket route resolution<a class="anchor" href="#59-websocket-route-resolution" aria-label="Link to this section">#</a></h3>
+<p>Routing happens <strong>once, at connection establishment</strong>: an implementation
+selects the first operation, in the addressed server&#39;s <code>operations</code> list
+(<a href="#8-matching-algorithm">§8</a> step 1), whose <code>path</code> template matches the
+connection&#39;s path (capturing <code>params</code>). If routing selects no target server
+(<a href="#8-matching-algorithm">§8</a> step 1), or no operation in the targeted server
+matches, the connection is <strong>unrouted</strong> and <strong>MUST be refused</strong>, not accepted (see
+<a href="#102-no-operation-matches">§10.2</a>).</p>
+<p>Every message on an established connection resolves against that one
+operation — messages are not re-routed, since the connection&#39;s path and
+server cannot change.</p>
+<p>Two operations in one server <strong>SHOULD NOT</strong> declare the same <code>path</code>. If they
+do, an implementation <strong>MUST</strong> consider them in the server&#39;s <code>operations</code>
+order and use the first.</p>
+<h2 id="6-scenarios">6. Scenarios<a class="anchor" href="#6-scenarios" aria-label="Link to this section">#</a></h2>
+<p>A scenario maps a matched request to a response. Scenarios live in an ordered
+list and are evaluated <strong>first-match-wins</strong> (see <a href="#8-matching-algorithm">§8</a>).</p>
+<pre><code class="language-yaml">- name: admin-user        # REQUIRED
+  when:                   # OPTIONAL — omit for the default scenario
+    headers:
+      X-Role: admin
+  response:               # REQUIRED
+    status: 200
+    body:
+      id: &quot;{{params.id}}&quot;
+      role: admin
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Identifier for the scenario, unique within the operation.</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>string</td>
+<td>no</td>
+<td>Optional human-oriented description of the scenario&#39;s intent. Non-normative.</td>
+</tr>
+<tr>
+<td><code>when</code></td>
+<td>object</td>
+<td>no</td>
+<td>Condition under which this scenario applies. Omit for the default.</td>
+</tr>
+<tr>
+<td><code>response</code></td>
+<td>object</td>
+<td>yes</td>
+<td>The <a href="#7-the-response-object">response</a> to return.</td>
+</tr>
+</tbody></table>
+<h3 id="61-when">6.1 <code>when</code><a class="anchor" href="#61-when" aria-label="Link to this section">#</a></h3>
+<p>A <code>when</code> object declares one or more <strong>facets</strong>. A facet constrains a part of
+the request. A scenario matches only if <strong>every declared facet matches</strong>. Facets
+that are absent from <code>when</code> are unconstrained.</p>
+<table>
+<thead>
+<tr>
+<th>Facet</th>
+<th>Protocol</th>
+<th>Matches against</th>
+<th>Match rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>params</code></td>
+<td>http, websocket</td>
+<td><code>request.params</code></td>
+<td>For each key, the captured path parameter equals the value (string equality).</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>http, websocket</td>
+<td><code>request.query</code></td>
+<td>For each key, the value is a <strong>list</strong> matched against the parameter&#39;s full occurrence sequence exactly (<a href="#46-multi-valued-fields">§4.6</a>); a single occurrence is a one-element sequence (<code>verbose: [&quot;true&quot;]</code>).</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>http, graphql, websocket</td>
+<td><code>request.headers</code></td>
+<td>For each key (compared case-insensitively), the header is present and equals the value.</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>http</td>
+<td><code>request.body</code></td>
+<td>Map form: for each key, the value at that dotted path (<a href="#45-dotted-paths-and-string-forms">§4.5</a>) of the request body equals the value (e.g. <code>user.role</code>, <code>items.0.id</code>). Scalar form: a single string matching the whole payload (see below).</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>grpc</td>
+<td><code>request.metadata</code></td>
+<td>For each key (compared case-insensitively), the metadata entry is present and equals the value.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>grpc, websocket</td>
+<td><code>request.message</code></td>
+<td>Map form: for each key, the value at that dotted path (<a href="#45-dotted-paths-and-string-forms">§4.5</a>) of the request message equals the value (e.g. <code>order.id</code>). Scalar form: a single string matching the whole payload (see below).</td>
+</tr>
+<tr>
+<td><code>variables</code></td>
+<td>graphql</td>
+<td><code>request.variables</code></td>
+<td>For each key, the value at that dotted path (<a href="#45-dotted-paths-and-string-forms">§4.5</a>) of the request&#39;s variables equals the value (e.g. <code>filter.state</code>).</td>
+</tr>
+<tr>
+<td><code>calls</code></td>
+<td>all</td>
+<td>the operation&#39;s call counter</td>
+<td>The counter&#39;s current value equals the declared integer or falls within the declared range. See <a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>.</td>
+</tr>
+</tbody></table>
+<p>A facet may only appear under an operation whose server&#39;s <code>type</code> lists it
+(<code>calls</code> is valid under all protocols); a document that uses, say, <code>headers</code>
+in the <code>when</code> of an operation in a gRPC server is invalid
+(<a href="#36-document-validity">§3.6</a>). A map-form facet <strong>MUST</strong> declare at least
+one key: an empty facet map (<code>headers: {}</code>) is not a vacuously-true
+constraint but an invalid document. For WebSocket operations, <code>params</code>,
+<code>query</code>, and <code>headers</code> match the connection-scoped values fixed at
+establishment (<a href="#44-websocket-requests">§4.4</a>) and <code>message</code> matches the
+individual inbound message.</p>
+<p>The <code>body</code> and <code>message</code> facets have a second, <strong>scalar form</strong>: instead of a
+map, the facet MAY be a single string, which matches iff the <strong>whole
+payload</strong> has a canonical string form
+(<a href="#45-dotted-paths-and-string-forms">§4.5</a>) equal to it. This is how scalar
+payloads — a <code>text/plain</code> body of <code>ping</code>, a plain-text WebSocket frame, a
+bare JSON number — are matched at all: <code>message: ping</code> matches the text
+frame <code>&quot;ping&quot;</code>, and <code>body: &quot;42&quot;</code> matches a body of the JSON number <code>42</code>. A
+payload that is an object, array, or <code>null</code> has no string form and never
+matches the scalar form; conversely, a dotted path never resolves inside a
+scalar payload, so the two forms cover disjoint payload shapes. (gRPC
+messages under the proto3 JSON mapping are normally objects; the scalar
+form exists there for the rare scalar normalizations, e.g. transcoded
+well-known wrapper types.)</p>
+<h4 id="value-matchers">Value matchers<a class="anchor" href="#value-matchers" aria-label="Link to this section">#</a></h4>
+<p>Wherever a facet accepts a <strong>string</strong> value, it also accepts a <strong>matcher
+object</strong> — once more, the YAML type carries the meaning. v0.2 defines two
+matchers, and a matcher object carries <strong>exactly one</strong> of them:</p>
+<pre><code class="language-yaml">when:
+  headers:
+    X-Trace:
+      exists: true          # header must be present, any value
+    X-Debug:
+      exists: false         # header must be absent
+  body:
+    orderId:
+      pattern: &quot;ord-[0-9]+&quot; # RE2, matches the ENTIRE value
+</code></pre>
+<p>A matcher is an <strong>ordinary YAML mapping</strong> — there is no matcher syntax.
+<code>X-Debug: {exists: false}</code> is the same document in YAML&#39;s flow style; use
+whichever style reads better. The only brace syntax OpenMock itself defines
+is the <strong>doubled</strong> <code>{{ … }}</code> of templating placeholders inside string
+values (<a href="#9-templating">§9</a>).</p>
+<table>
+<thead>
+<tr>
+<th>Matcher</th>
+<th>Matches when</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>exists: true</code></td>
+<td>The target is <strong>present</strong> — it resolves to any value, including an object or array. Presence is assertable even where equality is not.</td>
+</tr>
+<tr>
+<td><code>exists: false</code></td>
+<td>The target is <strong>absent</strong> — the header/parameter/entry is missing, or the dotted path fails to resolve. <code>null</code> counts as absent (<a href="#45-dotted-paths-and-string-forms">§4.5</a>).</td>
+</tr>
+<tr>
+<td><code>pattern: &quot;…&quot;</code></td>
+<td>The target has a canonical string form (<a href="#45-dotted-paths-and-string-forms">§4.5</a>) and the pattern matches <strong>that entire string</strong> — implicitly anchored, as if wrapped in <code>\A(?:…)\z</code>. Targets with no string form never match.</td>
+</tr>
+</tbody></table>
+<p>Patterns use <strong>RE2 syntax</strong> — no backreferences, no lookaround. RE2 is the
+one dialect with portable, linear-time implementations on every platform, so
+a document can never smuggle in a catastrophically backtracking pattern. An
+implementation whose regex engine accepts more than RE2 <strong>MUST</strong> still
+reject non-RE2 patterns: a pattern that is not valid RE2 makes the document
+<strong>invalid</strong> (<a href="#36-document-validity">§3.6</a>) — a static, load-time check like
+every other validity rule. Case-insensitivity is written inline:
+<code>pattern: &quot;(?i)shipped&quot;</code>.</p>
+<p>Two facets need a word on where matchers fit:</p>
+<ul>
+<li><strong><code>query</code></strong> (<a href="#46-multi-valued-fields">§4.6</a>): each <strong>list element</strong> may
+be a string or a <code>pattern</code> matcher, matched against the occurrence at
+that position — <code>ids: [{pattern: &quot;[0-9]+&quot;}, &quot;2&quot;]</code> — while count and order
+stay exact. The whole facet value may instead be an <code>exists</code> matcher,
+asserting the parameter&#39;s presence or absence regardless of values:
+<code>page: {exists: false}</code>. <code>exists</code> has no meaning <em>inside</em> the list (a
+position&#39;s existence is already asserted by the count).</li>
+<li><strong><code>body</code> / <code>message</code></strong>: matchers appear as map-form <strong>values</strong> —
+<code>body: {orderId: {pattern: …}}</code>. At the <strong>top level</strong> of these facets an
+object is always the map form, because its keys are dotted paths and a
+member may legitimately be named <code>exists</code> or <code>pattern</code>; the whole-payload
+scalar form therefore stays a plain string, and whole-payload matchers
+are not expressible in v0.2.</li>
+</ul>
+<p>Within a map-form facet, multiple keys are <strong>ANDed</strong> — all must match. Across facets, all
+declared facets must match. For every facet except <code>calls</code>, a <strong>string</strong>
+facet value compares by
+<strong>string equality on canonical string forms</strong>
+(<a href="#45-dotted-paths-and-string-forms">§4.5</a>): the facet key matches iff the
+targeted request value is present, has a canonical string form, and that form
+equals the string written in <code>when</code> — while an <strong>object</strong> facet value is a
+matcher (above). Under string equality, a target that is absent, <code>null</code>, an
+object, or an array never matches. In the flat facets (<code>params</code>, <code>query</code>,
+<code>headers</code>, <code>metadata</code>) the key is a plain name; in <code>body</code>, <code>message</code>, and
+<code>variables</code> it is a dotted path. Two facets carry their own comparison
+rules instead: <code>query</code>, whose values are lists matched against the
+occurrence sequence per <a href="#46-multi-valued-fields">§4.6</a>, and <code>calls</code>, which
+compares integers as described in
+<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>.</p>
+<pre><code class="language-yaml">when:
+  query:
+    verbose: [&quot;true&quot;]
+  headers:
+    X-Api-Key: secret
+  body:
+    user.role: admin
+    items.0.qty: &quot;2&quot;
+</code></pre>
+<p>This scenario matches only a request that has <code>?verbose=true</code>, an
+<code>X-Api-Key: secret</code> header, and a body whose <code>user.role</code> is <code>admin</code> and whose
+first <code>items</code> element has a <code>qty</code> of <code>2</code>. String forms are what make typed
+payload scalars matchable: <code>items.0.qty: &quot;2&quot;</code> matches whether the body carries
+the JSON number <code>2</code> or the string <code>&quot;2&quot;</code>.</p>
+<h3 id="62-the-default-scenario">6.2 The default scenario<a class="anchor" href="#62-the-default-scenario" aria-label="Link to this section">#</a></h3>
+<p>A scenario <strong>without</strong> a <code>when</code> object is the <strong>default</strong> (fallback) scenario. It
+always matches. A default scenario <strong>SHOULD</strong> be placed <strong>last</strong> in the list,
+because any scenario after it can never be reached (the default matches first
+under first-match-wins).</p>
+<p>An operation <strong>MAY</strong> omit a default scenario. If it does and no <code>when</code> scenario
+matches, the request is <strong>unmatched</strong> (see <a href="#101-no-scenario-matches">§10.1</a>).</p>
+<p>An operation <strong>SHOULD</strong> declare at most one default scenario. If more than one is
+present, only the first (in document order) is reachable.</p>
+<h3 id="63-the-calls-facet-and-the-call-counter">6.3 The <code>calls</code> facet and the call counter<a class="anchor" href="#63-the-calls-facet-and-the-call-counter" aria-label="Link to this section">#</a></h3>
+<p>The <code>calls</code> facet matches on <strong>how many times an operation has been called</strong>,
+which makes time-dependent flows — most importantly <em>polling</em> — expressible
+without scripting or an explicit state machine.</p>
+<h4 id="the-counter">The counter<a class="anchor" href="#the-counter" aria-label="Link to this section">#</a></h4>
+<p>An implementation maintains a <strong>call counter</strong> per <strong>(server, operation,
+concrete request path)</strong> tuple:</p>
+<ul>
+<li>The counter is keyed by the <em>concrete</em> path of the request (after routing),
+so <code>GET /v1/file/abc</code> and <code>GET /v1/file/def</code> advance <strong>independent</strong> counters
+even though both route to <code>/v1/file/{hash}</code>. For gRPC operations the concrete
+address is <code>service</code> + <code>rpc</code>, and for GraphQL operations it is
+<code>operationType</code> + <code>operationName</code> — there are no path parameters, so in both
+cases the counter is effectively <strong>per operation</strong>.</li>
+<li>The counter lives inside its server: two servers never share counters, even
+when both declare the same operation address
+(<a href="#33-servers-required">§3.3</a>).</li>
+<li>For <strong>WebSocket</strong> operations the counter is keyed by <strong>(operation,
+connection)</strong>: every message routed on a connection advances that
+connection&#39;s counter, so a scripted exchange starts from <code>1</code> on each new
+connection, and two concurrent connections never see each other&#39;s counts
+(<a href="#44-websocket-requests">§4.4</a>).</li>
+<li>The counter is incremented by <strong>every request routed to the operation</strong>,
+after routing succeeds and <strong>before</strong> scenario selection, regardless of which
+scenario (if any) ends up matching. Unrouted requests increment nothing.</li>
+<li>The first request observes a counter value of <code>1</code>.</li>
+<li>The counter is <strong>monotonic</strong>: it never resets or wraps during a mock run.
+What constitutes a run (and when state is discarded) is an implementation
+concern — for example a CLI restart or a test-framework reset hook. Each
+conformance case starts from fresh state.</li>
+</ul>
+<h4 id="the-facet">The facet<a class="anchor" href="#the-facet" aria-label="Link to this section">#</a></h4>
+<p><code>calls</code> accepts either an <strong>integer</strong> or an <strong>object</strong> with inclusive bounds:</p>
+<pre><code class="language-yaml">when:
+  calls: 3                # exactly the 3rd call
+</code></pre>
+<pre><code class="language-yaml">when:
+  calls:
+    min: 2                # inclusive; optional
+    max: 5                # inclusive; optional
+</code></pre>
+<ul>
+<li><code>calls: n</code> is shorthand for <code>calls: { min: n, max: n }</code>.</li>
+<li>In the object form at least one of <code>min</code>/<code>max</code> <strong>MUST</strong> be present. A missing
+<code>min</code> means &quot;from the 1st call&quot;; a missing <code>max</code> means &quot;onward, forever&quot;
+(so <code>{ min: 5 }</code> matches the 5th call and every call after it).</li>
+<li>Values are positive integers (the counter starts at 1).</li>
+<li>When both are present, <code>min</code> <strong>MUST</strong> be ≤ <code>max</code>. An inverted range
+(<code>{ min: 5, max: 2 }</code>) can never match, so a document declaring one is
+<strong>invalid</strong> (<a href="#36-document-validity">§3.6</a>) — this is a semantic rule the
+JSON Schema cannot express (it compares no two values), enforced at load
+time like an unknown faker or a malformed pattern.</li>
+</ul>
+<h4 id="no-special-exhaustion-rules">No special exhaustion rules<a class="anchor" href="#no-special-exhaustion-rules" aria-label="Link to this section">#</a></h4>
+<p>The <code>calls</code> facet introduces <strong>no new fallback behaviour</strong>. When the counter
+moves past every declared value or range, the ordinary rules of
+<a href="#8-matching-algorithm">§8</a> apply:</p>
+<ul>
+<li>a <strong>default scenario</strong> (no <code>when</code>) catches all remaining calls — this is how
+&quot;repeat the final response forever&quot; is written, explicitly;</li>
+<li>with <strong>no default</strong>, the request is unmatched and yields the synthetic
+<strong>501</strong> of <a href="#101-no-scenario-matches">§10.1</a>.</li>
+</ul>
+<p>Overlapping ranges likewise need no new rule: scenarios are evaluated in order
+and the first match wins, exactly as everywhere else.</p>
+<pre><code class="language-yaml"># A polling lifecycle: 404 until &quot;uploaded&quot;, pending while &quot;analyzing&quot;,
+# then done forever.
+- method: GET
+  path: /v1/file/{hash}
+  scenarios:
+    - name: not-uploaded-yet
+      when: { calls: 1 }
+      response: { status: 404, body: { error: not_found } }
+    - name: analyzing
+      when: { calls: { min: 2, max: 3 } }
+      response: { status: 200, body: { status: pending } }
+    - name: done            # default: the 4th call and beyond
+      response: { status: 200, body: { status: done, verdict: clean } }
+</code></pre>
+<p>A document that never uses <code>calls</code> is a pure function of the request — nothing
+about this facet affects stateless documents.</p>
+<h2 id="7-the-response-object">7. The response object<a class="anchor" href="#7-the-response-object" aria-label="Link to this section">#</a></h2>
+<p>The response object&#39;s shape follows the operation&#39;s protocol: HTTP responses
+are described here, gRPC responses in <a href="#73-grpc-responses">§7.3</a>, GraphQL
+responses in <a href="#74-graphql-responses">§7.4</a>, and WebSocket responses in
+<a href="#75-websocket-responses">§7.5</a>. The native-YAML rule
+(<a href="#71-native-yaml-bodies">§7.1</a>), <code>delay</code> (<a href="#72-delay">§7.2</a>), and templating
+(<a href="#9-templating">§9</a>) apply to all of them.</p>
+<pre><code class="language-yaml">response:
+  status: 200            # REQUIRED
+  headers:               # OPTIONAL
+    Content-Type: application/json
+    Set-Cookie:          # a list emits one field line per item, in order
+      - &quot;session={{params.id}}; Path=/; HttpOnly&quot;
+      - &quot;theme=dark; Path=/&quot;
+  delay: 250             # OPTIONAL — milliseconds
+  body:                  # OPTIONAL — native YAML
+    id: &quot;{{params.id}}&quot;
+    name: Ada Lovelace
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>status</code></td>
+<td>integer</td>
+<td>yes</td>
+<td>Response status code (e.g. <code>200</code>, <code>404</code>).</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td>object</td>
+<td>no</td>
+<td>Response headers. Each value is a <strong>string, or a list of strings</strong> emitted as one field line per item, in order — for headers that cannot be comma-joined, like <code>Set-Cookie</code> (<a href="#46-multi-valued-fields">§4.6</a>). Values (and each list item) may contain <a href="#9-templating">templating placeholders</a>.</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>integer</td>
+<td>no</td>
+<td>Non-negative delay in <strong>milliseconds</strong> to wait before responding. Default <code>0</code>.</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td>any</td>
+<td>no</td>
+<td>The response body as <strong>native YAML</strong> — an object, array, or scalar. Omit for an empty body.</td>
+</tr>
+</tbody></table>
+<h3 id="71-native-yaml-bodies">7.1 Native YAML bodies<a class="anchor" href="#71-native-yaml-bodies" aria-label="Link to this section">#</a></h3>
+<p><code>body</code> is written as ordinary YAML, never as an escaped JSON string. The value
+is the body: a mapping becomes a JSON object, a sequence becomes an array, a
+scalar becomes a scalar.</p>
+<pre><code class="language-yaml">body:
+  users:
+    - id: &quot;1&quot;
+      name: Ada
+    - id: &quot;2&quot;
+      name: Alan
+</code></pre>
+<p>String values (and header values) are scanned for
+<a href="#9-templating">templating placeholders</a> before the body is emitted. Non-string
+scalars (numbers, booleans, null) are emitted as-is.</p>
+<h3 id="72-delay">7.2 <code>delay</code><a class="anchor" href="#72-delay" aria-label="Link to this section">#</a></h3>
+<p><code>delay</code> expresses an artificial latency in milliseconds. An implementation
+<strong>SHOULD</strong> wait approximately that long before emitting the response. <code>delay</code> is
+a property of the chosen response; it is applied only when that response is
+selected. For a server-streaming gRPC response, <code>delay</code> is applied once,
+<strong>before the first message</strong>; per-message pacing is not part of v0.2. A
+WebSocket response behaves the same way: <code>delay</code> is applied once, before the
+first reply message (or before the <code>close</code>, if there are no messages).</p>
+<h3 id="73-grpc-responses">7.3 gRPC responses<a class="anchor" href="#73-grpc-responses" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml"># On a type: unary operation
+response:
+  status: OK               # REQUIRED — canonical gRPC status code name
+  metadata:                # OPTIONAL — initial metadata (headers)
+    x-trace-id: &quot;{{request.metadata.x-trace-id}}&quot;
+  trailers:                # OPTIONAL — trailing metadata (trailers)
+    x-cache: miss
+  delay: 250               # OPTIONAL — milliseconds
+  message:                 # unary response message, native YAML
+    id: &quot;{{request.message.orderId}}&quot;
+    state: SHIPPED
+</code></pre>
+<pre><code class="language-yaml"># On a type: server-streaming operation
+response:
+  status: OK
+  messages:                # ordered; emitted first to last
+    - event: CREATED
+    - event: PAID
+    - event: SHIPPED
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>status</code></td>
+<td>string</td>
+<td>yes</td>
+<td>A canonical gRPC status code name (see below).</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>string</td>
+<td>no</td>
+<td>The gRPC status message accompanying a non-OK <code>status</code>. May contain <a href="#9-templating">templating placeholders</a>.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>no</td>
+<td><strong>Initial</strong> response metadata (the call&#39;s headers), string→string, sent before the first message. Values may contain templating placeholders.</td>
+</tr>
+<tr>
+<td><code>trailers</code></td>
+<td>object</td>
+<td>no</td>
+<td><strong>Trailing</strong> response metadata (the call&#39;s trailers), string→string, sent with the final <code>status</code>. Values may contain templating placeholders.</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>integer</td>
+<td>no</td>
+<td>Non-negative delay in milliseconds. Default <code>0</code>.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>any</td>
+<td>no</td>
+<td>The response message, native YAML. <strong>Only on <code>type: unary</code> operations.</strong></td>
+</tr>
+<tr>
+<td><code>messages</code></td>
+<td>list</td>
+<td>no</td>
+<td>Ordered response messages, native YAML. <strong>Only on <code>type: server-streaming</code> operations.</strong></td>
+</tr>
+</tbody></table>
+<p><code>status</code> is one of the canonical gRPC code names: <code>OK</code>, <code>CANCELLED</code>, <code>UNKNOWN</code>,
+<code>INVALID_ARGUMENT</code>, <code>DEADLINE_EXCEEDED</code>, <code>NOT_FOUND</code>, <code>ALREADY_EXISTS</code>,
+<code>PERMISSION_DENIED</code>, <code>RESOURCE_EXHAUSTED</code>, <code>FAILED_PRECONDITION</code>, <code>ABORTED</code>,
+<code>OUT_OF_RANGE</code>, <code>UNIMPLEMENTED</code>, <code>INTERNAL</code>, <code>UNAVAILABLE</code>, <code>DATA_LOSS</code>,
+<code>UNAUTHENTICATED</code>. Names, not numbers — <code>NOT_FOUND</code>, never <code>5</code>.</p>
+<p>Shape rules:</p>
+<ul>
+<li>The response message field <strong>MUST</strong> agree with the operation&#39;s declared
+<code>type</code> (<a href="#54-grpc-operations">§5.4</a>): <code>message</code> on unary operations,
+<code>messages</code> on server-streaming operations, never both, never crossed.</li>
+<li>A <strong>unary</strong> response with a non-OK <code>status</code> <strong>MUST NOT</strong> carry a <code>message</code> —
+a gRPC unary call yields either a response message or an error status, not
+both.</li>
+<li>A <strong>server-streaming</strong> response <strong>MAY</strong> combine <code>messages</code> with a non-OK
+<code>status</code>: the messages are emitted in order and the stream then terminates
+with that status. This models a stream that fails mid-way. <code>messages</code> MAY be
+empty or absent for a stream that ends (or errors) without emitting.</li>
+<li><code>error</code> carries the status message for non-OK statuses; it has no meaning
+with <code>status: OK</code>.</li>
+<li><code>metadata</code> is <strong>initial</strong> metadata: it is emitted before the first
+response message. <code>trailers</code> is <strong>trailing</strong> metadata: it is emitted with
+the final <code>status</code>. Both are valid on any response, OK or not, unary or
+streaming — this is the distinction every real gRPC implementation
+carries, made explicit. How the two sets are framed on the wire —
+including gRPC&#39;s <em>trailers-only</em> framing for failed calls that send no
+initial metadata — is a transport concern, exactly as ports and TLS are
+for HTTP.</li>
+</ul>
+<h3 id="74-graphql-responses">7.4 GraphQL responses<a class="anchor" href="#74-graphql-responses" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">response:
+  delay: 250               # OPTIONAL — milliseconds
+  data:                    # the data payload, native YAML
+    order:
+      id: &quot;{{request.variables.orderId}}&quot;
+      state: SHIPPED
+</code></pre>
+<pre><code class="language-yaml"># An error response — and a partial response, since data and errors coexist.
+response:
+  data:
+    order: null
+  errors:
+    - message: order not found
+      path: [order]
+      extensions:
+        code: NOT_FOUND
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>data</code></td>
+<td>any</td>
+<td>no*</td>
+<td>The response&#39;s data payload as native YAML.</td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td>list</td>
+<td>no*</td>
+<td>GraphQL errors (see below), in order.</td>
+</tr>
+<tr>
+<td><code>extensions</code></td>
+<td>object</td>
+<td>no</td>
+<td>Top-level response extensions: the free-form, machine-readable map the GraphQL specification permits alongside <code>data</code>/<code>errors</code> (distinct from a per-error <code>extensions</code>).</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>integer</td>
+<td>no</td>
+<td>Non-negative delay in milliseconds. Default <code>0</code>.</td>
+</tr>
+</tbody></table>
+<p>* At least one of <code>data</code> / <code>errors</code> <strong>MUST</strong> be present — a GraphQL response
+carries data, errors, or both (a <em>partial response</em>, where <code>data</code> holds what
+resolved and <code>errors</code> explains what did not).</p>
+<p>There is no <code>status</code> field: GraphQL signals failure in-band through <code>errors</code>,
+not through a transport status. How a response maps onto the transport (for
+GraphQL-over-HTTP, typically <code>200</code> with an <code>application/json</code> body) is an
+implementation concern.</p>
+<p>Each entry in <code>errors</code> is a <strong>GraphQL error object</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>message</code></td>
+<td>string</td>
+<td>yes</td>
+<td>Human-readable error description.</td>
+</tr>
+<tr>
+<td><code>locations</code></td>
+<td>list</td>
+<td>no</td>
+<td>Source positions, each <code>{line, column}</code> (1-based integers).</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>list</td>
+<td>no</td>
+<td>Path to the response field the error concerns: field names (strings) and list indices (integers).</td>
+</tr>
+<tr>
+<td><code>extensions</code></td>
+<td>object</td>
+<td>no</td>
+<td>Free-form, machine-readable error details (e.g. a <code>code</code>).</td>
+</tr>
+</tbody></table>
+<p>These are the four members the GraphQL specification defines for an error;
+no other keys are permitted. <code>extensions</code> is intentionally unconstrained.</p>
+<h3 id="75-websocket-responses">7.5 WebSocket responses<a class="anchor" href="#75-websocket-responses" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-yaml">response:
+  delay: 100               # OPTIONAL — before the first reply message
+  messages:                # ordered reply messages; emitted first to last
+    - type: ack
+      requestId: &quot;{{request.message.requestId}}&quot;
+</code></pre>
+<pre><code class="language-yaml"># Reply, then close the connection.
+response:
+  messages:
+    - type: goodbye
+  close:
+    code: 1000
+    reason: client requested close
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>messages</code></td>
+<td>list</td>
+<td>no*</td>
+<td>Ordered reply messages, native YAML, emitted first to last. <strong>MAY</strong> be empty.</td>
+</tr>
+<tr>
+<td><code>close</code></td>
+<td>object</td>
+<td>no*</td>
+<td>Close the connection after the last message. Optional <code>code</code> (a WebSocket close code, <code>1000</code>–<code>4999</code>; default <code>1000</code>) and optional <code>reason</code> string, which may contain <a href="#9-templating">templating placeholders</a>.</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>integer</td>
+<td>no</td>
+<td>Non-negative delay in milliseconds. Default <code>0</code>.</td>
+</tr>
+</tbody></table>
+<p>* At least one of <code>messages</code> / <code>close</code> <strong>MUST</strong> be present.</p>
+<p>Shape rules:</p>
+<ul>
+<li>The reply is emitted in order: every entry of <code>messages</code>, then the <code>close</code>
+(if declared). A connection without a <code>close</code> stays open for further
+exchanges.</li>
+<li>An <strong>empty</strong> <code>messages</code> list with no <code>close</code> deliberately ignores the
+inbound message — a real need (heartbeats, fire-and-forget commands) made
+explicit rather than expressed by omission.</li>
+<li>There is no status field: WebSocket has no per-message status. An
+author-declared failure is a reply message shaped like an error, or a
+<code>close</code> with an application close code (<code>4000</code>–<code>4999</code>).</li>
+</ul>
+<h2 id="8-matching-algorithm">8. Matching algorithm<a class="anchor" href="#8-matching-algorithm" aria-label="Link to this section">#</a></h2>
+<p>Given a normalized request, an implementation resolves a response as follows.</p>
+<ol>
+<li><strong>Route.</strong> Select the <strong>target server</strong>: the one whose <code>name</code> equals the
+request&#39;s <code>server</code> field (<a href="#33-servers-required">§3.3</a>) or, when the
+field is absent, the document&#39;s <strong>sole</strong> server of the request&#39;s protocol
+(<a href="#4-the-request-model">§4</a>). If the named server does not exist, its
+<code>type</code> differs from the request&#39;s protocol, or the field is absent while
+the document declares zero or more than one server of that protocol, the
+request is <strong>unrouted</strong> (<a href="#102-no-operation-matches">§10.2</a>). Then select the first
+operation, in that server&#39;s <code>operations</code> list, that matches the request&#39;s
+address — for HTTP, <code>method</code> (case-insensitive) plus the <code>path</code> template
+(capturing <code>params</code>, <a href="#53-route-resolution">§5.3</a>); for gRPC, <code>service</code>
+plus <code>rpc</code> (<a href="#55-grpc-route-resolution">§5.5</a>); for GraphQL,
+<code>operationType</code> plus <code>operationName</code>
+(<a href="#57-graphql-route-resolution">§5.7</a>); for WebSocket, the <code>path</code>
+template, evaluated once at connection establishment and reused for every
+message on the connection (<a href="#59-websocket-route-resolution">§5.9</a>). If
+none matches, the request is likewise <strong>unrouted</strong> and no counter is
+incremented.</li>
+<li><strong>Count.</strong> Increment the operation&#39;s call counter for the request&#39;s concrete
+address (<a href="#63-the-calls-facet-and-the-call-counter">§6.3</a>). This happens
+before scenario selection and regardless of its outcome.</li>
+<li><strong>Select scenario.</strong> Walk the operation&#39;s <code>scenarios</code> in document order. For
+each scenario:<ul>
+<li>If it has no <code>when</code>, it matches (it is the default).</li>
+<li>If it has a <code>when</code>, it matches iff every declared facet matches per
+<a href="#61-when">§6.1</a>.
+Choose the <strong>first</strong> scenario that matches. This is <em>first-match-wins</em>.</li>
+</ul>
+</li>
+<li><strong>No match.</strong> If no scenario matches (there was no default and no <code>when</code>
+matched), the request is <strong>unmatched</strong> (<a href="#101-no-scenario-matches">§10.1</a>).</li>
+<li><strong>Render.</strong> Render the chosen scenario&#39;s <code>response</code>: substitute templating
+placeholders (<a href="#9-templating">§9</a>), then apply <code>delay</code> and emit the
+response — <code>status</code>, <code>headers</code>, and <code>body</code> for HTTP; <code>status</code>, <code>error</code>,
+<code>metadata</code>, <code>trailers</code>, and <code>message</code>/<code>messages</code> for gRPC (streamed
+messages are emitted in list order, initial metadata before the first,
+trailers with the status); <code>data</code> and <code>errors</code> for GraphQL; <code>messages</code>
+then <code>close</code> for WebSocket.</li>
+</ol>
+<p>Because evaluation stops at the first match, scenario <strong>order is significant</strong>:
+put the most specific <code>when</code> scenarios first and the default last.</p>
+<h2 id="9-templating">9. Templating<a class="anchor" href="#9-templating" aria-label="Link to this section">#</a></h2>
+<p>String values inside <code>response.body</code> and <code>response.headers</code> (HTTP —
+including each item of a list-valued header), inside
+<code>response.message</code>, <code>response.messages</code>, <code>response.metadata</code>,
+<code>response.trailers</code>, and <code>response.error</code> (gRPC),
+inside <code>response.data</code>, <code>response.errors</code>, and <code>response.extensions</code>
+(GraphQL), and inside
+<code>response.messages</code> and <code>response.close.reason</code> (WebSocket), may
+contain placeholders of the form <code>{{ expression }}</code>. Whitespace inside the braces is
+ignored, so <code>{{params.id}}</code> and <code>{{ params.id }}</code> are equivalent.</p>
+<p>A placeholder in running text is replaced by a rendered <strong>string</strong> (its
+canonical string form, <a href="#45-dotted-paths-and-string-forms">§4.5</a>). A value
+that is <strong>exactly one placeholder</strong> and nothing else, in a native-payload
+position, instead takes the resolved value&#39;s <strong>native type</strong> — a number
+stays a number, an object an object (<a href="#94-whole-value-placeholders-and-typed-output">§9.4</a>).
+The braces themselves are escapable (<a href="#95-literal-text-and-escaping">§9.5</a>).</p>
+<h3 id="91-placeholder-namespaces">9.1 Placeholder namespaces<a class="anchor" href="#91-placeholder-namespaces" aria-label="Link to this section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Resolves to</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{{params.NAME}}</code></td>
+<td>The captured path parameter <code>NAME</code>.</td>
+</tr>
+<tr>
+<td><code>{{request.body}}</code></td>
+<td>The whole request body, rendered by its canonical string form (<a href="#45-dotted-paths-and-string-forms">§4.5</a>).</td>
+</tr>
+<tr>
+<td><code>{{request.body.PATH}}</code></td>
+<td>The value at dotted <code>PATH</code> in the request body.</td>
+</tr>
+<tr>
+<td><code>{{request.headers.NAME}}</code></td>
+<td>The request header <code>NAME</code> (case-insensitive).</td>
+</tr>
+<tr>
+<td><code>{{request.query.NAME}}</code></td>
+<td>The request query parameter <code>NAME</code> when single-valued; a repeated parameter is a list and renders as the empty string (<a href="#46-multi-valued-fields">§4.6</a>).</td>
+</tr>
+<tr>
+<td><code>{{request.message}}</code></td>
+<td>The whole gRPC or WebSocket request message, rendered by its canonical string form (<a href="#45-dotted-paths-and-string-forms">§4.5</a>).</td>
+</tr>
+<tr>
+<td><code>{{request.message.PATH}}</code></td>
+<td>The value at dotted <code>PATH</code> in the gRPC or WebSocket request message.</td>
+</tr>
+<tr>
+<td><code>{{request.metadata.NAME}}</code></td>
+<td>The gRPC request metadata entry <code>NAME</code> (case-insensitive).</td>
+</tr>
+<tr>
+<td><code>{{request.variables.PATH}}</code></td>
+<td>The value at dotted <code>PATH</code> in the GraphQL request variables.</td>
+</tr>
+<tr>
+<td><code>{{faker.CATEGORY.METHOD}}</code></td>
+<td>A generated fake value (see <a href="#93-faker">§9.3</a>).</td>
+</tr>
+<tr>
+<td><code>{{ &quot;TEXT&quot; }}</code></td>
+<td>The literal string <code>TEXT</code> (single or double quotes). The escape for <code>{{</code>/<code>}}</code> and a literal-text injector — see <a href="#95-literal-text-and-escaping">§9.5</a>.</td>
+</tr>
+</tbody></table>
+<p><code>request.body.PATH</code>, <code>request.message.PATH</code>, and <code>request.variables.PATH</code> use
+dotted paths (<a href="#45-dotted-paths-and-string-forms">§4.5</a>) to reach nested
+values — member names and 0-based array indices joined by <code>.</code>, e.g.
+<code>{{request.body.user.role}}</code> or <code>{{request.body.items.0.id}}</code>. For <code>body</code>
+and <code>message</code> the path MAY be omitted entirely: bare <code>{{request.body}}</code> and
+<code>{{request.message}}</code> address the payload root. In running text these render
+by canonical string form (a scalar renders its form; an object, array,
+<code>null</code>, or absent payload renders the empty string, per
+<a href="#92-unresolved-placeholders">§9.2</a>); as a whole value in a native-payload
+position they inject the payload itself, object or array included
+(<a href="#94-whole-value-placeholders-and-typed-output">§9.4</a>).
+(<code>request.variables</code> is path-only:
+GraphQL variables are always an object, so a bare form would always render
+empty.) Each
+namespace reads the request model of the protocols that carry it: <code>params</code>
+and <code>request.query</code> are HTTP and WebSocket data; <code>request.body</code> is HTTP data;
+<code>request.message</code> is gRPC and WebSocket data; <code>request.metadata</code> is gRPC
+data; <code>request.variables</code> is GraphQL data; <code>request.headers</code> is HTTP,
+GraphQL, and WebSocket data. A namespace that does not apply to the
+request&#39;s protocol simply resolves as absent (yielding the empty string per
+<a href="#92-unresolved-placeholders">§9.2</a> — no new rule).</p>
+<h3 id="92-unresolved-placeholders">9.2 Unresolved placeholders<a class="anchor" href="#92-unresolved-placeholders" aria-label="Link to this section">#</a></h3>
+<p>If a placeholder cannot be resolved — the referenced parameter, header, query
+key, or body path is absent — it is replaced with the <strong>empty string</strong>. An
+implementation <strong>MUST NOT</strong> fail rendering because of an unresolved data
+placeholder. (An <em>unknown faker</em> is different; see below.)</p>
+<p>A placeholder that resolves to a number or boolean renders in its canonical
+string form (<a href="#45-dotted-paths-and-string-forms">§4.5</a>): <code>42</code> → <code>42</code>,
+<code>1.0</code> → <code>1</code>, <code>true</code> → <code>true</code>. A placeholder that resolves to a value with
+<strong>no</strong> string form — <code>null</code>, an object, or an array — is treated exactly like
+an unresolved placeholder and renders as the empty string. (These string
+rules govern <em>running text</em>; a whole-value placeholder is typed instead —
+<a href="#94-whole-value-placeholders-and-typed-output">§9.4</a>.)</p>
+<h3 id="93-faker">9.3 Faker<a class="anchor" href="#93-faker" aria-label="Link to this section">#</a></h3>
+<p>The <code>{{faker.CATEGORY.METHOD}}</code> namespace produces generated values, useful for
+realistic-looking mock data. v0.2 defines the following starter set, which every
+conformant implementation <strong>MUST</strong> support:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Produces</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>{{faker.person.fullName}}</code></td>
+<td>A person&#39;s full name, e.g. <code>Ada Lovelace</code>.</td>
+</tr>
+<tr>
+<td><code>{{faker.internet.email}}</code></td>
+<td>An email address, e.g. <code>ada.lovelace@example.com</code>.</td>
+</tr>
+<tr>
+<td><code>{{faker.string.uuid}}</code></td>
+<td>A UUID, e.g. <code>3f2504e0-4f89-11d3-9a0c-0305e82c3301</code>.</td>
+</tr>
+<tr>
+<td><code>{{faker.number.int}}</code></td>
+<td>An integer rendered as a string.</td>
+</tr>
+<tr>
+<td><code>{{faker.date.recent}}</code></td>
+<td>A recent timestamp, ISO 8601.</td>
+</tr>
+</tbody></table>
+<p>An implementation <strong>MAY</strong> support additional faker categories and methods beyond
+this set. If a faker placeholder names a category/method the implementation does
+<strong>not</strong> know, it <strong>MUST</strong> treat the document as invalid — refusing it at
+<strong>load time</strong> per <a href="#36-document-validity">§3.6</a>, never silently
+emitting an empty value — unlike unresolved <em>data</em> placeholders, an unknown
+faker is a mistake in the mock, not missing request data.</p>
+<p>The faker category <code>openmock</code> is <strong>reserved</strong>: an implementation <strong>MUST
+NOT</strong> define methods in it. A <code>{{faker.openmock.*}}</code> placeholder is
+therefore unknown on every conformant engine — which is what lets the
+corpus pin unknown-faker handling portably.</p>
+<p>Faker output is inherently non-deterministic — and there is no portable
+seed: two faker libraries cannot reproduce each other&#39;s random streams, so
+this specification does not pretend a shared seed mechanism exists. Instead,
+a conformant implementation <strong>MUST</strong> offer a <strong>conformance mode</strong>; how it is
+enabled (a flag, an environment variable, a test hook) is an implementation
+concern. In conformance mode, every faker placeholder in the
+<a href="../conformance/README.md#faker-determinism">reference-value table</a> of the
+conformance corpus <strong>MUST</strong> produce exactly its reference value, on every
+evaluation. Outside conformance mode, faker output is unconstrained beyond
+fitting the placeholder&#39;s description in the table above. The corpus is
+executed in conformance mode — that, and nothing subtler, is what makes
+faker cases assertable.</p>
+<h3 id="94-whole-value-placeholders-and-typed-output">9.4 Whole-value placeholders and typed output<a class="anchor" href="#94-whole-value-placeholders-and-typed-output" aria-label="Link to this section">#</a></h3>
+<p>Templating usually produces text, but a response is native data, and a mock
+often needs to echo a number <em>as</em> a number or inject an object. The rule
+that enables this is deliberately syntax-free — the shape of the value
+carries the meaning, as everywhere in this format:</p>
+<blockquote>
+<p>When a templatable value in a <strong>native-payload position</strong> consists of
+<strong>exactly one placeholder</strong> — the entire value is <code>{{ … }}</code>, with no other
+character before or after it — the rendered result is the resolved value&#39;s
+<strong>native type</strong>, not its string form.</p>
+</blockquote>
+<ul>
+<li><strong>Native-payload positions</strong> are the ones whose output is native YAML/JSON
+data: HTTP <code>response.body</code>; gRPC <code>response.message</code> and <code>response.messages</code>;
+GraphQL <code>response.data</code> and <code>response.errors</code>; WebSocket <code>response.messages</code>.</li>
+<li>The other templatable positions are <strong>wire strings</strong> and are <strong>always</strong>
+rendered as strings, even as a whole value: HTTP <code>response.headers</code>, gRPC
+<code>response.metadata</code>/<code>trailers</code>/<code>error</code>, and WebSocket <code>close.reason</code>. A
+header is a string, so <code>X-Count: &quot;{{request.body.count}}&quot;</code> yields the
+string <code>&quot;42&quot;</code>.</li>
+</ul>
+<p>In a native-payload position, a whole-value placeholder resolves to:</p>
+<table>
+<thead>
+<tr>
+<th>Resolved value</th>
+<th>Injected as</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>that string</td>
+</tr>
+<tr>
+<td>number</td>
+<td>that JSON number (<code>42</code>, not <code>&quot;42&quot;</code>)</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>that JSON boolean</td>
+</tr>
+<tr>
+<td>object / array</td>
+<td>that object / array, injected as-is</td>
+</tr>
+<tr>
+<td><code>null</code> or <strong>absent</strong></td>
+<td>the <strong>empty string</strong> <code>&quot;&quot;</code> (the <a href="#92-unresolved-placeholders">§9.2</a> rule is unchanged; to emit a JSON <code>null</code>, write <code>null</code> literally in the body)</td>
+</tr>
+</tbody></table>
+<p>Anything else — surrounding text, or two or more placeholders in one value —
+makes the value a <strong>string</strong>, with each placeholder rendered by its canonical
+string form (<a href="#92-unresolved-placeholders">§9.2</a>). So
+<code>id: &quot;{{request.body.id}}&quot;</code> injects the native value, while
+<code>id: &quot;order-{{request.body.id}}&quot;</code> produces a string.</p>
+<pre><code class="language-yaml"># request body: { &quot;count&quot;: 3, &quot;active&quot;: true, &quot;meta&quot;: { &quot;src&quot;: &quot;web&quot; } }
+response:
+  body:
+    count: &quot;{{request.body.count}}&quot;     # → 3        (JSON number)
+    active: &quot;{{request.body.active}}&quot;   # → true     (JSON boolean)
+    meta: &quot;{{request.body.meta}}&quot;       # → {&quot;src&quot;:&quot;web&quot;}  (object injected)
+    label: &quot;id-{{request.body.count}}&quot;  # → &quot;id-3&quot;   (mixed text → string)
+</code></pre>
+<p>Typed output is a <strong>rendering</strong> concept only. Matching is unaffected: facet
+values are always strings and compare by canonical string form
+(<a href="#61-when">§6.1</a>).</p>
+<h3 id="95-literal-text-and-escaping">9.5 Literal text and escaping<a class="anchor" href="#95-literal-text-and-escaping" aria-label="Link to this section">#</a></h3>
+<p>A placeholder expression may be a <strong>quoted string literal</strong> — single or
+double quotes — which renders that literal text verbatim. This is how a
+response emits a literal <code>{{</code> or <code>}}</code> (which would otherwise open or close a
+placeholder), following the same convention as Go text/template and Helm:</p>
+<pre><code class="language-yaml">body:
+  note: &#39;{{ &quot;{{&quot; }}not-a-placeholder{{ &quot;}}&quot; }}&#39;   # → &quot;{{not-a-placeholder}}&quot;
+  greeting: &#39;{{ &quot;hello&quot; }}&#39;                        # → &quot;hello&quot;
+</code></pre>
+<p>When scanning a value for the closing <code>}}</code>, an implementation <strong>MUST</strong> honour
+quotes: a <code>}}</code> inside a quoted literal is literal text, not the terminator.
+A quoted literal is a string, so as a whole value
+(<a href="#94-whole-value-placeholders-and-typed-output">§9.4</a>) it yields a string.</p>
+<h2 id="10-error-and-fallback-responses">10. Error and fallback responses<a class="anchor" href="#10-error-and-fallback-responses" aria-label="Link to this section">#</a></h2>
+<p>When OpenMock itself must answer (because the mock does not), it returns a
+synthetic response with a small, machine-readable body.</p>
+<h3 id="101-no-scenario-matches">10.1 No scenario matches<a class="anchor" href="#101-no-scenario-matches" aria-label="Link to this section">#</a></h3>
+<p>The request was routed to an operation, but no scenario matched and the
+operation declared no default. For an <strong>HTTP</strong> operation the implementation
+<strong>MUST</strong> respond with status <strong>501 Not Implemented</strong> and a body identifying the
+unmatched operation:</p>
+<pre><code class="language-json">{
+  &quot;openmock&quot;: &quot;unmatched&quot;,
+  &quot;message&quot;: &quot;No scenario matched and no default scenario is defined.&quot;,
+  &quot;method&quot;: &quot;POST&quot;,
+  &quot;path&quot;: &quot;/users&quot;
+}
+</code></pre>
+<p>For a <strong>gRPC</strong> operation the implementation <strong>MUST</strong> respond with status
+<strong><code>UNIMPLEMENTED</code></strong> and the error message
+<code>No scenario matched and no default scenario is defined.</code> There is no
+response message — a gRPC error carries none — so the identification travels
+in <strong>trailing metadata</strong> (<a href="#73-grpc-responses">§7.3</a>): the marker
+<code>openmock: unmatched</code> plus the request&#39;s address in <code>openmock-service</code> and
+<code>openmock-rpc</code>.</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;UNIMPLEMENTED&quot;,
+  &quot;error&quot;: &quot;No scenario matched and no default scenario is defined.&quot;,
+  &quot;trailers&quot;: {
+    &quot;openmock&quot;: &quot;unmatched&quot;,
+    &quot;openmock-service&quot;: &quot;shop.v1.OrderService&quot;,
+    &quot;openmock-rpc&quot;: &quot;CancelOrder&quot;
+  }
+}
+</code></pre>
+<p>For a <strong>GraphQL</strong> operation the implementation <strong>MUST</strong> respond with an
+<code>errors</code>-only response (no <code>data</code>) whose single error identifies OpenMock as
+the source and names the request&#39;s operation in <code>extensions</code>:</p>
+<pre><code class="language-json">{
+  &quot;errors&quot;: [
+    {
+      &quot;message&quot;: &quot;No scenario matched and no default scenario is defined.&quot;,
+      &quot;extensions&quot;: {
+        &quot;openmock&quot;: &quot;unmatched&quot;,
+        &quot;operationType&quot;: &quot;mutation&quot;,
+        &quot;operationName&quot;: &quot;CancelOrder&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>For a <strong>WebSocket</strong> operation the implementation <strong>MUST</strong> reply on the
+connection with a single synthetic message identifying the connection&#39;s
+<code>path</code>, and keep the connection open:</p>
+<pre><code class="language-json">{
+  &quot;openmock&quot;: &quot;unmatched&quot;,
+  &quot;message&quot;: &quot;No scenario matched and no default scenario is defined.&quot;,
+  &quot;path&quot;: &quot;/ws/orders&quot;
+}
+</code></pre>
+<h3 id="102-no-operation-matches">10.2 No operation matches<a class="anchor" href="#102-no-operation-matches" aria-label="Link to this section">#</a></h3>
+<p>No operation matched the request (the request is unrouted) — routing
+selected no target server (an unknown name, or an omitted <code>server</code> field
+without a sole server of the protocol to default to), or no operation in the
+targeted server matched the request&#39;s address
+(<a href="#8-matching-algorithm">§8</a> step 1).
+For an <strong>HTTP</strong> request the implementation <strong>MUST</strong> respond with status
+<strong>404 Not Found</strong> and a body identifying the request:</p>
+<pre><code class="language-json">{
+  &quot;openmock&quot;: &quot;unrouted&quot;,
+  &quot;message&quot;: &quot;No operation matched the request.&quot;,
+  &quot;method&quot;: &quot;GET&quot;,
+  &quot;path&quot;: &quot;/unknown&quot;
+}
+</code></pre>
+<p>For a <strong>gRPC</strong> request the implementation <strong>MUST</strong> respond with status
+<strong><code>UNIMPLEMENTED</code></strong>, the error message <code>No operation matched the request.</code>,
+and the same identifying <strong>trailing metadata</strong> as above — the marker
+<code>openmock: unrouted</code> plus the request&#39;s <code>openmock-service</code> and
+<code>openmock-rpc</code>:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;UNIMPLEMENTED&quot;,
+  &quot;error&quot;: &quot;No operation matched the request.&quot;,
+  &quot;trailers&quot;: {
+    &quot;openmock&quot;: &quot;unrouted&quot;,
+    &quot;openmock-service&quot;: &quot;shop.v1.PaymentService&quot;,
+    &quot;openmock-rpc&quot;: &quot;Charge&quot;
+  }
+}
+</code></pre>
+<p>For a <strong>GraphQL</strong> request the implementation <strong>MUST</strong> respond with an
+<code>errors</code>-only response (no <code>data</code>), naming the request&#39;s operation in
+<code>extensions</code>:</p>
+<pre><code class="language-json">{
+  &quot;errors&quot;: [
+    {
+      &quot;message&quot;: &quot;No operation matched the request.&quot;,
+      &quot;extensions&quot;: {
+        &quot;openmock&quot;: &quot;unrouted&quot;,
+        &quot;operationType&quot;: &quot;mutation&quot;,
+        &quot;operationName&quot;: &quot;GetOrder&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>For a <strong>WebSocket</strong> connection whose path matches no operation, the
+implementation <strong>MUST</strong> refuse the connection at establishment rather than
+accept it (<a href="#59-websocket-route-resolution">§5.9</a>); no message-level
+exchange ever begins. Over an HTTP-upgrade transport this is the <strong>404</strong>
+synthetic above, sent instead of completing the upgrade, identifying the
+request by <code>path</code>:</p>
+<pre><code class="language-json">{
+  &quot;openmock&quot;: &quot;unrouted&quot;,
+  &quot;message&quot;: &quot;No operation matched the request.&quot;,
+  &quot;path&quot;: &quot;/ws/unknown&quot;
+}
+</code></pre>
+<p>These synthetic responses distinguish &quot;this mock has no answer for that request&quot;
+from an author-declared error response (which is just a scenario with a 4xx/5xx
+HTTP <code>status</code>, a non-OK gRPC <code>status</code>, a declared GraphQL <code>errors</code> list, or a
+WebSocket reply/<code>close</code> shaped as an error).
+The <code>extensions.openmock</code> marker (<code>unmatched</code> / <code>unrouted</code>) makes the
+distinction machine-readable where GraphQL has no out-of-band status to carry
+it.</p>
+<p>Every synthetic identifies the request that provoked it, so a captured
+response is self-describing without the request beside it: the <code>openmock</code>
+marker plus the request&#39;s address — <code>method</code> + <code>path</code> for HTTP, <code>path</code> for
+WebSocket, <code>openmock-service</code> + <code>openmock-rpc</code> (trailing metadata) for gRPC,
+<code>operationType</code> + <code>operationName</code> (<code>extensions</code>) for GraphQL.</p>
+<h2 id="11-specification-extensions">11. Specification extensions<a class="anchor" href="#11-specification-extensions" aria-label="Link to this section">#</a></h2>
+<p>Any key whose name begins with <code>x-</code> is a <strong>specification extension</strong>: a place
+for implementations to attach data or behaviour beyond this specification,
+without breaking portability.</p>
+<p>Extension keys are permitted on these objects:</p>
+<ul>
+<li>the document root,</li>
+<li>a server object,</li>
+<li>an operation object,</li>
+<li>a scenario object,</li>
+<li>a response object.</li>
+</ul>
+<p>Rules:</p>
+<ol>
+<li>An implementation that does not recognise an <code>x-</code> key <strong>MUST ignore it</strong>.
+Ignoring every <code>x-</code> key in a document MUST still yield a well-formed
+document that resolves requests per <a href="#8-matching-algorithm">§8</a>.</li>
+<li>An extension <strong>MUST NOT</strong> change the meaning of any standard field. A
+document whose standard fields only make sense when an extension is
+interpreted is not a conformant OpenMock document.</li>
+<li>An implementation <strong>MAY</strong> define behaviour for the <code>x-</code> keys it recognises
+(for example, an engine that executes a script referenced by an <code>x-</code> key).
+Such behaviour is out of scope for this specification and for the
+conformance corpus, which covers standard fields only.</li>
+<li>Extension keys <strong>SHOULD</strong> be namespaced by their vendor or project,
+e.g. <code>x-acme-latency-profile</code>, to avoid collisions. Names beginning with
+<code>x-openmock-</code> are reserved for experiments run by the OpenMock project
+itself.</li>
+</ol>
+<pre><code class="language-yaml">openmock: 0.2.0
+x-acme-team: payments          # ignored by engines that don&#39;t know it
+servers:
+  - name: payments-api
+    type: http
+    x-acme-tier: critical      # extensions are permitted on servers too
+    operations:
+      - method: GET
+        path: /health
+        x-acme-monitor: true
+        scenarios:
+          - name: healthy
+            response:
+              status: 200
+              body:
+                status: ok
+</code></pre>
+<p>An engine that recognises none of the <code>x-acme-*</code> keys serves this mock exactly
+as if they were absent.</p>
+<h3 id="111-example-grpc-engine-behaviour-non-normative">11.1 Example: gRPC engine behaviour (non-normative)<a class="anchor" href="#111-example-grpc-engine-behaviour-non-normative" aria-label="Link to this section">#</a></h3>
+<p>OpenMock&#39;s gRPC support is deliberately <strong>proto-free</strong> (<a href="#42-grpc-requests">§4.2</a>):
+a document is serveable without any <code>.proto</code> file, and when a server does
+carry its protobuf schema it does so through the standard <code>descriptorSet</code>
+field (<a href="#34-grpc-servers-descriptorset">§3.4</a>) — descriptor attachment is <strong>not</strong> extension
+territory, precisely so that the same document ports across engines.</p>
+<p>Extensions remain the place for engine behaviour <em>around</em> the schema — knobs
+this specification does not define, for example:</p>
+<pre><code class="language-yaml">servers:
+  - name: orders-grpc
+    type: grpc
+    descriptorSet: ./descriptors/shop.binpb   # standard (§3.4)
+    x-acme-reflection: false        # engine-specific: don&#39;t serve reflection
+    operations:
+      - service: shop.v1.OrderService
+        rpc: GetOrder
+        type: unary
+        scenarios:
+          - ...
+</code></pre>
+<p>Per the rules above, an engine that ignores <code>x-acme-reflection</code> MUST still
+serve the mock from the standard fields alone.</p>
+<h2 id="12-conformance">12. Conformance<a class="anchor" href="#12-conformance" aria-label="Link to this section">#</a></h2>
+<p>The <a href="https://github.com/openmock-dev/openmock/tree/main/conformance"><code>/conformance</code></a> corpus is the <strong>normative source of truth</strong>
+for behaviour. Each case is a directory with <code>input.yml</code> (the document),
+<code>request.json</code> (a normalized request), and <code>expected.json</code> (the response an
+implementation must produce) — or, for stateful behaviour, a <code>steps.json</code>
+sequence, or, for invalid documents, an <code>invalid.json</code> marker: the
+implementation must refuse to load that case&#39;s <code>input.yml</code>
+(<a href="#36-document-validity">§3.6</a>). An implementation is <strong>conformant</strong> when it
+produces the expected outcome for every case. Where this prose and the corpus
+disagree, the corpus is authoritative and the prose is in error.</p>
+<h2 id="13-glossary">13. Glossary<a class="anchor" href="#13-glossary" aria-label="Link to this section">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Document</strong></td>
+<td>One OpenMock YAML file.</td>
+</tr>
+<tr>
+<td><strong>Invalid document</strong></td>
+<td>A document violating any requirement of this specification; refused whole at load time, never partially served or lazily failed (<a href="#36-document-validity">§3.6</a>).</td>
+</tr>
+<tr>
+<td><strong>Server</strong></td>
+<td>A named group of operations of one protocol — one mock service. Declared in the top-level <code>servers</code> list; addressed by requests through its unique <code>name</code>; carries its own protocol settings (<code>descriptorSet</code>, <code>schema</code>) and call counters (<a href="#33-servers-required">§3.3</a>).</td>
+</tr>
+<tr>
+<td><strong>Operation</strong></td>
+<td>An entry in a server&#39;s <code>operations</code> list: an addressable route and its scenarios — <code>method</code> + <code>path</code> (HTTP), <code>service</code> + <code>rpc</code> (gRPC), <code>operationType</code> + <code>operationName</code> (GraphQL), or <code>path</code> (WebSocket).</td>
+</tr>
+<tr>
+<td><strong>Call type</strong></td>
+<td>A gRPC operation&#39;s declared shape: <code>unary</code> or <code>server-streaming</code>. Never inferred from responses.</td>
+</tr>
+<tr>
+<td><strong>Operation name</strong></td>
+<td>A GraphQL request&#39;s client-declared name (<code>query GetOrder { … }</code> → <code>GetOrder</code>); what GraphQL operations route on. Case-sensitive.</td>
+</tr>
+<tr>
+<td><strong>Path parameter</strong></td>
+<td>A <code>{name}</code> segment in a <code>path</code>, capturing one non-empty path segment as its percent-decoded value (<a href="#52-path-and-path-parameters">§5.2</a>).</td>
+</tr>
+<tr>
+<td><strong>Scenario</strong></td>
+<td>A named <code>when</code> + <code>response</code> pair within an operation.</td>
+</tr>
+<tr>
+<td><strong>Facet</strong></td>
+<td>One constraint category inside <code>when</code> (<code>params</code>/<code>query</code>/<code>headers</code>/<code>body</code> for HTTP, <code>metadata</code>/<code>message</code> for gRPC, <code>variables</code>/<code>headers</code> for GraphQL, <code>params</code>/<code>query</code>/<code>headers</code>/<code>message</code> for WebSocket, <code>calls</code> for all).</td>
+</tr>
+<tr>
+<td><strong>Dotted path</strong></td>
+<td>The <code>items.0.id</code> syntax addressing values inside <code>body</code>/<code>message</code>/<code>variables</code>: non-empty segments joined by <code>.</code>, where a segment names an object member or 0-based-indexes an array. Every <code>.</code> separates; failed resolution is <em>absent</em> (<a href="#45-dotted-paths-and-string-forms">§4.5</a>).</td>
+</tr>
+<tr>
+<td><strong>Matcher</strong></td>
+<td>An object facet value standing in for exact equality: <code>{exists: true/false}</code> asserts presence/absence; <code>{pattern: &quot;…&quot;}</code> matches the entire canonical string form against an RE2 pattern (<a href="#61-when">§6.1</a>).</td>
+</tr>
+<tr>
+<td><strong>Canonical string form</strong></td>
+<td>The string a request value compares and renders as: strings unchanged, booleans <code>true</code>/<code>false</code>, numbers in shortest round-trip decimal; <code>null</code>, objects, and arrays have none (<a href="#45-dotted-paths-and-string-forms">§4.5</a>).</td>
+</tr>
+<tr>
+<td><strong>Call counter</strong></td>
+<td>Per-(server, operation, concrete address) count of routed requests; matched by the <code>calls</code> facet. Per-(server, operation, connection) for WebSocket.</td>
+</tr>
+<tr>
+<td><strong>Connection</strong></td>
+<td>One established WebSocket connection: routed once by <code>path</code>, carrying fixed <code>params</code>/<code>query</code>/<code>headers</code> and its own call counters; identified by the opaque <code>connection</code> value.</td>
+</tr>
+<tr>
+<td><strong>Metadata</strong></td>
+<td>gRPC&#39;s header analog: key→value pairs on a request or response; keys match case-insensitively; repeated request keys join with <code>&quot;, &quot;</code> (<a href="#46-multi-valued-fields">§4.6</a>). On responses, <code>metadata</code> is the <strong>initial</strong> set (headers) and <code>trailers</code> the <strong>trailing</strong> set, sent with the status (<a href="#73-grpc-responses">§7.3</a>).</td>
+</tr>
+<tr>
+<td><strong>Message</strong></td>
+<td>A gRPC request or response payload, written as native YAML per the proto3 JSON mapping; or a WebSocket inbound/reply payload, written as native YAML.</td>
+</tr>
+<tr>
+<td><strong>Variables</strong></td>
+<td>A GraphQL request&#39;s variables object; matched by the <code>variables</code> facet and read by <code>{{request.variables.PATH}}</code>.</td>
+</tr>
+<tr>
+<td><strong>Partial response</strong></td>
+<td>A GraphQL response carrying both <code>data</code> and <code>errors</code>.</td>
+</tr>
+<tr>
+<td><strong>Default scenario</strong></td>
+<td>A scenario with no <code>when</code>; always matches; the fallback.</td>
+</tr>
+<tr>
+<td><strong>First-match-wins</strong></td>
+<td>Scenarios are tried in order; the first match is used.</td>
+</tr>
+<tr>
+<td><strong>Normalized request</strong></td>
+<td>The transport-agnostic request model in <a href="#4-the-request-model">§4</a>.</td>
+</tr>
+<tr>
+<td><strong>Templating placeholder</strong></td>
+<td>A <code>{{ … }}</code> expression substituted during rendering.</td>
+</tr>
+</tbody></table>
+<h2 id="14-security-considerations">14. Security considerations<a class="anchor" href="#14-security-considerations" aria-label="Link to this section">#</a></h2>
+<p>An OpenMock document is data, and resolving a request against it
+(<a href="#8-matching-algorithm">§8</a>) executes no author-supplied code: templating
+substitutes values, never runs logic, and there is no scripting, proxying,
+or fallthrough (<a href="#1-status-and-scope">§1 Non-goals</a>). Two areas nonetheless
+warrant care when an implementation serves <strong>untrusted</strong> documents.</p>
+<p><strong>File-path resolution.</strong> The only fields that name external files are the
+gRPC server&#39;s optional <code>descriptorSet</code>
+(<a href="#34-grpc-servers-descriptorset">§3.4</a>) and the GraphQL server&#39;s optional
+<code>schema</code> (<a href="#35-graphql-servers-schema">§3.5</a>), each a path <em>resolved
+relative to the document</em>. An implementation that loads these from untrusted
+documents <strong>SHOULD</strong> confine resolution to the document&#39;s own directory —
+rejecting a path that escapes it via <code>..</code> traversal or an absolute path —
+and <strong>SHOULD NOT</strong> dereference a remote URL implicitly. Because both
+attachments are optional and never change what a document means
+(<a href="#34-grpc-servers-descriptorset">§3.4</a>/<a href="#35-graphql-servers-schema">§3.5</a>), an implementation
+<strong>MAY</strong> decline to load them at all and still serve the document.</p>
+<p><strong>Denial of service.</strong> Facet <code>pattern</code> matchers are <strong>RE2</strong>
+(<a href="#61-when">§6.1</a>), which runs in guaranteed linear time — a document cannot
+smuggle in a catastrophically backtracking expression. <code>delay</code>
+(<a href="#72-delay">§7.2</a>) is author-controlled latency; an implementation serving
+untrusted documents <strong>MAY</strong> cap it. Other resource limits (document size,
+request rate, connection count) are transport concerns, exactly as ports and
+TLS are (<a href="#1-status-and-scope">§1</a>).</p>
+
+</div>
+      </article>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid footer__grid--docs">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__brand" aria-label="OpenMock home">
+            <img src="assets/img/icon.svg" alt="" width="26" height="26" />
+            <span class="brand-word">open<b>mock</b></span>
+          </a>
+          <p>An open format for defining API mocks in a single, portable file. MIT licensed, community built.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Specification</h4>
+          <a href="spec.html">Spec v0.2</a>
+          <a href="schema.html">JSON Schema</a>
+          <a href="examples.html">Examples</a>
+          <a href="serving.html">Serving guide</a>
+        </div>
+        <div class="footer__col">
+          <h4>Community</h4>
+          <a href="https://github.com/openmock-dev/openmock">GitHub</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/CONTRIBUTING.md">Contributing</a>
+          <a href="https://github.com/openmock-dev/openmock/issues">Issues</a>
+          <a href="https://github.com/openmock-dev/openmock/blob/main/LICENSE">License (MIT)</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© <span id="year">2026</span> OpenMock contributors. Released under the MIT License.</span>
+        <div class="social">
+          <a href="https://github.com/openmock-dev" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/docs.js"></script>
+</body>
+</html>

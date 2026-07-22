@@ -1,0 +1,12 @@
+{
+  "name": "openmock-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Source for openmock.dev — the OpenMock project website.",
+  "scripts": {
+    "build:docs": "node tools/build-docs.js"
+  },
+  "devDependencies": {
+    "marked": "^12.0.0"
+  }
+}

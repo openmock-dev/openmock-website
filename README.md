@@ -17,20 +17,43 @@ straight to **GitHub Pages** and is served through the **Cloudflare** domain
 
 ```
 .
-├── index.html              # the entire page (single-page landing site)
+├── index.html              # landing page (single-page)
+├── spec.html               # generated — the specification (docs layout)
+├── schema.html             # generated — the JSON Schema viewer
+├── examples.html           # generated — the examples gallery
+├── serving.html            # generated — the serving guide
+├── openmock-0.2.0.json     # generated — downloadable JSON Schema
+├── content/                # SOURCE for the generated pages
+│   ├── spec.md · serving.md · schema.json
+│   └── examples/*.yml, *.proto, *.graphql
+├── tools/build-docs.js     # generator: content/ -> the *.html doc pages
 ├── assets/
-│   ├── css/styles.css      # design system + all styles (light & dark themes)
+│   ├── css/styles.css      # design system + landing styles (light & dark)
+│   ├── css/docs.css        # docs layout (sidebar, prose, schema viewer)
 │   ├── js/main.js          # theme toggle, mobile nav, scroll reveal
-│   └── img/
-│       ├── logo.svg        # full wordmark (light backgrounds)
-│       ├── logo-dark.svg   # full wordmark (dark backgrounds)
-│       ├── icon.svg        # play-bars mark (favicon / nav)
-│       └── og.svg          # social share card
+│   ├── js/docs.js          # docs scrollspy + code highlighting
+│   └── img/                # logo.svg, logo-dark.svg, icon.svg, og.svg
 ├── CNAME                   # custom domain for GitHub Pages (openmock.dev)
 ├── .nojekyll               # serve files as-is (skip Jekyll processing)
-└── .github/workflows/
-    └── deploy.yml          # GitHub Actions → GitHub Pages
+└── .github/workflows/deploy.yml   # GitHub Actions → GitHub Pages
 ```
+
+## Documentation pages
+
+`spec.html`, `schema.html`, `examples.html`, and `serving.html` are **generated**
+from the source content in [`content/`](./content) by
+[`tools/build-docs.js`](./tools/build-docs.js). To update them, edit the source
+in `content/` (kept in sync with the [openmock](https://github.com/openmock-dev/openmock)
+repo) and regenerate:
+
+```console
+$ npm install          # installs `marked` (dev-only)
+$ npm run build:docs   # regenerates spec/schema/examples/serving .html
+```
+
+There is still **no build step for deployment** — the generated `.html` is
+committed and served as-is. The generator is only for regenerating those pages
+when the source content changes.
 
 ## Design
 
