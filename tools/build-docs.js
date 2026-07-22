@@ -432,8 +432,8 @@ function buildSchema() {
   // never terminate the <script> element.
   const embedded = JSON.stringify(schema).replace(/</g, "\\u003c");
 
-  const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">JSON Schema</span>",
-    "An interactive explorer for the OpenMock JSON Schema (draft 2020-12). Pick a model to see its properties, drill into referenced models, view its relationship graph, or read the raw source.",
+  const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">schema diagram</span>",
+    "An interactive map of the OpenMock JSON Schema (draft 2020-12). Pan and zoom the diagram, follow references between models, and open any model for its properties and raw source.",
     [
       { label: "draft 2020-12" },
       { label: "Download JSON", href: "openmock-0.2.0.json" },
@@ -441,20 +441,27 @@ function buildSchema() {
     ]);
 
   const rawContent = `${hero}
-    <div class="sv" id="schema-app">
-      <aside class="sv__list">
-        <div class="sv__search-wrap">
-          <input class="sv__search" id="sv-search" type="search" placeholder="Search models…" aria-label="Search models" autocomplete="off" />
+    <div class="svx">
+      <div class="svx__bar">
+        <input class="svx__search" id="svx-search" type="search" placeholder="Search a model, then press Enter…" aria-label="Search models" autocomplete="off" />
+        <span class="svx__hint">Drag to pan · scroll to zoom · click a model for details</span>
+      </div>
+      <div class="svx__canvas" id="svx-canvas">
+        <div class="svx__world" id="svx-world">
+          <svg class="svx__edges" id="svx-edges" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
-        <nav class="sv__models" id="sv-models" aria-label="Schema models"></nav>
-      </aside>
-      <section class="sv__detail" id="sv-detail">
-        <noscript>
-          <div class="prose" style="padding:32px 0">
-            <p>This interactive schema explorer needs JavaScript. You can still <a href="openmock-0.2.0.json">download the raw JSON Schema</a> or <a href="spec.html">read the specification</a>.</p>
-          </div>
-        </noscript>
-      </section>
+        <div class="svx__zoom">
+          <button id="svx-zoom-in" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+          <button id="svx-zoom-out" type="button" aria-label="Zoom out" title="Zoom out">−</button>
+          <button id="svx-zoom-fit" type="button" aria-label="Fit to view" title="Fit to view">⊡</button>
+        </div>
+        <aside class="svx__panel" id="svx-panel" aria-label="Model details"></aside>
+      </div>
+      <noscript>
+        <div class="prose" style="padding:24px 0">
+          <p>This interactive schema diagram needs JavaScript. You can still <a href="openmock-0.2.0.json">download the raw JSON Schema</a> or <a href="spec.html">read the specification</a>.</p>
+        </div>
+      </noscript>
     </div>
     <script type="application/json" id="schema-data">${embedded}</script>`;
 
