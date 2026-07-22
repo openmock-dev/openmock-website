@@ -100,7 +100,23 @@ function footer() {
   </footer>`;
 }
 
-function pageShell({ title, desc, active, hero, sidebar, main }) {
+function pageShell({ title, desc, active, hero, sidebar, main, rawContent, scripts }) {
+  const inner = rawContent != null ? rawContent : `${hero}
+    <div class="docs">
+      <aside class="docs__side">
+        <details class="docs__toc" open>
+          <summary>On this page</summary>
+          <p class="toc-title">On this page</p>
+          <ul class="toc-list">
+${sidebar}
+          </ul>
+        </details>
+      </aside>
+      <article class="docs__main">
+${main}
+      </article>
+    </div>`;
+  const extraScripts = (scripts || []).map((s) => `  <script src="${s}"></script>`).join("\n");
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,25 +136,13 @@ function pageShell({ title, desc, active, hero, sidebar, main }) {
 <body>
 ${nav(active, "index.html")}
   <main>
-${hero}
-    <div class="docs">
-      <aside class="docs__side">
-        <details class="docs__toc" open>
-          <summary>On this page</summary>
-          <p class="toc-title">On this page</p>
-          <ul class="toc-list">
-${sidebar}
-          </ul>
-        </details>
-      </aside>
-      <article class="docs__main">
-${main}
-      </article>
-    </div>
+${inner}
   </main>
 ${footer()}
+  <script src="assets/js/highlight.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/docs.js"></script>
+${extraScripts}
 </body>
 </html>
 `;
@@ -231,13 +235,21 @@ function buildServing() {
 /* --------------------------------------------------------------------------
    Examples page
    -------------------------------------------------------------------------- */
+const GRPC_DESCRIPTOR_CMD = `# The gRPC server's \`descriptorSet\` (spec §3.4) is the compiled
+# FileDescriptorSet the transport uses to decode/encode protobuf.
+# Generate it from the .proto with protoc:
+protoc \\
+  --descriptor_set_out=06-grpc.binpb \\
+  --include_imports \\
+  06-grpc.proto`;
+
 const EXAMPLES = [
   { file: "01-minimal.yml", extra: null },
   { file: "02-scenarios-when.yml", extra: null },
   { file: "03-templating-faker.yml", extra: null },
   { file: "04-delays-errors.yml", extra: null },
   { file: "05-polling-calls.yml", extra: null },
-  { file: "06-grpc.yml", extra: { file: "06-grpc.proto", lang: "protobuf", label: "Protobuf schema (06-grpc.proto)" } },
+  { file: "06-grpc.yml", extra: { file: "06-grpc.proto", lang: "protobuf", label: "Protobuf schema (06-grpc.proto)" }, cmd: { code: GRPC_DESCRIPTOR_CMD, lang: "bash", label: "Generate the descriptor set (06-grpc.binpb)" } },
   { file: "07-graphql.yml", extra: { file: "07-graphql.graphql", lang: "graphql", label: "GraphQL schema (07-graphql.graphql)" } },
   { file: "08-websocket.yml", extra: null },
 ];
@@ -248,18 +260,29 @@ function metaFromYaml(src) {
   return { title: title.trim(), desc: desc.trim() };
 }
 
-function codeblock(src, lang, extra) {
+function rawCodeblock(src, lang, style) {
+  return `<div class="codeblock"${style ? ` style="${style}"` : ""}>
+              <button class="codeblock__copy" type="button">Copy</button>
+              <pre><code class="language-${lang}">${escapeHtml(src)}</code></pre>
+            </div>`;
+}
+
+function codeblock(src, lang, extra, cmd) {
   let html = `        <div class="codeblock">
           <button class="codeblock__copy" type="button">Copy</button>
           <pre><code class="language-${lang}">${escapeHtml(src)}</code></pre>`;
+  if (cmd) {
+    html += `
+          <details open>
+            <summary>${escapeHtml(cmd.label)}</summary>
+            ${rawCodeblock(cmd.code, cmd.lang, "margin-top:8px")}
+          </details>`;
+  }
   if (extra) {
     html += `
           <details>
             <summary>${escapeHtml(extra.label)}</summary>
-            <div class="codeblock" style="margin-top:8px">
-              <button class="codeblock__copy" type="button">Copy</button>
-              <pre><code class="language-${extra.lang}">${escapeHtml(extra.src)}</code></pre>
-            </div>
+            ${rawCodeblock(extra.src, extra.lang, "margin-top:8px")}
           </details>`;
   }
   html += `
@@ -274,7 +297,7 @@ function buildExamples() {
     const id = "ex-" + ex.file.replace(/\.yml$/, "");
     let extra = null;
     if (ex.extra) extra = Object.assign({}, ex.extra, { src: read(path.join(CONTENT, "examples", ex.extra.file)) });
-    return { id, file: ex.file, title: meta.title || ex.file, desc: meta.desc, src, extra };
+    return { id, file: ex.file, title: meta.title || ex.file, desc: meta.desc, src, extra, cmd: ex.cmd || null };
   });
 
   const sidebar = items.map((it) => `            <li><a class="lvl-2" href="#${it.id}">${escapeHtml(it.title)}</a></li>`).join("\n");
@@ -285,7 +308,7 @@ function buildExamples() {
           <h2 id="${it.id}-h">${escapeHtml(it.title)}</h2>
           <p>${escapeHtml(it.desc)}</p>
         </div>
-${codeblock(it.src, "yaml", it.extra)}
+${codeblock(it.src, "yaml", it.extra, it.cmd)}
       </section>`).join("\n");
 
   const hero = docHero("Examples", "OpenMock <span class=\"gradient-text\">examples</span>",
@@ -404,65 +427,40 @@ const SCHEMA_GROUPS = [
 function buildSchema() {
   const schema = JSON.parse(read(path.join(CONTENT, "schema.json")));
   fs.copyFileSync(path.join(CONTENT, "schema.json"), path.join(ROOT, "openmock-0.2.0.json"));
-  const defs = schema.$defs || {};
 
-  // Root "document" section
-  const rootRows = objectRows(schema);
-  let main = `<div class="prose" style="max-width:820px">
-  <p>${escapeHtml(schema.description || "")}</p>
-  <p>This viewer documents the OpenMock JSON Schema (draft 2020-12). It validates the document envelope strictly — servers, operations, scenarios, matching, and responses — while allowing arbitrary structured bodies and messages. <a href="openmock-0.2.0.json">Download the raw schema</a>.</p>
-</div>
-
-      <section class="schema-section" id="document">
-        <div class="prose"><h2 id="document-h">The document</h2><p>The root object. <code>additionalProperties</code> is <code>false</code> — only the fields below (and <code>x-</code> extensions) are allowed.</p></div>
-        <div class="def" id="def-root">
-          <div class="def__head"><h3>OpenMock document<span class="def__type">object</span></h3></div>
-          <div class="def__body">
-${rootRows}
-          </div>
-        </div>
-      </section>
-`;
-
-  const placed = {};
-  SCHEMA_GROUPS.forEach((g) => {
-    const cards = g.defs.filter((d) => defs[d]).map((d) => { placed[d] = true; return defCard(d, defs[d]); }).join("\n");
-    if (!cards) return;
-    main += `      <section class="schema-section" id="${g.id}">
-        <div class="prose"><h2 id="${g.id}-h">${escapeHtml(g.title)}</h2></div>
-${cards}
-      </section>
-`;
-  });
-  // Any leftover defs
-  const leftover = Object.keys(defs).filter((d) => !placed[d]);
-  if (leftover.length) {
-    main += `      <section class="schema-section" id="other">
-        <div class="prose"><h2 id="other-h">Other definitions</h2></div>
-${leftover.map((d) => defCard(d, defs[d])).join("\n")}
-      </section>
-`;
-  }
-
-  // Sidebar: sections + defs
-  let sidebar = `            <li><a class="lvl-2" href="#document">The document</a></li>\n`;
-  SCHEMA_GROUPS.forEach((g) => {
-    const ds = g.defs.filter((d) => defs[d]);
-    if (!ds.length) return;
-    sidebar += `            <li><a class="lvl-2" href="#${g.id}">${escapeHtml(g.title)}</a></li>\n`;
-    sidebar += ds.map((d) => `            <li><a class="lvl-3" href="#def-${d}">${escapeHtml(d)}</a></li>`).join("\n") + "\n";
-  });
+  // Embed the schema for the client-side viewer. Escape "<" so the JSON can
+  // never terminate the <script> element.
+  const embedded = JSON.stringify(schema).replace(/</g, "\\u003c");
 
   const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">JSON Schema</span>",
-    "A browsable reference for the OpenMock JSON Schema (draft 2020-12) — every server, operation, scenario, matcher, and response shape the format defines.",
+    "An interactive explorer for the OpenMock JSON Schema (draft 2020-12). Pick a model to see its properties, drill into referenced models, view its relationship graph, or read the raw source.",
     [
       { label: "draft 2020-12" },
       { label: "Download JSON", href: "openmock-0.2.0.json" },
       { label: "Read the spec", href: "spec.html" },
     ]);
+
+  const rawContent = `${hero}
+    <div class="sv" id="schema-app">
+      <aside class="sv__list">
+        <div class="sv__search-wrap">
+          <input class="sv__search" id="sv-search" type="search" placeholder="Search models…" aria-label="Search models" autocomplete="off" />
+        </div>
+        <nav class="sv__models" id="sv-models" aria-label="Schema models"></nav>
+      </aside>
+      <section class="sv__detail" id="sv-detail">
+        <noscript>
+          <div class="prose" style="padding:32px 0">
+            <p>This interactive schema explorer needs JavaScript. You can still <a href="openmock-0.2.0.json">download the raw JSON Schema</a> or <a href="spec.html">read the specification</a>.</p>
+          </div>
+        </noscript>
+      </section>
+    </div>
+    <script type="application/json" id="schema-data">${embedded}</script>`;
+
   write("schema.html", pageShell({
-    title: "OpenMock JSON Schema", desc: "Browsable reference for the OpenMock JSON Schema (draft 2020-12): servers, operations, scenarios, matchers, and responses.",
-    active: "schema", hero, sidebar, main,
+    title: "OpenMock JSON Schema", desc: "Interactive explorer for the OpenMock JSON Schema (draft 2020-12): models, properties, relationship graph, and source.",
+    active: "schema", hero, rawContent, scripts: ["assets/js/schema-viewer.js"],
   }));
 }
 

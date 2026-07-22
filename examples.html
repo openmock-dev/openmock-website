@@ -518,6 +518,19 @@ servers:
                 state: READY
                 url: https://example.com/report.pdf
 </code></pre>
+          <details open>
+            <summary>Generate the descriptor set (06-grpc.binpb)</summary>
+            <div class="codeblock" style="margin-top:8px">
+              <button class="codeblock__copy" type="button">Copy</button>
+              <pre><code class="language-bash"># The gRPC server's `descriptorSet` (spec §3.4) is the compiled
+# FileDescriptorSet the transport uses to decode/encode protobuf.
+# Generate it from the .proto with protoc:
+protoc \
+  --descriptor_set_out=06-grpc.binpb \
+  --include_imports \
+  06-grpc.proto</code></pre>
+            </div>
+          </details>
           <details>
             <summary>Protobuf schema (06-grpc.proto)</summary>
             <div class="codeblock" style="margin-top:8px">
@@ -899,7 +912,9 @@ servers:
       </div>
     </div>
   </footer>
+  <script src="assets/js/highlight.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="assets/js/docs.js"></script>
+
 </body>
 </html>
