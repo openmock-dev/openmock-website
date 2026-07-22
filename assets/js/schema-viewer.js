@@ -316,8 +316,10 @@
       n.expanded = !n.expanded;
       if (n.expanded) ensureChildren(n.key);
       render();
-      // Re-frame on the toggled node (and its children when expanding).
-      focusKeys(n.expanded ? [n.key].concat(n.childKeys) : [n.key]);
+      // Let the new nodes register, then glide to frame the toggled node
+      // (and its children when expanding).
+      var keys = n.expanded ? [n.key].concat(n.childKeys) : [n.key];
+      setTimeout(function () { focusKeys(keys); }, 220);
     });
 
     /* pan / zoom */
