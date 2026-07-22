@@ -1,51 +1,12 @@
-/* OpenMock docs — scrollspy, lightweight code highlighting, copy buttons.
-   Runs after main.js (theme, mobile nav). Dependency-free. */
+/* OpenMock docs — scrollspy, code highlighting, copy buttons.
+   Runs after highlight.js (window.OM) and main.js. Dependency-free. */
 (function () {
   "use strict";
 
-  /* ---- Lightweight YAML / JSON highlighter ------------------------------- */
-  function esc(s) { return s; } // content is already HTML-escaped by the server
-
-  function highlightYAML(raw) {
-    return raw.split("\n").map(function (line) {
-      // full-line comment
-      var m = line.match(/^(\s*)(#.*)$/);
-      if (m) return m[1] + '<span class="c">' + m[2] + "</span>";
-      // list item dash
-      var out = line.replace(/^(\s*)(-)(\s)/, '$1<span class="p">-</span>$3');
-      // key:
-      out = out.replace(/^(\s*(?:<span class="p">-<\/span>\s)?)([A-Za-z0-9_.$-]+)(:)(\s|$)/,
-        function (_, pre, key, colon, tail) { return pre + '<span class="k">' + key + "</span><span class=\"p\">:</span>" + tail; });
-      // trailing inline comment
-      out = out.replace(/(\s)(#.*)$/, '$1<span class="c">$2</span>');
-      // quoted strings — content is already HTML-escaped, so real quotes are
-      // entities; matching only entities avoids corrupting inserted markup.
-      out = out.replace(/(&quot;[^\n]*?&quot;|&#39;[^\n]*?&#39;)/g, '<span class="s">$1</span>');
-      // booleans / null
-      out = out.replace(/(:\s|\[|,\s*|- )(true|false|null)\b/g, '$1<span class="b">$2</span>');
-      // bare numbers after a colon
-      out = out.replace(/(<span class="p">:<\/span>\s)(-?\d+(?:\.\d+)*)/g, '$1<span class="n">$2</span>');
-      return out;
-    }).join("\n");
+  /* ---- Highlight every code block via the shared highlighter ------------- */
+  if (window.OM && window.OM.highlightEl) {
+    document.querySelectorAll("pre code").forEach(function (code) { window.OM.highlightEl(code); });
   }
-
-  function highlightJSON(raw) {
-    var out = raw.replace(/(&quot;(?:[^&]|&(?!quot;))*?&quot;)(\s*:)?/g, function (_, str, colon) {
-      if (colon) return '<span class="k">' + str + "</span>" + colon;
-      return '<span class="s">' + str + "</span>";
-    });
-    out = out.replace(/\b(true|false|null)\b/g, '<span class="b">$1</span>');
-    out = out.replace(/(:\s*)(-?\d+(?:\.\d+)?)/g, '$1<span class="n">$2</span>');
-    return out;
-  }
-
-  document.querySelectorAll("pre code").forEach(function (code) {
-    var cls = code.className || "";
-    var lang = (cls.match(/language-(\w+)/) || [])[1] || code.getAttribute("data-lang") || "";
-    var raw = code.innerHTML; // already entity-escaped
-    if (lang === "yaml" || lang === "yml") code.innerHTML = highlightYAML(raw);
-    else if (lang === "json") code.innerHTML = highlightJSON(raw);
-  });
 
   /* ---- Copy buttons ------------------------------------------------------ */
   document.querySelectorAll(".codeblock__copy").forEach(function (btn) {
@@ -59,9 +20,10 @@
     });
   });
 
-  /* ---- Scrollspy: highlight the TOC link for the section in view --------- */
+  /* ---- Scrollspy --------------------------------------------------------- */
   var links = Array.prototype.slice.call(document.querySelectorAll(".toc-list a"));
   if (!links.length) return;
+
   var byId = {};
   var targets = [];
   links.forEach(function (a) {
@@ -70,16 +32,30 @@
     if (el) { byId[id] = a; targets.push(el); }
   });
 
+  function setActive(a) {
+    links.forEach(function (l) { l.classList.remove("active"); });
+    if (a) a.classList.add("active");
+  }
+
+  // Clicking a link: activate it immediately and pause the spy until the
+  // smooth-scroll settles, so the click never leaves the previous item active.
+  var pausedUntil = 0;
+  links.forEach(function (a) {
+    a.addEventListener("click", function () {
+      setActive(a);
+      pausedUntil = Date.now() + 900;
+    });
+  });
+
   function onScroll() {
-    var top = window.scrollY + 120;
+    if (Date.now() < pausedUntil) return;
+    var line = 130; // px from the top of the viewport (clears the header)
     var current = null;
     for (var i = 0; i < targets.length; i++) {
-      if (targets[i].offsetTop <= top) current = targets[i]; else break;
+      if (targets[i].getBoundingClientRect().top - line <= 1) current = targets[i]; else break;
     }
-    links.forEach(function (a) { a.classList.remove("active"); });
-    if (current && byId[current.id]) {
-      byId[current.id].classList.add("active");
-    }
+    if (!current) current = targets[0];
+    if (current && byId[current.id]) setActive(byId[current.id]);
   }
 
   var ticking = false;
