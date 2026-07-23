@@ -4,7 +4,7 @@ The site is a static page hosted on **GitHub Pages** and served through
 **Cloudflare** for the apex domain `openmock.dev` (and `www`). This guide covers
 both halves: enabling Pages, and pointing Cloudflare DNS at it.
 
-There is **no build step** — the repository root *is* the site. A GitHub Actions
+There is **no build step**. The repository root *is* the site. A GitHub Actions
 workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml))
 uploads the root and deploys it whenever `main` changes.
 
@@ -17,8 +17,8 @@ uploads the root and deploys it whenever `main` changes.
    **Settings → Pages**.
 3. Under **Build and deployment → Source**, choose **GitHub Actions**.
    (The included workflow uses `actions/deploy-pages`, so you do *not* select a
-   branch here — Actions is the source.)
-4. Push to `main` — or run the **Deploy to GitHub Pages** workflow manually from
+   branch here. Actions is the source.)
+4. Push to `main`, or run the **Deploy to GitHub Pages** workflow manually from
    the **Actions** tab. The first successful run publishes the site to the
    default `*.github.io` URL.
 
@@ -48,7 +48,7 @@ Records**, create the following. GitHub Pages' apex IPs are stable and
 documented by GitHub; add all four A records (and the IPv6 AAAA records if you
 want IPv6).
 
-**Apex (`openmock.dev`) — A records → GitHub Pages:**
+**Apex (`openmock.dev`), A records → GitHub Pages:**
 
 | Type | Name | Value            |
 | ---- | ---- | ---------------- |
@@ -74,22 +74,22 @@ want IPv6).
 
 > `openmock-dev.github.io` is the org's Pages host. The `CNAME` file's
 > `openmock.dev` value tells GitHub which name is canonical; the `www` CNAME
-> just lets GitHub redirect it to the apex.
+> lets GitHub redirect it to the apex.
 
 Confirm these are the current GitHub Pages IPs in GitHub's docs
-("Managing a custom domain for your GitHub Pages site") before relying on them —
+("Managing a custom domain for your GitHub Pages site") before relying on them.
 GitHub occasionally updates the set.
 
 ### 2b. Proxy status (orange vs. grey cloud)
 
 You have two valid options:
 
-- **Grey cloud (DNS only) — recommended to start.** Cloudflare only resolves
+- **Grey cloud (DNS only), recommended to start.** Cloudflare only resolves
   DNS; GitHub Pages terminates TLS with its own Let's Encrypt certificate. This
   is the simplest path and lets GitHub's **Enforce HTTPS** work immediately.
 - **Orange cloud (proxied).** Cloudflare's CDN/proxy sits in front. If you
   enable this, set **SSL/TLS → Overview → encryption mode** to **Full**
-  (not *Flexible* — Flexible causes redirect loops with Pages). Keep the records
+  (not *Flexible*: Flexible causes redirect loops with Pages). Keep the records
   grey-clouded until GitHub has issued its certificate (custom-domain HTTPS
   shows "certificate active" in **Settings → Pages**), then switch to orange if
   you want the CDN.
@@ -139,6 +139,6 @@ In the repo, **Settings → Pages** should show:
 
 ## References
 
-- GitHub Docs — *Managing a custom domain for your GitHub Pages site*
-- GitHub Docs — *About GitHub Pages and Cloudflare*
-- Cloudflare Docs — *DNS records* and *SSL/TLS encryption modes*
+- GitHub Docs: *Managing a custom domain for your GitHub Pages site*
+- GitHub Docs: *About GitHub Pages and Cloudflare*
+- Cloudflare Docs: *DNS records* and *SSL/TLS encryption modes*

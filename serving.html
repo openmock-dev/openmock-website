@@ -76,7 +76,7 @@
 <p><strong>Status: non-normative.</strong> Document conformance is defined by the
 <a href="spec.html">specification</a> and the <a href="https://github.com/openmock-dev/openmock/tree/main/conformance">conformance corpus</a>
 alone; nothing here affects how a document resolves a request. This page
-describes how implementations <em>around</em> the resolution engine should behave —
+describes how implementations <em>around</em> the resolution engine should behave,
 so that the same document lands on the same ports, with the same defaults,
 whether it is served by a standalone CLI or inside an application that
 embeds OpenMock.</p>
@@ -87,18 +87,18 @@ states.</p>
 <p>Three roles recur below; most disagreements about &quot;what must an
 implementation do&quot; dissolve once they are kept apart:</p>
 <ul>
-<li><strong>Resolution engine</strong> — the <code>parse → match → render</code> core that resolves
+<li><strong>Resolution engine</strong>: the <code>parse → match → render</code> core that resolves
 normalized requests against a document. This is the only role the
 specification and corpus constrain. It binds no sockets and has no ports.</li>
-<li><strong>Embedding host</strong> — an application that consumes the engine as a library
+<li><strong>Embedding host</strong>: an application that consumes the engine as a library
 and owns the transport itself: an API client offering &quot;mock servers&quot; in
 its UI (a Postman-like tool), a test framework spinning mocks up
 in-process, an IDE plugin. The host binds ports, surfaces discovery
 through <strong>its own UI or API</strong>, and is <em>not</em> expected to expose the admin
 API of §3.</li>
-<li><strong>Standalone server</strong> — a runtime whose whole job is serving documents
+<li><strong>Standalone server</strong>: a runtime whose whole job is serving documents
 (<code>openmock serve</code>). It claims the <strong>serving profile</strong>: the port
-resolution of §2 <em>and</em> the admin API of §3, which is simply the CLI&#39;s
+resolution of §2 <em>and</em> the admin API of §3, which is the CLI&#39;s
 projection of the engine capabilities below over HTTP.</li>
 </ul>
 <h3 id="who-is-bound-by-what">Who is bound by what<a class="anchor" href="#who-is-bound-by-what" aria-label="Link to this section">#</a></h3>
@@ -119,19 +119,19 @@ projection of the engine capabilities below over HTTP.</li>
 </tr>
 <tr>
 <td>Bind ports; resolve them by §2&#39;s order; fail loudly, never silently reassign</td>
-<td>— (binds no sockets)</td>
+<td>n/a (binds no sockets)</td>
 <td><strong>MUST</strong></td>
 <td><strong>MUST</strong></td>
 </tr>
 <tr>
 <td>Surface the resolved name → port topology (discovery)</td>
-<td>—</td>
+<td>n/a</td>
 <td><strong>MUST</strong>, via its own UI or API</td>
 <td><strong>MUST</strong>, via the admin API (§3)</td>
 </tr>
 <tr>
 <td>Expose the HTTP admin API on 4400 (§3)</td>
-<td>—</td>
+<td>n/a</td>
 <td>not expected</td>
 <td><strong>MUST</strong></td>
 </tr>
@@ -142,7 +142,7 @@ projection of the engine capabilities below over HTTP.</li>
 <td>projects it via <code>POST /reset</code> (§3)</td>
 </tr>
 </tbody></table>
-<p>In words: the <strong>engine</strong> is bound only by the specification — it has no
+<p>In words: the <strong>engine</strong> is bound only by the specification. It has no
 ports, and nothing in this document adds obligations to it. §1 and §2 are
 the <strong>shared</strong> responsibilities, binding <em>both</em> serving roles (host and
 standalone), because they are what make one document behave identically
@@ -150,7 +150,7 @@ everywhere it is served. §3 is <strong>standalone-only</strong>: the admin API 
 more than the standalone server&#39;s HTTP projection of the shared discovery
 and reset capabilities, which an embedding host projects through its own UI
 or API instead. Wherever this document says <strong>&quot;the serving profile&quot;</strong>, it
-means the standalone server&#39;s obligations — §2 <em>plus</em> §3.</p>
+means the standalone server&#39;s obligations: §2 <em>plus</em> §3.</p>
 <h3 id="engine-capabilities">Engine capabilities<a class="anchor" href="#engine-capabilities" aria-label="Link to this section">#</a></h3>
 <p>Whatever the packaging, a serving-capable engine exposes the same four
 capabilities; the profile and an embedding host differ only in how they are
@@ -158,27 +158,27 @@ projected (HTTP endpoints vs. library calls and UI):</p>
 <ol>
 <li><strong>Load &amp; validate</strong> a document (refusing invalid ones whole, per
 <a href="../spec/v0.2.md#36-document-validity">spec §3.6</a>);</li>
-<li><strong>Enumerate topology</strong> — the declared servers with their <code>name</code>, <code>type</code>,
+<li><strong>Enumerate topology</strong>: the declared servers with their <code>name</code>, <code>type</code>,
 and <code>port</code> hint;</li>
 <li><strong>Resolve</strong> a normalized request to a response
 (<a href="../spec/v0.2.md#8-matching-algorithm">spec §8</a>);</li>
-<li><strong>Reset state</strong> — clear call counters to start a fresh &quot;run&quot;
+<li><strong>Reset state</strong>: clear call counters to start a fresh &quot;run&quot;
 (<a href="../spec/v0.2.md#63-the-calls-facet-and-the-call-counter">spec §6.3</a>).</li>
 </ol>
 <p>A library API should expose all four directly (their shape in each language
 is the implementation&#39;s business); the admin API of §3 is these same
-capabilities over HTTP. Keeping the two aligned is what makes a document —
-and the tooling around it — portable between a CLI and a host.</p>
+capabilities over HTTP. Keeping the two aligned is what makes a document
+(and the tooling around it) portable between a CLI and a host.</p>
 <h2 id="1-serving-semantics-all-hosts">1. Serving semantics (all hosts)<a class="anchor" href="#1-serving-semantics-all-hosts" aria-label="Link to this section">#</a></h2>
-<p><em>Applies to: <strong>embedding hosts and standalone servers</strong> — any process that
-binds ports for a document. Shared responsibility.</em></p>
+<p><em>Applies to: <strong>embedding hosts and standalone servers</strong> (any process that
+binds ports for a document). Shared responsibility.</em></p>
 <p>The rules of §2 bind <strong>any</strong> implementation that serves a document over a
-network — standalone or embedding — because they are what make one document
+network (standalone or embedding) because they are what make one document
 behave identically everywhere:</p>
 <ul>
 <li><strong>Configuration beats hints beats defaults</strong> (§2&#39;s order). For a
 standalone server, &quot;configuration&quot; is flags and environment; for an
-embedding host, it is the host&#39;s own settings — the port field in a
+embedding host, it is the host&#39;s own settings. The port field in a
 Postman-like UI plays exactly the role of the CLI&#39;s <code>--port</code> flag.</li>
 <li><strong>Hints are prefills.</strong> A host <strong>SHOULD</strong> surface the document&#39;s <code>port</code>
 hints as the <em>default</em> values in its UI or API, and <strong>MUST NOT</strong> treat
@@ -186,34 +186,34 @@ them as binding when its user configures otherwise.</li>
 <li><strong>The sole-server default and ephemeral fallback apply unchanged.</strong> A
 host that opens a document with one HTTP server should offer 3000, not a
 random port; a host that must avoid collisions should bind port <code>0</code> and
-report what the OS assigned — through its own UI, which is its
+report what the OS assigned, through its own UI, which is its
 <code>GET /servers</code>.</li>
 <li><strong>No silent reassignment</strong> (§2). If a user-configured or hinted port
 cannot be bound, surface the failure; never quietly serve elsewhere.</li>
 </ul>
 <p>What an embedding host is exempt from is exactly one thing: the <strong>HTTP
-admin API</strong> (§3). Its discovery and reset surfaces are its own UI and API —
-the capabilities must exist, their projection is free.</p>
+admin API</strong> (§3). Its discovery and reset surfaces are its own UI and API.
+The capabilities must exist, their projection is free.</p>
 <h2 id="2-port-resolution">2. Port resolution<a class="anchor" href="#2-port-resolution" aria-label="Link to this section">#</a></h2>
-<p><em>Applies to: <strong>embedding hosts and standalone servers</strong> — shared
-responsibility, per §1.</em></p>
+<p><em>Applies to: <strong>embedding hosts and standalone servers</strong> (shared
+responsibility, per §1).</em></p>
 <p>Every network-served server needs exactly one resolved port, from four
 sources, first match wins:</p>
 <ol>
-<li><strong>Explicit configuration</strong> — for a standalone server, a CLI flag or
+<li><strong>Explicit configuration</strong>: for a standalone server, a CLI flag or
 environment variable (<code>--port &lt;name&gt;=&lt;n&gt;</code>, repeatable; or
 <code>OPENMOCK_PORTS=&quot;users-api=3000,billing-api=3001&quot;</code>); for an embedding
 host, its own settings (§1). Deployment configuration belongs to the
 deployment layer, so explicit configuration always beats the document.</li>
-<li><strong>The document&#39;s <code>port</code> hint</strong> (<a href="../spec/v0.2.md#33-servers-required">spec §3.3</a>) —
+<li><strong>The document&#39;s <code>port</code> hint</strong> (<a href="../spec/v0.2.md#33-servers-required">spec §3.3</a>):
 the author&#39;s declared default.</li>
-<li><strong>The sole-server default</strong> — when the document declares <strong>exactly one</strong>
+<li><strong>The sole-server default</strong>: when the document declares <strong>exactly one</strong>
 server of a type, that server gets the stable default port for the type.
 This profile recommends: <code>http</code> 3000, <code>graphql</code> 3001, <code>websocket</code> 3002,
 <code>grpc</code> 3003 (and 4400 for the admin API, §3). Stable defaults keep the
 everyday single-server loop (<code>openmock serve mocks.yml</code>, point a client
 at <code>:3000</code>) free of configuration and of surprises across restarts.</li>
-<li><strong>Ephemeral fallback</strong> — any server still unresolved binds an
+<li><strong>Ephemeral fallback</strong>: any server still unresolved binds an
 <strong>OS-assigned ephemeral port</strong> (bind port <code>0</code>), reported through the
 discovery surface (a standalone server&#39;s admin API, §3; a host&#39;s own UI
 or API). Ephemeral beats a made-up random number (the OS guarantees no
@@ -224,22 +224,22 @@ declaration order, no clash with a neighbour&#39;s 3001).</li>
 <ul>
 <li>A serving implementation (host or standalone) <strong>MUST NOT</strong> silently
 reassign a port resolved from sources 1–2. If a configured or hinted port
-cannot be bound, it <strong>MUST</strong> fail loudly for that source — never fall
-through to another port — so tests point at what they think they point at.</li>
+cannot be bound, it <strong>MUST</strong> fail loudly for that source (never fall
+through to another port), so tests point at what they think they point at.</li>
 <li>An automatically assigned port (rung 4, or any port the implementation
-picks itself) <strong>MUST NOT</strong> be one of the profile&#39;s default ports — 3000,
-3001, 3002, 3003, or 4400 — <strong>whether or not</strong> the current document uses
+picks itself) <strong>MUST NOT</strong> be one of the profile&#39;s default ports (3000,
+3001, 3002, 3003, or 4400) <strong>whether or not</strong> the current document uses
 that default. Example: a document declares two <code>http</code> servers and the
 first resolves to 3000; giving the second 3001 is forbidden, because 3001
-is the <code>graphql</code> default — a graphql server added to the document later,
+is the <code>graphql</code> default. A graphql server added to the document later,
 or a neighbouring document on the same machine, expects to find it free.
 The second server binds an OS-ephemeral port instead. Binding port <code>0</code>
 satisfies this rule by construction (every mainstream OS&#39;s ephemeral
-range lies far above these values) — one more reason the fallback is
+range lies far above these values), one more reason the fallback is
 OS-assigned rather than a self-picked &quot;random&quot; number.</li>
 <li>Two servers resolving to the same port is a startup <strong>error</strong>.</li>
 <li>A serving implementation <strong>SHOULD</strong> surface the full name → port mapping
-at startup — a standalone server by logging it; the admin API is the
+at startup: a standalone server by logging it; the admin API is the
 machine-readable version of the same truth.</li>
 </ul>
 <h2 id="3-the-admin-api">3. The admin API<a class="anchor" href="#3-the-admin-api" aria-label="Link to this section">#</a></h2>
@@ -292,7 +292,7 @@ in document order:</p>
 <tr>
 <td><code>port</code></td>
 <td>integer or null</td>
-<td>The <strong>resolved</strong> port — the runtime truth, including overrides and ephemeral assignments.</td>
+<td>The <strong>resolved</strong> port: the runtime truth, including overrides and ephemeral assignments.</td>
 </tr>
 <tr>
 <td><code>url</code></td>
@@ -309,40 +309,40 @@ ignore fields they do not know.</p>
 serving. This is the container healthcheck target (§5).</p>
 <h3 id="reserved-post-reset">Reserved: <code>POST /reset</code><a class="anchor" href="#reserved-post-reset" aria-label="Link to this section">#</a></h3>
 <p>Resets all call counters (<a href="../spec/v0.2.md#63-the-calls-facet-and-the-call-counter">spec §6.3</a>
-leaves the &quot;run&quot; boundary to the implementation — this is the test-framework
+leaves the &quot;run&quot; boundary to the implementation: this is the test-framework
 reset hook it anticipates). Standalone servers <strong>SHOULD</strong> implement it; its
 detailed semantics will be pinned when reference tooling lands.</p>
 <h2 id="4-stdio-transports-future-mcp">4. stdio transports (future: MCP)<a class="anchor" href="#4-stdio-transports-future-mcp" aria-label="Link to this section">#</a></h2>
-<p><em>Applies to: <strong>standalone servers</strong> — the launched subprocess is the
-standalone binary.</em></p>
-<p>Some anticipated server types — an MCP server being the motivating example —
+<p><em>Applies to: <strong>standalone servers</strong> (the launched subprocess is the
+standalone binary).</em></p>
+<p>Some anticipated server types (an MCP server being the motivating example)
 are served over <strong>stdio</strong>, where the client launches the standalone server
 as a subprocess. The profile&#39;s rule, stated now so the port model and the
 future type stay coherent:</p>
 <blockquote>
 <p><strong>One stdio session incarnates exactly one server.</strong> The launch selects it:
 <code>openmock mcp mocks.yml --server orders-mcp</code>, or, when the document
-declares exactly one server of the launched type, no flag at all — the
+declares exactly one server of the launched type, no flag at all: the
 sole-server default again, transposed. Two stdio servers in one document
 mean two subprocess launches against the same file.</p>
 </blockquote>
 <p>The stdio process binds no ports and serves no admin API; attribution is
 trivial (everything on the pipe belongs to the launched server), and the
-<code>port</code> field is meaningless for it — which is why <code>port</code> is optional in the
+<code>port</code> field is meaningless for it, which is why <code>port</code> is optional in the
 schema. A concurrently network-serving process lists stdio-only servers in
 <code>GET /servers</code> with <code>&quot;transport&quot;: null</code>.</p>
 <h2 id="5-containers">5. Containers<a class="anchor" href="#5-containers" aria-label="Link to this section">#</a></h2>
-<p><em>Applies to: <strong>standalone servers</strong> — the role that runs in a container.</em></p>
+<p><em>Applies to: <strong>standalone servers</strong> (the role that runs in a container).</em></p>
 <p>Docker already implements &quot;random ports + discovery&quot; at its own boundary
 (<code>docker run -P</code>, <code>docker port</code>, testcontainers&#39; <code>getMappedPort</code>).
-<strong>Randomness belongs at exactly one layer</strong> — so inside a container, be
+<strong>Randomness belongs at exactly one layer</strong>, so inside a container, be
 deterministic:</p>
 <ul>
 <li><p><strong>Single-server documents need nothing</strong>: the sole-server default (rung 3)
 is already deterministic. <code>EXPOSE 3000</code>, publish it, done.</p>
 </li>
 <li><p><strong>Multi-server documents</strong>: give every server you want reachable a
-deterministic container port — <code>port</code> hints in the file, or flags/env in
+deterministic container port: <code>port</code> hints in the file, or flags/env in
 the compose file, which is the <em>right</em> home for deployment configuration:</p>
 <pre><code class="language-yaml">services:
   mocks:
@@ -366,19 +366,19 @@ a containerized server unreachable. A standalone server <strong>MUST</strong> pr
 <strong>SHOULD</strong> default it to <code>0.0.0.0</code>.</p>
 </li>
 <li><p><strong>Two-step discovery</strong>: <code>GET /servers</code> answers &quot;which container port is
-<code>billing-api</code>?&quot; — the half Docker cannot tell you; <code>docker port</code> /
+<code>billing-api</code>?&quot; (the half Docker cannot tell you); <code>docker port</code> /
 <code>getMappedPort</code> answers &quot;which host port is container port 3001?&quot;. A
 testcontainers-style harness composes the two.</p>
 </li>
 </ul>
 <h2 id="6-security">6. Security<a class="anchor" href="#6-security" aria-label="Link to this section">#</a></h2>
-<p><em>Applies to: <strong>all roles</strong> — anything that binds a socket or handles a
-document.</em></p>
+<p><em>Applies to: <strong>all roles</strong> (anything that binds a socket or handles a
+document).</em></p>
 <ul>
 <li>Loopback binding is the default for everything (§2, §3); exposing beyond
 it is an explicit choice.</li>
 <li>The admin API discloses topology and will mutate state (<code>/reset</code>); treat
-it like any other admin surface — never expose it on the same interface
+it like any other admin surface: never expose it on the same interface
 as the mocks in a shared environment without access control in front.</li>
 <li>The document-level security considerations of
 <a href="../spec/v0.2.md#14-security-considerations">spec §14</a> apply unchanged;

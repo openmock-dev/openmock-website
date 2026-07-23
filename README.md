@@ -2,14 +2,14 @@
   <img src="assets/img/logo.svg" alt="OpenMock" width="420" />
 </p>
 
-<p align="center"><strong>Source for <a href="https://openmock.dev">openmock.dev</a> — the OpenMock project website.</strong></p>
+<p align="center"><strong>Source for <a href="https://openmock.dev">openmock.dev</a>, the OpenMock project website.</strong></p>
 
 ---
 
 This repository holds the marketing/landing site for
 [OpenMock](https://github.com/openmock-dev/openmock), an open format and data
 model for defining API mocks in a single, portable file. The site is a **static,
-dependency-free** HTML/CSS/JS page — no framework, no build step — so it deploys
+dependency-free** HTML/CSS/JS page (no framework, no build step) so it deploys
 straight to **GitHub Pages** and is served through the **Cloudflare** domain
 [`openmock.dev`](https://openmock.dev).
 
@@ -51,7 +51,7 @@ $ npm install          # installs `marked` (dev-only)
 $ npm run build:docs   # regenerates spec/schema/examples/serving .html
 ```
 
-There is still **no build step for deployment** — the generated `.html` is
+There is still **no build step for deployment**. The generated `.html` is
 committed and served as-is. The generator is only for regenerating those pages
 when the source content changes.
 

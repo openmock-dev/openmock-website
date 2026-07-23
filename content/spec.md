@@ -8,8 +8,8 @@
 ## 1. Status and scope
 
 OpenMock is an open, self-contained format for describing **API mocks** in a
-single YAML file. A single file declares a list of named **servers** — each of
-one protocol, each carrying its own operations — and for each operation an
+single YAML file. A single file declares a list of named **servers**, each of
+one protocol, each carrying its own operations, and for each operation an
 ordered list of scenarios that map an incoming request to a response.
 
 This document is a **draft**. It is precise enough to implement and is backed by
@@ -24,16 +24,16 @@ transport-agnostic: TLS, process management, and hosting are implementation
 concerns, as is how an implementation listens for requests and maps a real
 request onto the normalized request model used here. The one
 deployment-adjacent field a server may carry is the optional `port` **hint**
-([§3.3](#33-servers-required)) — a non-binding default for serving
+([§3.3](#33-servers-required)), a non-binding default for serving
 implementations that never changes what a document means. Recommended
-practice for the implementations around this specification — standalone
+practice for the implementations around this specification, standalone
 servers (port resolution, a discovery/admin API) and applications embedding
-an engine as a library — lives outside it in
+an engine as a library, lives outside it in
 [`docs/serving.md`](../docs/serving.md).
 
-**Non-goals.** Some capabilities are deliberately *not* part of the format —
+**Non-goals.** Some capabilities are deliberately *not* part of the format:
 not oversights, and distinct from the *future* protocol work named below.
-Each has an OpenMock-native alternative or is simply outside the mission:
+Each has an OpenMock-native alternative or is outside the mission:
 
 - **No proxying or fallthrough.** An unmatched or unrouted request yields a
   synthetic response ([§10](#10-error-and-fallback-responses)); OpenMock
@@ -43,9 +43,9 @@ Each has an OpenMock-native alternative or is simply outside the mission:
   format is not a test-spy API for asserting that a call happened N times.
 - **No webhooks or server-initiated calls.** A mock answers requests; it
   does not originate outbound calls. (Server-initiated WebSocket messages
-  are *future* work, not a non-goal — see Protocol scope below.)
+  are *future* work, not a non-goal: see Protocol scope below.)
 - **No response randomness or scripting.** A resolved response is a pure
-  function of the request and the `calls` counter — no random selection
+  function of the request and the `calls` counter: no random selection
   among responses, no embedded logic. (`faker` ([§9.3](#93-faker)) produces
   field-level fake data, not control flow.)
 - **No cross-request state beyond `calls`.** The per-operation call counter
@@ -59,15 +59,15 @@ format and the conformance corpus.
 **Self-contained.** An OpenMock document is serveable on its own: no other
 specification or file format is ever required. gRPC messages are written in
 the proto3 JSON mapping ([§4.2](#42-grpc-requests)), and a document MAY attach
-a compiled protobuf schema ([§3.4](#34-grpc-servers-descriptorset)) — but never has to.
+a compiled protobuf schema ([§3.4](#34-grpc-servers-descriptorset)), but never has to.
 Likewise, GraphQL mocks are serveable without a GraphQL schema; a document MAY
-attach one ([§3.5](#35-graphql-servers-schema)) — but never has to.
+attach one ([§3.5](#35-graphql-servers-schema)), but never has to.
 
 **Protocol scope.** v0.2 addresses **HTTP/REST**, **gRPC** (unary and
 server-streaming calls), **GraphQL** (queries and mutations), and
 **WebSocket** (client-initiated request/reply exchanges) mocks. The protocols
-share one model — named servers, operations, first-match-wins scenarios,
-`when` facets, `calls`, delays, templating, and extensions — and differ only
+share one model (named servers, operations, first-match-wins scenarios,
+`when` facets, `calls`, delays, templating, and extensions) and differ only
 in three places, summarized here and detailed in the sections referenced:
 
 | Protocol    | Addressed by ([§5](#5-operations)) | Matchable `when` facets ([§6.1](#61-when)) | Response fields ([§7](#7-the-response-object)) |
@@ -143,7 +143,7 @@ breaking changes; an implementation supports specific `0.MINOR` versions and
 rejects the rest.
 
 > **Note on numbering.** The format version in the `openmock` key (`0.2.0`) and
-> this document's "v0.2 (draft)" label share a `0.2` line — both say the
+> this document's "v0.2 (draft)" label share a `0.2` line: both say the
 > format is pre-stable. The key names the on-disk contract that tooling reads;
 > until a `1.0.0` milestone the format may still change in `0.x` releases.
 > The `0.1` → `0.2` change is itself the breaking-minor rule in action: 0.2
@@ -151,7 +151,7 @@ rejects the rest.
 
 ### 3.2 `info` (OPTIONAL)
 
-Human-oriented metadata. All fields are optional and non-normative — they do not
+Human-oriented metadata. All fields are optional and non-normative: they do not
 affect matching or responses.
 
 | Field         | Type   | Description                          |
@@ -163,14 +163,14 @@ affect matching or responses.
 ### 3.3 `servers` (REQUIRED)
 
 A non-empty list of **server objects**. A server is a named group of
-operations of one protocol — one mock service. A document may declare several
+operations of one protocol, one mock service. A document may declare several
 servers, **including several of the same type**: two HTTP services with
 overlapping paths coexist in one document because every request addresses a
 server by name ([§4](#4-the-request-model), [§8](#8-matching-algorithm)).
 
 | Field        | Type   | Required | Description                                          |
 | ------------ | ------ | -------- | ---------------------------------------------------- |
-| `name`       | string | yes      | The server's name — how normalized requests address it. Non-empty; **MUST** be unique across the `servers` list. Compared case-sensitively. |
+| `name`       | string | yes      | The server's name, how normalized requests address it. Non-empty; **MUST** be unique across the `servers` list. Compared case-sensitively. |
 | `type`       | string | yes      | The server's protocol: `http`, `grpc`, `graphql`, or `websocket`. Determines the shape of the server's operations ([§5](#5-operations)), the facets its scenarios may use ([§6.1](#61-when)), and the shape of their responses ([§7](#7-the-response-object)). |
 | `port`       | integer | no      | Optional **default port hint** (1–65535) for implementations serving this server over a network. A hint only: engines **MAY** override it, and it never affects routing, matching, or rendering. See the recommended serving practice in [`docs/serving.md`](../docs/serving.md). |
 | `operations` | list   | yes      | Ordered, non-empty list of [operation objects](#5-operations) of the server's type. |
@@ -184,7 +184,7 @@ Rules:
 - **At least one server.** A document with no `servers` entry mocks nothing
   and is invalid ([§3.6](#36-document-validity)).
 - **Every server carries operations.** A declared server without a non-empty
-  `operations` list — even one that attaches a `descriptorSet` — is invalid.
+  `operations` list (even one that attaches a `descriptorSet`) is invalid.
 - **Names are unique.** Two servers sharing a `name` make the document
   invalid. This is a load-time semantic rule (a JSON Schema cannot compare
   values across list items), like an inverted `calls` range.
@@ -202,7 +202,7 @@ Rules:
   ([§12](#12-conformance)) holds engines to this.
 - A top-level `operations` key is the **0.1 layout** and is invalid in 0.2.
   An implementation **SHOULD** name the `servers` layout in its diagnostic
-  when it sees one — it is the migration mistake every 0.1 author will make
+  when it sees one. It is the migration mistake every 0.1 author will make
   once.
 
 ### 3.4 gRPC servers: `descriptorSet`
@@ -214,8 +214,8 @@ A server of `type: grpc` **MAY** carry one additional field:
 | `descriptorSet` | string | no       | Path, resolved relative to the document (see [§14](#14-security-considerations) on untrusted paths), to a serialized `google.protobuf.FileDescriptorSet` covering the services this server mocks. |
 
 A **descriptor set** is the protobuf ecosystem's standard compiled-schema
-artifact — the output of `protoc --include_imports --descriptor_set_out=…` or
-`buf build -o …` — consumable by every protobuf runtime without parsing
+artifact (the output of `protoc --include_imports --descriptor_set_out=…` or
+`buf build -o …`), consumable by every protobuf runtime without parsing
 `.proto` source. It **SHOULD** contain every service and message type used by
 the server's operations, with transitive imports included. Each gRPC server
 carries its own schema: two gRPC servers in one document may attach two
@@ -232,8 +232,8 @@ server attaches its protobuf schema. Its rules:
    this.
 2. An implementation **MAY** ignore it. Every document **MUST** remain
    serveable from its YAML alone, exactly as if the field were absent.
-3. An implementation that binds messages to real protobuf encoding — serving
-   binary wire format, gRPC server reflection, or schema validation — **MUST**
+3. An implementation that binds messages to real protobuf encoding (serving
+   binary wire format, gRPC server reflection, or schema validation) **MUST**
    accept the schema through this field. It **MAY** additionally offer its own
    mechanisms (flags, registries, extensions), but a document that carries
    `descriptorSet` **MUST NOT** need any of them.
@@ -265,9 +265,9 @@ follows the same interoperability rules, restated here for GraphQL:
    ([§12](#12-conformance)) holds engines to this.
 2. An implementation **MAY** ignore it. Every document **MUST** remain
    serveable from its YAML alone, exactly as if the field were absent.
-3. An implementation that binds mocks to a real GraphQL type system — serving
+3. An implementation that binds mocks to a real GraphQL type system (serving
    introspection, validating incoming query documents, or checking response
-   shapes — **MUST** accept the schema through this field. It **MAY**
+   shapes) **MUST** accept the schema through this field. It **MAY**
    additionally offer its own mechanisms (flags, registries, extensions), but
    a document that carries `schema` **MUST NOT** need any of them.
 4. A missing or unreadable schema is **not** a document error. The
@@ -294,19 +294,19 @@ names a faker category/method the implementation does not know
 ([§9.3](#93-faker)), carries a facet `pattern` that is not valid RE2
 ([§6.1](#61-when)), or declares an inverted `calls` range with `min > max`
 ([§6.3](#63-the-calls-facet-and-the-call-counter)). The schema is a floor,
-not the whole rule: some invalidity — an unknown faker, a malformed pattern,
-an inverted range — is not schema-expressible.
+not the whole rule: some invalidity (an unknown faker, a malformed pattern,
+an inverted range) is not schema-expressible.
 
 1. An implementation **MUST NOT serve an invalid document.** It **MUST**
    refuse the document at **load time**, before answering any request, and
    **SHOULD** emit a diagnostic identifying the violation and where it is
    (operation, scenario).
 2. **Partial service is not an option.** An implementation **MUST NOT**
-   skip an invalid operation or scenario and serve the rest — a silently
+   skip an invalid operation or scenario and serve the rest. A silently
    dropped operation surfaces later as a baffling unrouted 404 in someone's
    test run.
 3. **Validity is static.** Every rule above is checkable from the document
-   alone — templating placeholders are literal strings, so an
+   alone: templating placeholders are literal strings, so an
    implementation can enumerate every `{{faker.*}}` placeholder without
    rendering a single response. Detection **MUST NOT** be deferred to
    matching or render time, where it would surface as a per-request
@@ -335,10 +335,10 @@ It **MAY** carry a `server` field: the **name** of the server it targets
 ([§8](#8-matching-algorithm)). When `server` is **absent** and the document
 declares **exactly one** server of the request's protocol, the request
 targets that server; with zero or several such servers, an absent `server`
-leaves the request **unrouted** ([§10.2](#102-no-operation-matches)) —
-omission is a convenience for the common single-server document, never a
+leaves the request **unrouted** ([§10.2](#102-no-operation-matches)).
+Omission is a convenience for the common single-server document, never a
 tiebreaker. How an implementation attributes a real incoming request to a
-server name — a port per server, a host header, a dedicated socket — is a
+server name (a port per server, a host header, a dedicated socket) is a
 transport concern, exactly as TLS is.
 
 ### 4.1 HTTP requests
@@ -347,7 +347,7 @@ transport concern, exactly as TLS is.
 | --------- | ------ | ------------------------------------------------------- |
 | `server`  | string | Name of the server the request targets ([§3.3](#33-servers-required)). MAY be omitted when the document declares exactly one server of this protocol ([§8](#8-matching-algorithm)). |
 | `method`  | string | Request method, compared case-insensitively.            |
-| `path`    | string | Request path without query string, as received — percent-encoding preserved (decoding happens per segment during matching, [§5.2](#52-path-and-path-parameters)). E.g. `/users/42`. |
+| `path`    | string | Request path without query string, as received, percent-encoding preserved (decoding happens per segment during matching, [§5.2](#52-path-and-path-parameters)). E.g. `/users/42`. |
 | `params`  | object | Path parameters extracted by matching `path` (see §5.2).|
 | `query`   | object | Query-string parameters, name→value; a repeated name carries a **list** of its values in wire order ([§4.6](#46-multi-valued-fields)). |
 | `headers` | object | Header name→value; names compared case-insensitively; repeated field lines join with `", "` ([§4.6](#46-multi-valued-fields)). |
@@ -369,15 +369,15 @@ others come from the incoming request.
 Messages are represented as plain data following the
 [proto3 JSON mapping](https://protobuf.dev/programming-guides/proto3/#json)
 (field names, not wire bytes). How an implementation binds these
-representations to actual protobuf encoding — server reflection, descriptor
-sets, transcoding — is an implementation concern, exactly as ports and TLS are
+representations to actual protobuf encoding (server reflection, descriptor
+sets, transcoding) is an implementation concern, exactly as ports and TLS are
 for HTTP. A gRPC server **MAY** attach its compiled protobuf schema portably
 through its `descriptorSet` field ([§3.4](#34-grpc-servers-descriptorset)).
 
 So that the same document matches the same requests on every engine, the
 following consequences of the JSON mapping are normative here:
 
-- **Field names** are the proto3 **JSON names** — lowerCamelCase by default
+- **Field names** are the proto3 **JSON names**, lowerCamelCase by default
   (`order_id` in the `.proto` is `orderId` here). Documents address fields by
   JSON name in facets, templates, and messages, and an implementation that
   normalizes wire requests **MUST** present message keys under their JSON
@@ -401,9 +401,9 @@ following consequences of the JSON mapping are normative here:
 
 A GraphQL request document names its operation (`query GetOrder(...) { ... }`);
 that name and the operation type are what OpenMock routes on
-([§5.6](#56-graphql-operations)). How an implementation obtains these values —
+([§5.6](#56-graphql-operations)). How an implementation obtains these values (
 parsing the `query` text of a GraphQL-over-HTTP POST, reading the
-`operationName` request parameter, a persisted-query lookup — is an
+`operationName` request parameter, a persisted-query lookup) is an
 implementation concern, exactly as ports and TLS are for HTTP. Requests whose
 operation cannot be named (anonymous operations) have no normalized form in
 v0.2; how an implementation treats them is likewise an implementation concern.
@@ -420,13 +420,13 @@ resolved response stays the same.
 
 WebSocket is message-oriented: a client establishes a connection to a path and
 then sends messages over it. **Each inbound client message is one normalized
-request.** The connection itself produces no request — v0.2 mocks speak only
+request.** The connection itself produces no request. v0.2 mocks speak only
 in reply to a client message ([§5.8](#58-websocket-operations)).
 
 | Field        | Type   | Description                                                     |
 | ------------ | ------ | --------------------------------------------------------------- |
 | `server`     | string | Name of the server the connection targets ([§3.3](#33-servers-required)). MAY be omitted when the document declares exactly one WebSocket server ([§8](#8-matching-algorithm)). Connection-scoped: fixed at establishment. |
-| `path`       | string | The connection's request path without query string, as received — percent-encoding preserved ([§5.2](#52-path-and-path-parameters)), e.g. `/ws/orders/42`. |
+| `path`       | string | The connection's request path without query string, as received, percent-encoding preserved ([§5.2](#52-path-and-path-parameters)), e.g. `/ws/orders/42`. |
 | `params`     | object | Path parameters extracted by matching the operation's `path` (see §5.2). |
 | `query`      | object | Query-string parameters of the connection URL, name→value; a repeated name carries a **list** of its values in wire order ([§4.6](#46-multi-valued-fields)). |
 | `headers`    | object | Connection (upgrade) request headers; names compared case-insensitively; repeated field lines join with `", "` ([§4.6](#46-multi-valued-fields)). |
@@ -437,7 +437,7 @@ in reply to a client message ([§5.8](#58-websocket-operations)).
 they are fixed when the connection is established and identical for every
 message on it. `message` is the one per-request field.
 
-`connection` distinguishes one connection from another — it is what the
+`connection` distinguishes one connection from another: it is what the
 per-connection call counter is keyed by
 ([§6.3](#63-the-calls-facet-and-the-call-counter)). Its value is opaque; an
 implementation derives it however it likes (a socket id, a UUID). Two
@@ -446,8 +446,8 @@ connection. When the field is absent, all requests belong to one default
 connection.
 
 Messages are data, exactly like bodies and gRPC messages. How an
-implementation maps wire frames onto that data — typically parsing JSON text
-frames, with a plain text frame normalizing to a string scalar — and how it
+implementation maps wire frames onto that data (typically parsing JSON text
+frames, with a plain text frame normalizing to a string scalar) and how it
 serializes reply messages back onto the wire is an implementation concern,
 exactly as ports and TLS are for HTTP. A frame that normalized to a string
 scalar is matched with the scalar form of the `message` facet
@@ -457,8 +457,8 @@ scalar is matched with the scalar form of the `message` facet
 ### 4.5 Dotted paths and string forms
 
 Matching ([§6.1](#61-when)) and templating ([§9](#9-templating)) both address
-values inside the structured request payloads — `body` (HTTP), `message`
-(gRPC, WebSocket), and `variables` (GraphQL) — with **dotted paths**, and both
+values inside the structured request payloads, `body` (HTTP), `message`
+(gRPC, WebSocket), and `variables` (GraphQL), with **dotted paths**, and both
 reduce what they find to a value's **canonical string form** before comparing
 or rendering it. Both definitions live here, once, so the two features cannot
 drift apart.
@@ -472,7 +472,7 @@ path    = segment *( "." segment )
 segment = one or more characters, none of which is "."
 ```
 
-Every `.` is a segment separator — there is no escape syntax. A member whose
+Every `.` is a segment separator. There is no escape syntax. A member whose
 name contains a literal dot therefore **cannot be addressed** in v0.2. This is
 a deliberate limitation: a future version may add an escape syntax, but the
 meaning of `.` will not change.
@@ -483,18 +483,18 @@ payload root. At each step, against the current value:
 - If the current value is an **object**, the segment selects the member with
   exactly that name (case-sensitively). No such member → resolution fails.
 - If the current value is an **array** and the segment is a **canonical
-  base-10 integer** — one or more ASCII digits, no sign, no leading zeros
-  (`0` is canonical) — the segment selects the element at that 0-based index.
+  base-10 integer**, one or more ASCII digits, no sign, no leading zeros
+  (`0` is canonical), the segment selects the element at that 0-based index.
   An index at or beyond the array's length, or a non-canonical segment
   (`01`, `-1`, `1x`), fails resolution.
 - Against anything else (a string, number, boolean, or `null`), resolution
   fails.
 
 A path whose resolution fails resolves to **absent**. Absent is not an error:
-an absent target simply never matches a facet ([§6.1](#61-when)) and renders
+an absent target never matches a facet ([§6.1](#61-when)) and renders
 as the empty string in a template ([§9.2](#92-unresolved-placeholders)).
 
-Dotted paths apply **only** to `body`, `message`, and `variables` — the
+Dotted paths apply **only** to `body`, `message`, and `variables`: the
 facets and template namespaces that address structured payloads. The flat
 facets (`params`, `query`, `headers`, `metadata`) and their template
 namespaces are plain key lookups: a `.` in a header or query parameter name
@@ -518,8 +518,8 @@ reducing them to a **canonical string form**:
 | --------------------- | -------------------------------------------------------- |
 | string                | the string itself, unchanged                              |
 | boolean               | `true` or `false`                                         |
-| number                | the shortest decimal string that round-trips to the same IEEE 754 double — the output of the ECMAScript `Number::toString` algorithm, which is what `JSON.stringify` emits |
-| `null`, object, array | **none** — these values have no canonical string form     |
+| number                | the shortest decimal string that round-trips to the same IEEE 754 double, the output of the ECMAScript `Number::toString` algorithm, which is what `JSON.stringify` emits |
+| `null`, object, array | **none**, these values have no canonical string form     |
 
 Consequences of the number rule: `42` → `42`; `1.0` → `1` (a fractionless
 double and the integer are the same value); `0.5` → `0.5`; `-0` → `0`;
@@ -529,13 +529,13 @@ or arbitrary-precision integers) renders such values in plain decimal form;
 the conformance corpus stays within the double-safe range.
 
 Because comparison operates on string forms, a facet cannot distinguish the
-JSON number `42` from the JSON string `"42"` — both have the form `42`. This
+JSON number `42` from the JSON string `"42"`: both have the form `42`. This
 is deliberate: values that arrive as text on the wire (query parameters, path
 segments, headers) and values that arrive typed (JSON payloads) are matched
 by one rule.
 
 `null` has no string form **by design**: a `null` target behaves exactly like
-an absent one — it matches no facet value and renders as the empty string.
+an absent one: it matches no facet value and renders as the empty string.
 v0.2 offers no way to distinguish `null` from absent, in matching or in
 templating.
 
@@ -548,8 +548,8 @@ repetition is normative:
 
 - **Repeated headers and metadata** normalize to **one string**: every value
   the transport delivered for that name, in arrival order, joined with
-  `", "` (a comma and a single space). This is RFC 9110's rule — repeated
-  field lines are semantically one comma-separated list — applied at
+  `", "` (a comma and a single space). This is RFC 9110's rule (repeated
+  field lines are semantically one comma-separated list), applied at
   normalization time, so nothing is dropped. It covers HTTP request headers,
   gRPC request metadata, and the transport headers of GraphQL and WebSocket
   requests alike. Matching and templating see only the joined value: a facet
@@ -557,7 +557,7 @@ repetition is normative:
   `X-Tag: beta` (the normalized value is `alpha, beta`); an author who wants
   to match the repetition writes the joined form.
 - **Repeated query parameters are preserved as a list.** Query strings,
-  unlike header fields, have no standard joining semantics — and repetition
+  unlike header fields, have no standard joining semantics, and repetition
   can be the encoding of the data itself (a gRPC-JSON transcoder renders a
   repeated proto field as `?ids=1&ids=2`), so no occurrence may be dropped.
   A `query` value is therefore a **string** when the name appeared once and
@@ -567,25 +567,25 @@ Because a `query` value can be a list, the `query` facet has exactly one
 rule of its own:
 
 - A `query` facet value is **always a non-empty list of strings**. It
-  matches iff the parameter's full occurrence sequence equals it — same
+  matches iff the parameter's full occurrence sequence equals it: same
   values, same order, same count. A single occurrence is a one-element
   sequence: `verbose: ["true"]` matches `?verbose=true` and nothing else.
   `ids: ["1", "2"]` matches `?ids=1&ids=2` but not `?ids=1`,
   `?ids=2&ids=1`, or `?ids=1&ids=2&ids=3`. There is no string form and no
-  hidden single-value shortcut — one rule covers one occurrence and many.
+  hidden single-value shortcut: one rule covers one occurrence and many.
 - Templating follows the ordinary string-form rules of
   [§4.5](#45-dotted-paths-and-string-forms): `{{request.query.NAME}}`
   renders a single-valued parameter's value, and renders the **empty
   string** for a repeated one ([§9.2](#92-unresolved-placeholders)).
 
-On the **response** side the concern is reversed — emitting repetition, not
-normalizing it — and only HTTP needs it, for the one header that RFC 6265
+On the **response** side the concern is reversed (emitting repetition, not
+normalizing it) and only HTTP needs it, for the one header that RFC 6265
 forbids comma-joining: `Set-Cookie`. An HTTP response header value MAY
 therefore be a **list of strings**, emitted as one field line per item, in
 order ([§7](#7-the-response-object)). gRPC response `metadata` and
 `trailers` ([§7.3](#73-grpc-responses)) stay string-valued: metadata has no
-`Set-Cookie` analog — a comma-joined value is semantically the repetition,
-for ASCII and base64 `-bin` values alike — so an author who wants repeated
+`Set-Cookie` analog (a comma-joined value is semantically the repetition,
+for ASCII and base64 `-bin` values alike), so an author who wants repeated
 metadata or trailer entries writes the joined value.
 
 ## 5. Operations
@@ -593,7 +593,7 @@ metadata or trailer entries writes the joined value.
 An operation object declares one addressable route and the scenarios for it.
 Operations live in a server's `operations` list
 ([§3.3](#33-servers-required)); the server's `type` determines the
-operation's shape — there is no per-operation protocol field. A document that
+operation's shape: there is no per-operation protocol field. A document that
 mocks several protocols declares several servers, one per service.
 
 ### HTTP operations
@@ -649,12 +649,12 @@ A template matches a request path **segment for segment**:
 2. **Decode.** Each *request* segment is then percent-decoded: `%` followed
    by two hex digits becomes the encoded octet, and the octets are
    interpreted as UTF-8. A segment containing a malformed escape (`%zz`, a
-   trailing `%`) is compared as written. `+` is **not** decoded — it means a
+   trailing `%`) is compared as written. `+` is **not** decoded: it means a
    space only in query strings, never in paths. Because splitting happens
    **before** decoding, an encoded `%2F` can never act as a segment
    separator.
 3. **Compare.** A literal template segment matches iff it equals the decoded
-   request segment — **case-sensitively**, with no Unicode case folding or
+   request segment, **case-sensitively**, with no Unicode case folding or
    other normalization. Template segments are compared exactly as written in
    the YAML; authors write them in decoded form. An empty literal segment
    (from a trailing slash) matches only an empty request segment.
@@ -666,7 +666,7 @@ A template matches a request path **segment for segment**:
 
 There is **no other normalization**: paths are never case-folded, `/users`
 and `/users/` are distinct (an author who wants both declares both), and
-dot-segments (`.`, `..`) are not resolved during matching — resolving them,
+dot-segments (`.`, `..`) are not resolved during matching. Resolving them,
 like every other URL normalization that precedes the normalized request,
 is the transport mapping's concern, exactly as ports and TLS are.
 
@@ -701,7 +701,7 @@ servers:
 | `summary`    | string | no       | Optional human-oriented description.                 |
 | `scenarios`  | list   | yes      | Ordered, non-empty list of scenarios.                |
 
-The call type is declared **explicitly on the operation** — it is never
+The call type is declared **explicitly on the operation**: it is never
 inferred from the shape of a response. Every response in a `unary` operation
 uses `message`; every response in a `server-streaming` operation uses
 `messages` ([§7.3](#73-grpc-responses)). A response whose shape does not agree
@@ -746,7 +746,7 @@ servers:
 | `summary`       | string | no       | Optional human-oriented description.                 |
 | `scenarios`     | list   | yes      | Ordered, non-empty list of scenarios.                |
 
-`operationName` is the name a client gives its request document — the
+`operationName` is the name a client gives its request document: the
 `GetOrder` in `query GetOrder($id: ID!) { order(id: $id) { … } }`. Mocking
 addresses requests by this name rather than by root field or query text: it is
 present on every named request, it survives persisted-query indirection, and
@@ -792,7 +792,7 @@ per [§8](#8-matching-algorithm), against this operation's scenarios to a
 response of zero or more reply messages, optionally followed by a close
 ([§7.5](#75-websocket-responses)).
 
-v0.2 covers **client-initiated exchanges only** — the mock speaks only in
+v0.2 covers **client-initiated exchanges only**: the mock speaks only in
 reply to a client message. Server-initiated messages (a greeting on connect,
 unsolicited pushes) are not part of v0.2.
 
@@ -807,7 +807,7 @@ matches, the connection is **unrouted** and **MUST be refused**, not accepted (s
 [§10.2](#102-no-operation-matches)).
 
 Every message on an established connection resolves against that one
-operation — messages are not re-routed, since the connection's path and
+operation: messages are not re-routed, since the connection's path and
 server cannot change.
 
 Two operations in one server **SHOULD NOT** declare the same `path`. If they
@@ -869,8 +869,8 @@ The `body` and `message` facets have a second, **scalar form**: instead of a
 map, the facet MAY be a single string, which matches iff the **whole
 payload** has a canonical string form
 ([§4.5](#45-dotted-paths-and-string-forms)) equal to it. This is how scalar
-payloads — a `text/plain` body of `ping`, a plain-text WebSocket frame, a
-bare JSON number — are matched at all: `message: ping` matches the text
+payloads (a `text/plain` body of `ping`, a plain-text WebSocket frame, a
+bare JSON number) are matched at all: `message: ping` matches the text
 frame `"ping"`, and `body: "42"` matches a body of the JSON number `42`. A
 payload that is an object, array, or `null` has no string form and never
 matches the scalar form; conversely, a dotted path never resolves inside a
@@ -882,7 +882,7 @@ well-known wrapper types.)
 #### Value matchers
 
 Wherever a facet accepts a **string** value, it also accepts a **matcher
-object** — once more, the YAML type carries the meaning. v0.2 defines two
+object**. Once more, the YAML type carries the meaning. v0.2 defines two
 matchers, and a matcher object carries **exactly one** of them:
 
 ```yaml
@@ -897,7 +897,7 @@ when:
       pattern: "ord-[0-9]+" # RE2, matches the ENTIRE value
 ```
 
-A matcher is an **ordinary YAML mapping** — there is no matcher syntax.
+A matcher is an **ordinary YAML mapping**. There is no matcher syntax.
 `X-Debug: {exists: false}` is the same document in YAML's flow style; use
 whichever style reads better. The only brace syntax OpenMock itself defines
 is the **doubled** `{{ … }}` of templating placeholders inside string
@@ -905,16 +905,16 @@ values ([§9](#9-templating)).
 
 | Matcher          | Matches when                                                        |
 | ---------------- | ------------------------------------------------------------------- |
-| `exists: true`   | The target is **present** — it resolves to any value, including an object or array. Presence is assertable even where equality is not. |
-| `exists: false`  | The target is **absent** — the header/parameter/entry is missing, or the dotted path fails to resolve. `null` counts as absent ([§4.5](#45-dotted-paths-and-string-forms)). |
-| `pattern: "…"`   | The target has a canonical string form ([§4.5](#45-dotted-paths-and-string-forms)) and the pattern matches **that entire string** — implicitly anchored, as if wrapped in `\A(?:…)\z`. Targets with no string form never match. |
+| `exists: true`   | The target is **present**: it resolves to any value, including an object or array. Presence is assertable even where equality is not. |
+| `exists: false`  | The target is **absent**: the header/parameter/entry is missing, or the dotted path fails to resolve. `null` counts as absent ([§4.5](#45-dotted-paths-and-string-forms)). |
+| `pattern: "…"`   | The target has a canonical string form ([§4.5](#45-dotted-paths-and-string-forms)) and the pattern matches **that entire string**, implicitly anchored, as if wrapped in `\A(?:…)\z`. Targets with no string form never match. |
 
-Patterns use **RE2 syntax** — no backreferences, no lookaround. RE2 is the
+Patterns use **RE2 syntax**: no backreferences, no lookaround. RE2 is the
 one dialect with portable, linear-time implementations on every platform, so
 a document can never smuggle in a catastrophically backtracking pattern. An
 implementation whose regex engine accepts more than RE2 **MUST** still
 reject non-RE2 patterns: a pattern that is not valid RE2 makes the document
-**invalid** ([§3.6](#36-document-validity)) — a static, load-time check like
+**invalid** ([§3.6](#36-document-validity)), a static, load-time check like
 every other validity rule. Case-insensitivity is written inline:
 `pattern: "(?i)shipped"`.
 
@@ -922,25 +922,25 @@ Two facets need a word on where matchers fit:
 
 - **`query`** ([§4.6](#46-multi-valued-fields)): each **list element** may
   be a string or a `pattern` matcher, matched against the occurrence at
-  that position — `ids: [{pattern: "[0-9]+"}, "2"]` — while count and order
+  that position (`ids: [{pattern: "[0-9]+"}, "2"]`) while count and order
   stay exact. The whole facet value may instead be an `exists` matcher,
   asserting the parameter's presence or absence regardless of values:
   `page: {exists: false}`. `exists` has no meaning *inside* the list (a
   position's existence is already asserted by the count).
-- **`body` / `message`**: matchers appear as map-form **values** —
+- **`body` / `message`**: matchers appear as map-form **values**,
   `body: {orderId: {pattern: …}}`. At the **top level** of these facets an
   object is always the map form, because its keys are dotted paths and a
   member may legitimately be named `exists` or `pattern`; the whole-payload
   scalar form therefore stays a plain string, and whole-payload matchers
   are not expressible in v0.2.
 
-Within a map-form facet, multiple keys are **ANDed** — all must match. Across facets, all
+Within a map-form facet, multiple keys are **ANDed**: all must match. Across facets, all
 declared facets must match. For every facet except `calls`, a **string**
 facet value compares by
 **string equality on canonical string forms**
 ([§4.5](#45-dotted-paths-and-string-forms)): the facet key matches iff the
 targeted request value is present, has a canonical string form, and that form
-equals the string written in `when` — while an **object** facet value is a
+equals the string written in `when`, while an **object** facet value is a
 matcher (above). Under string equality, a target that is absent, `null`, an
 object, or an array never matches. In the flat facets (`params`, `query`,
 `headers`, `metadata`) the key is a plain name; in `body`, `message`, and
@@ -983,7 +983,7 @@ present, only the first (in document order) is reachable.
 ### 6.3 The `calls` facet and the call counter
 
 The `calls` facet matches on **how many times an operation has been called**,
-which makes time-dependent flows — most importantly *polling* — expressible
+which makes time-dependent flows (most importantly *polling*) expressible
 without scripting or an explicit state machine.
 
 #### The counter
@@ -995,7 +995,7 @@ concrete request path)** tuple:
   so `GET /v1/file/abc` and `GET /v1/file/def` advance **independent** counters
   even though both route to `/v1/file/{hash}`. For gRPC operations the concrete
   address is `service` + `rpc`, and for GraphQL operations it is
-  `operationType` + `operationName` — there are no path parameters, so in both
+  `operationType` + `operationName`. There are no path parameters, so in both
   cases the counter is effectively **per operation**.
 - The counter lives inside its server: two servers never share counters, even
   when both declare the same operation address
@@ -1011,7 +1011,7 @@ concrete request path)** tuple:
 - The first request observes a counter value of `1`.
 - The counter is **monotonic**: it never resets or wraps during a mock run.
   What constitutes a run (and when state is discarded) is an implementation
-  concern — for example a CLI restart or a test-framework reset hook. Each
+  concern, for example a CLI restart or a test-framework reset hook. Each
   conformance case starts from fresh state.
 
 #### The facet
@@ -1037,7 +1037,7 @@ when:
 - Values are positive integers (the counter starts at 1).
 - When both are present, `min` **MUST** be ≤ `max`. An inverted range
   (`{ min: 5, max: 2 }`) can never match, so a document declaring one is
-  **invalid** ([§3.6](#36-document-validity)) — this is a semantic rule the
+  **invalid** ([§3.6](#36-document-validity)). This is a semantic rule the
   JSON Schema cannot express (it compares no two values), enforced at load
   time like an unknown faker or a malformed pattern.
 
@@ -1047,7 +1047,7 @@ The `calls` facet introduces **no new fallback behaviour**. When the counter
 moves past every declared value or range, the ordinary rules of
 [§8](#8-matching-algorithm) apply:
 
-- a **default scenario** (no `when`) catches all remaining calls — this is how
+- a **default scenario** (no `when`) catches all remaining calls: this is how
   "repeat the final response forever" is written, explicitly;
 - with **no default**, the request is unmatched and yields the synthetic
   **501** of [§10.1](#101-no-scenario-matches).
@@ -1071,7 +1071,7 @@ and the first match wins, exactly as everywhere else.
       response: { status: 200, body: { status: done, verdict: clean } }
 ```
 
-A document that never uses `calls` is a pure function of the request — nothing
+A document that never uses `calls` is a pure function of the request: nothing
 about this facet affects stateless documents.
 
 ## 7. The response object
@@ -1100,9 +1100,9 @@ response:
 | Field     | Type    | Required | Description                                             |
 | --------- | ------- | -------- | ------------------------------------------------------- |
 | `status`  | integer | yes      | Response status code (e.g. `200`, `404`).               |
-| `headers` | object  | no       | Response headers. Each value is a **string, or a list of strings** emitted as one field line per item, in order — for headers that cannot be comma-joined, like `Set-Cookie` ([§4.6](#46-multi-valued-fields)). Values (and each list item) may contain [templating placeholders](#9-templating). |
+| `headers` | object  | no       | Response headers. Each value is a **string, or a list of strings** emitted as one field line per item, in order, for headers that cannot be comma-joined, like `Set-Cookie` ([§4.6](#46-multi-valued-fields)). Values (and each list item) may contain [templating placeholders](#9-templating). |
 | `delay`   | integer | no       | Non-negative delay in **milliseconds** to wait before responding. Default `0`. |
-| `body`    | any      | no       | The response body as **native YAML** — an object, array, or scalar. Omit for an empty body. |
+| `body`    | any      | no       | The response body as **native YAML**: an object, array, or scalar. Omit for an empty body. |
 
 ### 7.1 Native YAML bodies
 
@@ -1173,14 +1173,14 @@ response:
 `INVALID_ARGUMENT`, `DEADLINE_EXCEEDED`, `NOT_FOUND`, `ALREADY_EXISTS`,
 `PERMISSION_DENIED`, `RESOURCE_EXHAUSTED`, `FAILED_PRECONDITION`, `ABORTED`,
 `OUT_OF_RANGE`, `UNIMPLEMENTED`, `INTERNAL`, `UNAVAILABLE`, `DATA_LOSS`,
-`UNAUTHENTICATED`. Names, not numbers — `NOT_FOUND`, never `5`.
+`UNAUTHENTICATED`. Names, not numbers: `NOT_FOUND`, never `5`.
 
 Shape rules:
 
 - The response message field **MUST** agree with the operation's declared
   `type` ([§5.4](#54-grpc-operations)): `message` on unary operations,
   `messages` on server-streaming operations, never both, never crossed.
-- A **unary** response with a non-OK `status` **MUST NOT** carry a `message` —
+- A **unary** response with a non-OK `status` **MUST NOT** carry a `message`:
   a gRPC unary call yields either a response message or an error status, not
   both.
 - A **server-streaming** response **MAY** combine `messages` with a non-OK
@@ -1192,10 +1192,10 @@ Shape rules:
 - `metadata` is **initial** metadata: it is emitted before the first
   response message. `trailers` is **trailing** metadata: it is emitted with
   the final `status`. Both are valid on any response, OK or not, unary or
-  streaming — this is the distinction every real gRPC implementation
-  carries, made explicit. How the two sets are framed on the wire —
+  streaming. This is the distinction every real gRPC implementation
+  carries, made explicit. How the two sets are framed on the wire (
   including gRPC's *trailers-only* framing for failed calls that send no
-  initial metadata — is a transport concern, exactly as ports and TLS are
+  initial metadata) is a transport concern, exactly as ports and TLS are
   for HTTP.
 
 ### 7.4 GraphQL responses
@@ -1228,7 +1228,7 @@ response:
 | `extensions` | object  | no       | Top-level response extensions: the free-form, machine-readable map the GraphQL specification permits alongside `data`/`errors` (distinct from a per-error `extensions`). |
 | `delay`      | integer | no       | Non-negative delay in milliseconds. Default `0`.          |
 
-\* At least one of `data` / `errors` **MUST** be present — a GraphQL response
+\* At least one of `data` / `errors` **MUST** be present: a GraphQL response
 carries data, errors, or both (a *partial response*, where `data` holds what
 resolved and `errors` explains what did not).
 
@@ -1283,7 +1283,7 @@ Shape rules:
   (if declared). A connection without a `close` stays open for further
   exchanges.
 - An **empty** `messages` list with no `close` deliberately ignores the
-  inbound message — a real need (heartbeats, fire-and-forget commands) made
+  inbound message: a real need (heartbeats, fire-and-forget commands) made
   explicit rather than expressed by omission.
 - There is no status field: WebSocket has no per-message status. An
   author-declared failure is a reply message shaped like an error, or a
@@ -1301,7 +1301,7 @@ Given a normalized request, an implementation resolves a response as follows.
    the document declares zero or more than one server of that protocol, the
    request is **unrouted** ([§10.2](#102-no-operation-matches)). Then select the first
    operation, in that server's `operations` list, that matches the request's
-   address — for HTTP, `method` (case-insensitive) plus the `path` template
+   address: for HTTP, `method` (case-insensitive) plus the `path` template
    (capturing `params`, [§5.3](#53-route-resolution)); for gRPC, `service`
    plus `rpc` ([§5.5](#55-grpc-route-resolution)); for GraphQL,
    `operationType` plus `operationName`
@@ -1323,7 +1323,7 @@ Given a normalized request, an implementation resolves a response as follows.
    matched), the request is **unmatched** ([§10.1](#101-no-scenario-matches)).
 5. **Render.** Render the chosen scenario's `response`: substitute templating
    placeholders ([§9](#9-templating)), then apply `delay` and emit the
-   response — `status`, `headers`, and `body` for HTTP; `status`, `error`,
+   response: `status`, `headers`, and `body` for HTTP; `status`, `error`,
    `metadata`, `trailers`, and `message`/`messages` for gRPC (streamed
    messages are emitted in list order, initial metadata before the first,
    trailers with the status); `data` and `errors` for GraphQL; `messages`
@@ -1334,7 +1334,7 @@ put the most specific `when` scenarios first and the default last.
 
 ## 9. Templating
 
-String values inside `response.body` and `response.headers` (HTTP —
+String values inside `response.body` and `response.headers` (HTTP,
 including each item of a list-valued header), inside
 `response.message`, `response.messages`, `response.metadata`,
 `response.trailers`, and `response.error` (gRPC),
@@ -1347,7 +1347,7 @@ ignored, so `{{params.id}}` and `{{ params.id }}` are equivalent.
 A placeholder in running text is replaced by a rendered **string** (its
 canonical string form, [§4.5](#45-dotted-paths-and-string-forms)). A value
 that is **exactly one placeholder** and nothing else, in a native-payload
-position, instead takes the resolved value's **native type** — a number
+position, instead takes the resolved value's **native type**: a number
 stays a number, an object an object ([§9.4](#94-whole-value-placeholders-and-typed-output)).
 The braces themselves are escapable ([§9.5](#95-literal-text-and-escaping)).
 
@@ -1365,11 +1365,11 @@ The braces themselves are escapable ([§9.5](#95-literal-text-and-escaping)).
 | `{{request.metadata.NAME}}`| The gRPC request metadata entry `NAME` (case-insensitive). |
 | `{{request.variables.PATH}}`| The value at dotted `PATH` in the GraphQL request variables. |
 | `{{faker.CATEGORY.METHOD}}`| A generated fake value (see [§9.3](#93-faker)).          |
-| `{{ "TEXT" }}`             | The literal string `TEXT` (single or double quotes). The escape for `{{`/`}}` and a literal-text injector — see [§9.5](#95-literal-text-and-escaping). |
+| `{{ "TEXT" }}`             | The literal string `TEXT` (single or double quotes). The escape for `{{`/`}}` and a literal-text injector. See [§9.5](#95-literal-text-and-escaping). |
 
 `request.body.PATH`, `request.message.PATH`, and `request.variables.PATH` use
 dotted paths ([§4.5](#45-dotted-paths-and-string-forms)) to reach nested
-values — member names and 0-based array indices joined by `.`, e.g.
+values: member names and 0-based array indices joined by `.`, e.g.
 `{{request.body.user.role}}` or `{{request.body.items.0.id}}`. For `body`
 and `message` the path MAY be omitted entirely: bare `{{request.body}}` and
 `{{request.message}}` address the payload root. In running text these render
@@ -1386,22 +1386,22 @@ and `request.query` are HTTP and WebSocket data; `request.body` is HTTP data;
 `request.message` is gRPC and WebSocket data; `request.metadata` is gRPC
 data; `request.variables` is GraphQL data; `request.headers` is HTTP,
 GraphQL, and WebSocket data. A namespace that does not apply to the
-request's protocol simply resolves as absent (yielding the empty string per
-[§9.2](#92-unresolved-placeholders) — no new rule).
+request's protocol resolves as absent (yielding the empty string per
+[§9.2](#92-unresolved-placeholders), no new rule).
 
 ### 9.2 Unresolved placeholders
 
-If a placeholder cannot be resolved — the referenced parameter, header, query
-key, or body path is absent — it is replaced with the **empty string**. An
+If a placeholder cannot be resolved (the referenced parameter, header, query
+key, or body path is absent), it is replaced with the **empty string**. An
 implementation **MUST NOT** fail rendering because of an unresolved data
 placeholder. (An *unknown faker* is different; see below.)
 
 A placeholder that resolves to a number or boolean renders in its canonical
 string form ([§4.5](#45-dotted-paths-and-string-forms)): `42` → `42`,
 `1.0` → `1`, `true` → `true`. A placeholder that resolves to a value with
-**no** string form — `null`, an object, or an array — is treated exactly like
+**no** string form (`null`, an object, or an array) is treated exactly like
 an unresolved placeholder and renders as the empty string. (These string
-rules govern *running text*; a whole-value placeholder is typed instead —
+rules govern *running text*; a whole-value placeholder is typed instead,
 [§9.4](#94-whole-value-placeholders-and-typed-output).)
 
 ### 9.3 Faker
@@ -1420,17 +1420,17 @@ conformant implementation **MUST** support:
 
 An implementation **MAY** support additional faker categories and methods beyond
 this set. If a faker placeholder names a category/method the implementation does
-**not** know, it **MUST** treat the document as invalid — refusing it at
+**not** know, it **MUST** treat the document as invalid (refusing it at
 **load time** per [§3.6](#36-document-validity), never silently
-emitting an empty value — unlike unresolved *data* placeholders, an unknown
+emitting an empty value). Unlike unresolved *data* placeholders, an unknown
 faker is a mistake in the mock, not missing request data.
 
 The faker category `openmock` is **reserved**: an implementation **MUST
 NOT** define methods in it. A `{{faker.openmock.*}}` placeholder is
-therefore unknown on every conformant engine — which is what lets the
+therefore unknown on every conformant engine, which is what lets the
 corpus pin unknown-faker handling portably.
 
-Faker output is inherently non-deterministic — and there is no portable
+Faker output is inherently non-deterministic, and there is no portable
 seed: two faker libraries cannot reproduce each other's random streams, so
 this specification does not pretend a shared seed mechanism exists. Instead,
 a conformant implementation **MUST** offer a **conformance mode**; how it is
@@ -1440,19 +1440,19 @@ concern. In conformance mode, every faker placeholder in the
 conformance corpus **MUST** produce exactly its reference value, on every
 evaluation. Outside conformance mode, faker output is unconstrained beyond
 fitting the placeholder's description in the table above. The corpus is
-executed in conformance mode — that, and nothing subtler, is what makes
+executed in conformance mode: that, and nothing subtler, is what makes
 faker cases assertable.
 
 ### 9.4 Whole-value placeholders and typed output
 
 Templating usually produces text, but a response is native data, and a mock
 often needs to echo a number *as* a number or inject an object. The rule
-that enables this is deliberately syntax-free — the shape of the value
+that enables this is deliberately syntax-free. The shape of the value
 carries the meaning, as everywhere in this format:
 
 > When a templatable value in a **native-payload position** consists of
-> **exactly one placeholder** — the entire value is `{{ … }}`, with no other
-> character before or after it — the rendered result is the resolved value's
+> **exactly one placeholder** (the entire value is `{{ … }}`, with no other
+> character before or after it), the rendered result is the resolved value's
 > **native type**, not its string form.
 
 - **Native-payload positions** are the ones whose output is native YAML/JSON
@@ -1474,7 +1474,7 @@ In a native-payload position, a whole-value placeholder resolves to:
 | object / array        | that object / array, injected as-is                  |
 | `null` or **absent**  | the **empty string** `""` (the [§9.2](#92-unresolved-placeholders) rule is unchanged; to emit a JSON `null`, write `null` literally in the body) |
 
-Anything else — surrounding text, or two or more placeholders in one value —
+Anything else (surrounding text, or two or more placeholders in one value)
 makes the value a **string**, with each placeholder rendered by its canonical
 string form ([§9.2](#92-unresolved-placeholders)). So
 `id: "{{request.body.id}}"` injects the native value, while
@@ -1496,8 +1496,8 @@ values are always strings and compare by canonical string form
 
 ### 9.5 Literal text and escaping
 
-A placeholder expression may be a **quoted string literal** — single or
-double quotes — which renders that literal text verbatim. This is how a
+A placeholder expression may be a **quoted string literal** (single or
+double quotes), which renders that literal text verbatim. This is how a
 response emits a literal `{{` or `}}` (which would otherwise open or close a
 placeholder), following the same convention as Go text/template and Helm:
 
@@ -1536,7 +1536,7 @@ unmatched operation:
 For a **gRPC** operation the implementation **MUST** respond with status
 **`UNIMPLEMENTED`** and the error message
 `No scenario matched and no default scenario is defined.` There is no
-response message — a gRPC error carries none — so the identification travels
+response message (a gRPC error carries none), so the identification travels
 in **trailing metadata** ([§7.3](#73-grpc-responses)): the marker
 `openmock: unmatched` plus the request's address in `openmock-service` and
 `openmock-rpc`.
@@ -1586,7 +1586,7 @@ connection with a single synthetic message identifying the connection's
 
 ### 10.2 No operation matches
 
-No operation matched the request (the request is unrouted) — routing
+No operation matched the request (the request is unrouted): routing
 selected no target server (an unknown name, or an omitted `server` field
 without a sole server of the protocol to default to), or no operation in the
 targeted server matched the request's address
@@ -1605,7 +1605,7 @@ For an **HTTP** request the implementation **MUST** respond with status
 
 For a **gRPC** request the implementation **MUST** respond with status
 **`UNIMPLEMENTED`**, the error message `No operation matched the request.`,
-and the same identifying **trailing metadata** as above — the marker
+and the same identifying **trailing metadata** as above, the marker
 `openmock: unrouted` plus the request's `openmock-service` and
 `openmock-rpc`:
 
@@ -1665,7 +1665,7 @@ it.
 
 Every synthetic identifies the request that provoked it, so a captured
 response is self-describing without the request beside it: the `openmock`
-marker plus the request's address — `method` + `path` for HTTP, `path` for
+marker plus the request's address, `method` + `path` for HTTP, `path` for
 WebSocket, `openmock-service` + `openmock-rpc` (trailing metadata) for gRPC,
 `operationType` + `operationName` (`extensions`) for GraphQL.
 
@@ -1727,10 +1727,10 @@ as if they were absent.
 OpenMock's gRPC support is deliberately **proto-free** ([§4.2](#42-grpc-requests)):
 a document is serveable without any `.proto` file, and when a server does
 carry its protobuf schema it does so through the standard `descriptorSet`
-field ([§3.4](#34-grpc-servers-descriptorset)) — descriptor attachment is **not** extension
+field ([§3.4](#34-grpc-servers-descriptorset)). Descriptor attachment is **not** extension
 territory, precisely so that the same document ports across engines.
 
-Extensions remain the place for engine behaviour *around* the schema — knobs
+Extensions remain the place for engine behaviour *around* the schema, knobs
 this specification does not define, for example:
 
 ```yaml
@@ -1755,7 +1755,7 @@ serve the mock from the standard fields alone.
 The [`/conformance`](../conformance) corpus is the **normative source of truth**
 for behaviour. Each case is a directory with `input.yml` (the document),
 `request.json` (a normalized request), and `expected.json` (the response an
-implementation must produce) — or, for stateful behaviour, a `steps.json`
+implementation must produce), or, for stateful behaviour, a `steps.json`
 sequence, or, for invalid documents, an `invalid.json` marker: the
 implementation must refuse to load that case's `input.yml`
 ([§3.6](#36-document-validity)). An implementation is **conformant** when it
@@ -1768,8 +1768,8 @@ disagree, the corpus is authoritative and the prose is in error.
 | --------------- | ----------------------------------------------------------------- |
 | **Document**    | One OpenMock YAML file.                                            |
 | **Invalid document** | A document violating any requirement of this specification; refused whole at load time, never partially served or lazily failed ([§3.6](#36-document-validity)). |
-| **Server**      | A named group of operations of one protocol — one mock service. Declared in the top-level `servers` list; addressed by requests through its unique `name`; carries its own protocol settings (`descriptorSet`, `schema`) and call counters ([§3.3](#33-servers-required)). |
-| **Operation**   | An entry in a server's `operations` list: an addressable route and its scenarios — `method` + `path` (HTTP), `service` + `rpc` (gRPC), `operationType` + `operationName` (GraphQL), or `path` (WebSocket). |
+| **Server**      | A named group of operations of one protocol, one mock service. Declared in the top-level `servers` list; addressed by requests through its unique `name`; carries its own protocol settings (`descriptorSet`, `schema`) and call counters ([§3.3](#33-servers-required)). |
+| **Operation**   | An entry in a server's `operations` list: an addressable route and its scenarios: `method` + `path` (HTTP), `service` + `rpc` (gRPC), `operationType` + `operationName` (GraphQL), or `path` (WebSocket). |
 | **Call type**   | A gRPC operation's declared shape: `unary` or `server-streaming`. Never inferred from responses. |
 | **Operation name** | A GraphQL request's client-declared name (`query GetOrder { … }` → `GetOrder`); what GraphQL operations route on. Case-sensitive. |
 | **Path parameter** | A `{name}` segment in a `path`, capturing one non-empty path segment as its percent-decoded value ([§5.2](#52-path-and-path-parameters)). |
@@ -1802,15 +1802,15 @@ gRPC server's optional `descriptorSet`
 ([§3.4](#34-grpc-servers-descriptorset)) and the GraphQL server's optional
 `schema` ([§3.5](#35-graphql-servers-schema)), each a path *resolved
 relative to the document*. An implementation that loads these from untrusted
-documents **SHOULD** confine resolution to the document's own directory —
-rejecting a path that escapes it via `..` traversal or an absolute path —
+documents **SHOULD** confine resolution to the document's own directory (
+rejecting a path that escapes it via `..` traversal or an absolute path)
 and **SHOULD NOT** dereference a remote URL implicitly. Because both
 attachments are optional and never change what a document means
 ([§3.4](#34-grpc-servers-descriptorset)/[§3.5](#35-graphql-servers-schema)), an implementation
 **MAY** decline to load them at all and still serve the document.
 
 **Denial of service.** Facet `pattern` matchers are **RE2**
-([§6.1](#61-when)), which runs in guaranteed linear time — a document cannot
+([§6.1](#61-when)), which runs in guaranteed linear time: a document cannot
 smuggle in a catastrophically backtracking expression. `delay`
 ([§7.2](#72-delay)) is author-controlled latency; an implementation serving
 untrusted documents **MAY** cap it. Other resource limits (document size,
