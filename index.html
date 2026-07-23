@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenMock — An open format for your API mocks</title>
-  <meta name="description" content="OpenMock is an open format and data model for defining API mocks — HTTP, gRPC, GraphQL, and WebSocket — in a single, portable file. One file, no split metadata, no external dispatcher: just the mock." />
+  <title>OpenMock: an open format for your API mocks</title>
+  <meta name="description" content="OpenMock is an open format and data model for defining API mocks (HTTP, gRPC, GraphQL, and WebSocket) in a single, portable file. One file, no split metadata, no external dispatcher. Just the mock." />
   <link rel="canonical" href="https://openmock.dev/" />
 
   <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://openmock.dev/" />
-  <meta property="og:title" content="OpenMock — An open format for your API mocks" />
-  <meta property="og:description" content="An open format and data model for defining API mocks in a single, portable file. HTTP, gRPC, GraphQL, and WebSocket — one model." />
+  <meta property="og:title" content="OpenMock: an open format for your API mocks" />
+  <meta property="og:description" content="An open format and data model for defining API mocks in a single, portable file. HTTP, gRPC, GraphQL, and WebSocket in one model." />
   <meta property="og:image" content="https://openmock.dev/assets/img/og.svg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="OpenMock — An open format for your API mocks" />
+  <meta name="twitter:title" content="OpenMock: an open format for your API mocks" />
   <meta name="twitter:description" content="An open format and data model for defining API mocks in a single, portable file." />
   <meta name="theme-color" content="#76C81D" />
 
@@ -93,8 +93,8 @@
         <h1>One open format<br />for <span class="gradient-text">all your API mocks</span></h1>
         <p class="hero__sub">
           OpenMock is an open format and data model for describing how a mock API
-          should respond — routes, request matching, response bodies, delays, and
-          templated values — in a single, portable, human- and AI-friendly file.
+          should respond. Routes, request matching, response bodies, delays, and
+          templated values live in a single, portable, human- and AI-friendly file.
           No split metadata, no external dispatcher. Just the mock.
         </p>
         <div class="hero__cta">
@@ -138,7 +138,7 @@
                 <span class="tok-key">name</span><span class="tok-punc">:</span> <span class="tok-str">"{{faker.person.fullName}}"</span>
                 <span class="tok-key">role</span><span class="tok-punc">:</span> <span class="tok-str">admin</span>
 
-          <span class="tok-com"># Default fallback (no `when`) — always matches, goes last.</span>
+          <span class="tok-com"># Default fallback (no `when`): always matches, goes last.</span>
           <span class="tok-dash">-</span> <span class="tok-key">name</span><span class="tok-punc">:</span> <span class="tok-str">default-user</span>
             <span class="tok-key">response</span><span class="tok-punc">:</span>
               <span class="tok-key">status</span><span class="tok-punc">:</span> <span class="tok-num">200</span>
@@ -157,13 +157,13 @@
         <div class="section-head reveal">
           <span class="eyebrow">The whole model</span>
           <h2>Four steps, and that's it</h2>
-          <p>An implementation resolves every request the same way. No dispatchers, no scripting — the rules live right next to the response.</p>
+          <p>An implementation resolves every request the same way. No dispatchers, no scripting. The rules live right next to the response.</p>
         </div>
         <div class="flow">
           <div class="flow__step reveal">
             <span class="flow__num">1</span>
             <h3>Route</h3>
-            <p>The request names its server, then <code>method</code> + <code>path</code> select the operation — capturing path params like <code>id</code>.</p>
+            <p>The request names its server, then <code>method</code> + <code>path</code> select the operation, capturing path params like <code>id</code>.</p>
           </div>
           <div class="flow__step reveal">
             <span class="flow__num">2</span>
@@ -178,7 +178,7 @@
           <div class="flow__step reveal">
             <span class="flow__num">4</span>
             <h3>Respond</h3>
-            <p>Answer with the status, headers, and body — after any declared <code>delay</code>. First-match-wins, every time.</p>
+            <p>Answer with the status, headers, and body after any declared <code>delay</code>. First match wins, every time.</p>
           </div>
         </div>
       </div>
@@ -190,18 +190,18 @@
         <div class="section-head reveal">
           <span class="eyebrow">Why OpenMock</span>
           <h2>Example-driven mocks, made <span class="gradient-text">smaller and standalone</span></h2>
-          <p>The good idea — example-driven mocks in one open format — with the ceremony removed. One file, inline matching, and a clear JSON Schema humans and AI agents can both read and write.</p>
+          <p>The good idea, example-driven mocks in one open format, with the ceremony removed. One file, inline matching, and a clear JSON Schema humans and AI agents can both read and write.</p>
         </div>
         <div class="grid">
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
             <h3>One file</h3>
-            <p>A whole mock environment lives in a single <code>openmock.yml</code> — two HTTP services, a gRPC backend, and a WebSocket feed coexist because every request addresses a server by name.</p>
+            <p>A whole mock environment lives in a single <code>openmock.yml</code>. Two HTTP services, a gRPC backend, and a WebSocket feed coexist because every request addresses a server by name.</p>
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></div>
             <h3>Native bodies</h3>
-            <p>Response payloads are real structured data — never escaped JSON-in-a-string. What you write is what the client receives.</p>
+            <p>Response payloads are real structured data, never escaped JSON-in-a-string. What you write is what the client receives.</p>
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
@@ -211,17 +211,17 @@
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg></div>
             <h3>Explicit, in-file matching</h3>
-            <p>Requests are matched by rules written right next to the response — first-match-wins, with a plain default fallback. No external dispatcher concept.</p>
+            <p>Requests are matched by rules written right next to the response. First match wins, with a plain default fallback. No external dispatcher concept.</p>
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg></div>
             <h3>Stateful without scripting</h3>
-            <p>A per-operation call counter mocks polling flows — upload → pending → done — with plain data. No code, no side effects.</p>
+            <p>A per-operation call counter mocks polling flows (upload → pending → done) with plain data. No code, no side effects.</p>
           </div>
           <div class="card reveal">
             <div class="card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 2v10l7 3"/></svg></div>
             <h3>Transport-agnostic &amp; self-contained</h3>
-            <p>OpenMock describes mocks, not running processes — how a server maps to a port stays an implementation concern. It depends on no other spec or format.</p>
+            <p>OpenMock describes mocks, not running processes. How a server maps to a port stays an implementation concern. It depends on no other spec or format.</p>
           </div>
         </div>
       </div>
@@ -233,7 +233,7 @@
         <div class="section-head reveal">
           <span class="eyebrow">Four protocols, one shape</span>
           <h2>Mock the whole stack</h2>
-          <p>v0.2 covers HTTP/REST, gRPC, GraphQL, and WebSocket — each reusing the same scenario model rather than forking it.</p>
+          <p>v0.2 covers HTTP/REST, gRPC, GraphQL, and WebSocket. Each one reuses the same scenario model rather than forking it.</p>
         </div>
         <div class="protocols">
           <div class="protocol reveal">
@@ -265,9 +265,9 @@
             <h2>Write a mock. Serve it. Done.</h2>
             <p>Describe your servers, operations, and scenarios in one <code>openmock.yml</code>, then serve it with the Go reference implementation.</p>
             <ul class="split__list">
-              <li><b>Stateful polling</b> — the <code>calls</code> facet keeps a counter per operation and concrete path, so <code>upload → pending → done</code> is just data.</li>
-              <li><b>Templating &amp; faker</b> — <code>{{params.hash}}</code>, <code>{{request.body.x}}</code>, and <code>{{faker.*}}</code> fill responses dynamically.</li>
-              <li><b>Marked synthetic fallbacks</b> — unrouted 404 / unmatched 501, each carrying an <code>openmock</code> marker so it's never mistaken for an authored mock.</li>
+              <li><b>Stateful polling:</b> the <code>calls</code> facet keeps a counter per operation and concrete path, so <code>upload → pending → done</code> is plain data.</li>
+              <li><b>Templating &amp; faker:</b> <code>{{params.hash}}</code>, <code>{{request.body.x}}</code>, and <code>{{faker.*}}</code> fill responses dynamically.</li>
+              <li><b>Marked synthetic fallbacks:</b> unrouted 404 or unmatched 501, each carrying an <code>openmock</code> marker so it's never mistaken for an authored mock.</li>
             </ul>
             <div class="hero__cta" style="justify-content:flex-start;margin-top:26px;">
               <a class="btn btn--primary" href="examples.html">Browse examples</a>
@@ -375,7 +375,7 @@
         <div class="section-head reveal">
           <span class="eyebrow">Reference tooling</span>
           <h2>A canonical, corpus-validated engine</h2>
-          <p>OpenMock is first a specification; the tooling proves it's implementable. <b>openmock-go</b> is the canonical engine — a pure parse → match → render core that passes every conformance case, across all four protocols.</p>
+          <p>OpenMock is first a specification. The tooling proves it's implementable. <b>openmock-go</b> is the canonical engine: a pure parse → match → render core that passes every conformance case across all four protocols.</p>
         </div>
         <div class="install-grid">
           <div class="terminal reveal">
@@ -391,11 +391,11 @@
           </div>
           <div class="split__text reveal">
             <h3 style="font-size:1.3rem;">Engine-first, CLI-second</h3>
-            <p>The <code>engine</code> package is pure — no I/O, no server assumption — importable standalone by an embedding host. The <code>server</code> package adds the protocol adapters and the admin/discovery API; <code>openmock serve</code> runs it from the command line.</p>
+            <p>The <code>engine</code> package is pure (no I/O, no server assumption), importable standalone by an embedding host. The <code>server</code> package adds the protocol adapters and the admin/discovery API. <code>openmock serve</code> runs it from the command line.</p>
             <ul class="split__list">
-              <li><b>Go engine (canonical)</b> — validated against every conformance case.</li>
-              <li><b>All four protocol servers</b> — HTTP, gRPC, GraphQL, WebSocket.</li>
-              <li><b>TypeScript port</b> — planned, provably equivalent via the shared corpus.</li>
+              <li><b>Go engine (canonical):</b> validated against every conformance case.</li>
+              <li><b>All four protocol servers:</b> HTTP, gRPC, GraphQL, WebSocket.</li>
+              <li><b>TypeScript port:</b> planned, provably equivalent via the shared corpus.</li>
             </ul>
             <div class="hero__cta" style="justify-content:flex-start;margin-top:22px;">
               <a class="btn btn--primary" href="https://github.com/openmock-dev/openmock-go">openmock-go on GitHub</a>

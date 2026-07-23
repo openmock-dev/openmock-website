@@ -206,14 +206,14 @@ function buildSpec() {
   md = rewriteLinks(md);
   const { html, toc } = renderMarkdown(md);
   const hero = docHero("Specification", "OpenMock Specification <span class=\"gradient-text\">v0.2</span>",
-    "The normative specification for the OpenMock format — file structure, request matching, response shaping, delays, and templating, across HTTP, gRPC, GraphQL, and WebSocket.",
+    "The normative specification for the OpenMock format: file structure, request matching, response shaping, delays, and templating across HTTP, gRPC, GraphQL, and WebSocket.",
     [
       { label: "Draft · v0.2" },
       { label: "Download Markdown", href: "https://github.com/openmock-dev/openmock/blob/main/spec/v0.2.md" },
       { label: "JSON Schema", href: "schema.html" },
     ]);
   write("spec.html", pageShell({
-    title: "OpenMock Specification v0.2", desc: "The OpenMock format specification — servers, operations, scenarios, matching, responses, and templating across HTTP, gRPC, GraphQL, and WebSocket.",
+    title: "OpenMock Specification v0.2", desc: "The OpenMock format specification: servers, operations, scenarios, matching, responses, and templating across HTTP, gRPC, GraphQL, and WebSocket.",
     active: "spec", hero, sidebar: tocHtml(toc), main: `<div class="prose">\n${html}\n</div>`,
   }));
 }
@@ -224,7 +224,7 @@ function buildServing() {
   md = rewriteLinks(md);
   const { html, toc } = renderMarkdown(md);
   const hero = docHero("Guide", "Serving OpenMock documents",
-    "Recommended practice for the implementations around the spec — port resolution, the discovery/admin API, and embedding the engine. Non-normative.",
+    "Recommended practice for the implementations around the spec: port resolution, the discovery/admin API, and embedding the engine. Non-normative.",
     [{ label: "Non-normative" }, { label: "openmock-go", href: "https://github.com/openmock-dev/openmock-go" }]);
   write("serving.html", pageShell({
     title: "Serving OpenMock documents", desc: "Recommended serving practice for OpenMock: port resolution, the admin/discovery API, and embedding the engine.",
@@ -301,7 +301,7 @@ function buildExamples() {
   });
 
   const sidebar = items.map((it) => `            <li><a class="lvl-2" href="#${it.id}">${escapeHtml(it.title)}</a></li>`).join("\n");
-  const main = `<div class="prose"><p>Eight worked <code>openmock.yml</code> documents, from a minimal REST mock to a two-server gRPC topology — each runnable with the <a href="https://github.com/openmock-dev/openmock-go">openmock-go</a> reference server. Copy any of them and adapt.</p></div>\n` +
+  const main = `<div class="prose"><p>Eight worked <code>openmock.yml</code> documents, from a minimal REST mock to a two-server gRPC topology. Each one runs with the <a href="https://github.com/openmock-dev/openmock-go">openmock-go</a> reference server. Copy any of them and adapt.</p></div>\n` +
     items.map((it) => `      <section class="example" id="${it.id}">
         <div class="example__head">
           <span class="example__badge">${escapeHtml(it.file)}</span>
@@ -433,7 +433,7 @@ function buildSchema() {
   const embedded = JSON.stringify(schema).replace(/</g, "\\u003c");
 
   const hero = docHero("JSON Schema", "OpenMock <span class=\"gradient-text\">schema explorer</span>",
-    "Browse the OpenMock JSON Schema (draft 2020-12) column by column — click a property to open the model it references. Switch to the diagram for the big picture, or read the raw source.",
+    "Browse the OpenMock JSON Schema (draft 2020-12) column by column. Click a property to open the model it references. Switch to the diagram for the big picture, or read the raw source.",
     [
       { label: "draft 2020-12" },
       { label: "Download JSON", href: "openmock-0.2.0.json" },
